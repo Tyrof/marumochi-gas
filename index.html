@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まるもちGASドリル - 初心者のためのGoogle Apps Script入門</title>
+  <style>
+    :root {
+      --primary: #1A73E8;
+      --primary-hover: #1557b0;
+      --primary-light: #e8f0fe;
+      --success: #0d904f;
+      --success-light: #e6f4ea;
+      --warning: #f9ab00;
+      --warning-light: #fef7e0;
+      --danger: #d93025;
+      --danger-light: #fce8e6;
+      --text-main: #202124;
+      --text-sub: #5f6368;
+      --border: #dadce0;
+      --bg-page: #f8f9fa;
+      --bg-card: #ffffff;
+      --sheet-grid: #e0e0e0;
+      --sheet-header: #f1f3f4;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Sans", "Meiryo", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      font-size: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 16px;
+      flex: 1;
+    }
+
+    /* Header & Navigation */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .header-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 2px 4px rgba(26,115,232,0.2);
+    }
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+    .brand-badge {
+      font-size: 0.75rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+    .btn-outline {
+      background-color: #fff;
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background-color: var(--bg-page);
+      border-color: #bcc1c8;
+    }
+    .btn-success {
+      background-color: var(--success);
+      color: #fff;
+    }
+    .btn-success:hover {
+      background-color: #0b7a42;
+    }
+
+    /* まるもちキャラクター吹き出し */
+    .marumochi-box {
+      background: #ffffff;
+      border: 1px solid #d2e3fc;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      box-shadow: 0 3px 10px rgba(26,115,232,0.06);
+    }
+    .marumochi-avatar {
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .marumochi-face {
+      width: 52px;
+      height: 48px;
+      background: #ffffff;
+      border: 2px solid #5f6368;
+      border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+      animation: floatMochi 3s ease-in-out infinite;
+    }
+    @keyframes floatMochi {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .mochi-eyes {
+      display: flex;
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .mochi-eye {
+      width: 4px;
+      height: 4px;
+      background: #202124;
+      border-radius: 50%;
+    }
+    .mochi-cheeks {
+      display: flex;
+      gap: 22px;
+      position: absolute;
+      top: 24px;
+    }
+    .mochi-cheek {
+      width: 7px;
+      height: 5px;
+      background: #ffb6c1;
+      border-radius: 50%;
+      opacity: 0.9;
+    }
+    .mochi-mouth {
+      width: 6px;
+      height: 3px;
+      border-bottom: 2px solid #202124;
+      border-radius: 0 0 4px 4px;
+      margin-top: 2px;
+    }
+    .marumochi-name {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+    .marumochi-speech {
+      flex: 1;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+
+    /* カード・セクション */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* プログレスバー */
+    .progress-bar-container {
+      background: #e9ecef;
+      border-radius: 10px;
+      height: 10px;
+      overflow: hidden;
+      margin: 10px 0 6px;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, #1A73E8, #34a853);
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .progress-text {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      text-align: right;
+    }
+
+    /* ステージマップ */
+    .stage-section {
+      margin-bottom: 24px;
+    }
+    .stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    .stage-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: #fff;
+    }
+    .stage-badge.locked {
+      background: #9aa0a6;
+    }
+    .stage-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-left: 8px;
+      color: var(--text-main);
+      flex: 1;
+    }
+
+    .lesson-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .lesson-list {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .lesson-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .lesson-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+    .lesson-item.completed {
+      border-color: #a8dab5;
+      background: #fbfefc;
+    }
+    .lesson-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .lesson-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .lesson-title-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .lesson-status-icon {
+      font-size: 1.25rem;
+      color: #dadce0;
+    }
+    .lesson-item.completed .lesson-status-icon {
+      color: var(--success);
+    }
+    .stage-locked-card {
+      background: #f1f3f4;
+      border: 1px dashed #bcc1c8;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 0.95rem;
+    }
+
+    /* 疑似スプレッドシート表示 */
+    .sheet-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0 16px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .sheet-tabs {
+      background: #e8eaed;
+      padding: 6px 10px 0;
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--sheet-grid);
+    }
+    .sheet-tab {
+      background: #ffffff;
+      border: 1px solid var(--sheet-grid);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sheet-tab-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+    .sheet-table-scroll {
+      overflow-x: auto;
+      max-height: 280px;
+    }
+    .sheet-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      font-family: var(--font-family);
+    }
+    .sheet-table th, .sheet-table td {
+      border: 1px solid var(--sheet-grid);
+      padding: 6px 10px;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .sheet-table th {
+      background: var(--sheet-header);
+      color: var(--text-sub);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-align: center;
+      user-select: none;
+    }
+    .sheet-table th.row-header {
+      width: 32px;
+      background: var(--sheet-header);
+      text-align: center;
+      color: var(--text-sub);
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+    .sheet-table td {
+      background: #ffffff;
+      color: var(--text-main);
+      transition: background-color 0.4s ease;
+    }
+    .sheet-table td.cell-updated {
+      background-color: #fff9c4 !important;
+      font-weight: bold;
+      color: #b06000;
+      animation: cellHighlight 1.5s ease-out;
+    }
+    @keyframes cellHighlight {
+      0% { background-color: #ffe082; }
+      100% { background-color: #fff9c4; }
+    }
+
+    /* コードエディタ & 補助ボタン */
+    .editor-container {
+      margin: 12px 0;
+    }
+    .code-editor-header {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 8px 8px 0 0;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .code-textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      resize: vertical;
+      tab-size: 2;
+      outline: none;
+    }
+    .code-textarea:focus {
+      border-color: var(--primary);
+    }
+
+    /* 入力補助ボタン群 */
+    .helper-toolbar {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .helper-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+    .helper-label {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-right: 4px;
+      font-weight: bold;
+    }
+    .helper-btn {
+      background: #f1f3f4;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-main);
+      transition: all 0.1s ease;
+    }
+    .helper-btn:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+    }
+    .helper-btn:active {
+      background: #cbd5e1;
+      transform: scale(0.96);
+    }
+    .helper-btn.component {
+      background: var(--primary-light);
+      border-color: #c2e7ff;
+      color: var(--primary);
+    }
+    .helper-btn.component:hover {
+      background: #d3e3fd;
+    }
+
+    /* 実行ログ */
+    .log-box {
+      background: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      min-height: 48px;
+      max-height: 140px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .log-box.empty {
+      color: #9aa0a6;
+      font-style: italic;
+    }
+
+    /* 判定結果・アラート */
+    .result-alert {
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin: 14px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 0.95rem;
+    }
+    .result-alert.success {
+      background: var(--success-light);
+      border: 1px solid #a8dab5;
+      color: #0b6938;
+    }
+    .result-alert.error {
+      background: var(--danger-light);
+      border: 1px solid #f5c2c7;
+      color: #b02a37;
+    }
+    .result-alert.info {
+      background: var(--primary-light);
+      border: 1px solid #d2e3fc;
+      color: #174ea6;
+    }
+
+    /* ヒント */
+    .hints-section {
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+    .hint-step {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .hint-step-header {
+      padding: 10px 14px;
+      background: #f8f9fa;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .hint-step-content {
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      border-top: 1px solid #e0e0e0;
+      line-height: 1.5;
+      color: #374151;
+      background: #fff;
+    }
+
+    /* クイズ選択肢（選択式レッスン用） */
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .quiz-option {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      transition: all 0.15s ease;
+    }
+    .quiz-option:hover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+    .quiz-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      font-weight: bold;
+    }
+    .quiz-option-key {
+      width: 28px;
+      height: 28px;
+      background: #e8eaed;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--text-main);
+      flex-shrink: 0;
+    }
+    .quiz-option.selected .quiz-option-key {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* モーダル */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transform: scale(0.9);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+    .modal-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+    .modal-desc {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* 紙吹雪Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1001;
+    }
+
+    /* フッター */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 20px 16px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-top: auto;
+    }
+
+    /* ユーティリティ */
+    .hidden {
+      display: none !important;
+    }
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: center;
+    }
+    .after-note-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 16px;
+      font-size: 0.95rem;
+    }
+    .model-code-box {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 紙吹雪用 Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ヘッダー -->
+  <header>
+    <div class="header-inner">
+      <div class="brand" onclick="app.showTop()">
+        <div class="brand-icon">🍡</div>
+        <div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="brand-title">まるもちGASドリル</span>
+            <span class="brand-badge">入門編</span>
+          </div>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-outline btn-sm" onclick="app.showSandbox()">自由練習</button>
+        <button class="btn btn-outline btn-sm" onclick="app.showTop()">マップ</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. トップ画面（ステージマップ） -->
+    <div id="view-top">
+      <!-- まるもちウェルカム挨拶 -->
+      <div class="marumochi-box">
+        <div class="marumochi-avatar">
+          <div class="marumochi-face">
+            <div class="mochi-eyes">
+              <div class="mochi-eye"></div>
+              <div class="mochi-eye"></div>
+            </div>
+            <div class="mochi-cheeks">
+              <div class="mochi-cheek"></div>
+              <div class="mochi-cheek"></div>
+            </div>
+            <div class="mochi-mouth"></div>
+          </div>
+          <div class="marumochi-name">まるもち</div>
+        </div>
+        <div class="marumochi-speech">
+          やあ！ボクは「まるもち」だよ🍡<br>
+          Google Apps Script（GAS）を使えば、スプレッドシートの手作業をぜんぶ自動化できちゃうんだ！<br>
+          まずはプロローグから、1つずつステップアップしていこう！
+        </div>
+      </div>
+
+      <!-- 全体進捗カード -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:700; font-size:1rem;">学習の進捗</span>
+          <span id="top-progress-ratio" style="font-weight:700; color:var(--primary); font-size:1.05rem;">0 / 11 完了</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="top-progress-bar" class="progress-bar-fill"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+          <span class="progress-text" style="text-align:left;">コツコツ進めていこう！</span>
+          <button class="btn btn-sm btn-outline" onclick="app.resetAllProgress()" style="color:#888; font-size:0.75rem; border:none; padding:2px 6px;">進捗リセット</button>
+        </div>
+      </div>
+
+      <!-- ステージリスト -->
+      <div id="stage-list-container"></div>
+    </div>
+
+    <!-- 2. レッスン画面 -->
+    <div id="view-lesson" class="hidden">
+      <!-- 上部戻るボタン & タイトル -->
+      <div style="margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+        <button class="btn btn-outline btn-sm" onclick="app.showTop()">← マップに戻る</button>
+        <span id="lesson-stage-indicator" style="font-size:0.85rem; font-weight:bold; color:var(--text-sub);"></span>
+      </div>
+
+      <!-- まるもち解説吹き出し -->
+      <div class="marumochi-box">
+        <div class="marumochi-avatar">
+          <div class="marumochi-face">
+            <div class="mochi-eyes">
+              <div class="mochi-eye"></div>
+              <div class="mochi-eye"></div>
+            </div>
+            <div class="mochi-cheeks">
+              <div class="mochi-cheek"></div>
+              <div class="mochi-cheek"></div>
+            </div>
+            <div class="mochi-mouth"></div>
+          </div>
+          <div class="marumochi-name">まるもち</div>
+        </div>
+        <div class="marumochi-speech" id="lesson-explain"></div>
+      </div>
+
+      <!-- 例題セクション（exampleがある場合のみ） -->
+      <div id="example-card" class="card hidden">
+        <div class="card-title">💡 例題を見てみよう</div>
+        <p id="example-desc" style="font-size:0.95rem; margin-bottom:10px;"></p>
+        <div class="model-code-box" id="example-code" style="margin-top:0;"></div>
+        <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
+          <button class="btn btn-sm btn-outline" onclick="app.runExample()">例題を実行してみる</button>
+        </div>
+        <!-- 例題ログ -->
+        <div id="example-log" class="log-box empty" style="margin-top:8px;">実行ログがここに表示されます</div>
+      </div>
+
+      <!-- 問題セクション -->
+      <div class="card">
+        <div class="card-title" id="lesson-question-title">🎯 チャレンジ問題</div>
+        <div id="lesson-question-body" style="font-size:1rem; margin-bottom:14px; line-height:1.6;"></div>
+
+        <!-- 疑似スプレッドシート表示 -->
+        <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub); margin-bottom:4px;">📊 練習シート「売上」の現在の状態：</div>
+        <div class="sheet-wrapper">
+          <div class="sheet-tabs">
+            <div class="sheet-tab">
+              <div class="sheet-tab-dot"></div>
+              <span id="lesson-sheet-tab-name">売上</span>
+            </div>
+          </div>
+          <div class="sheet-table-scroll">
+            <table class="sheet-table" id="lesson-sheet-table">
+              <!-- 動的生成 -->
+            </table>
+          </div>
+        </div>
+
+        <!-- 選択式の場合（p-01など） -->
+        <div id="quiz-container" class="hidden">
+          <div class="quiz-options" id="quiz-options"></div>
+          <button class="btn btn-primary" onclick="app.submitQuiz()">回答を決定する</button>
+        </div>
+
+        <!-- コード記述式の場合 -->
+        <div id="code-task-container">
+          <div class="editor-container">
+            <div class="code-editor-header">
+              <span>GASコード入力欄 (JavaScript)</span>
+              <span style="font-size:0.75rem; color:#94a3b8;">Tabキーでインデント可</span>
+            </div>
+            <textarea id="code-input" class="code-textarea" spellcheck="false" placeholder="ここにコードを書きます"></textarea>
+          </div>
+
+          <!-- 入力補助ボタン群 -->
+          <div class="helper-toolbar">
+            <div class="helper-row">
+              <span class="helper-label">部品:</span>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('function ')">function</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('return ')">return</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('Logger.log(')">Logger.log</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('.getRange(\'')">getRange</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('.getValue()')">getValue</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('.setValue(')">setValue</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('const ')">const</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('let ')">let</button>
+            </div>
+            <div class="helper-row">
+              <span class="helper-label">記号:</span>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('(')">(</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(')')">)</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('{')">{</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('}')">}</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('[')">[</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(']')">]</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(';')">;</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('.')">.</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(',')">,</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('\'')">'</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('&quot;')">"</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(' + ')">+</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(' - ')">-</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(' * ')">*</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(' / ')">/</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(' = ')">=</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(' < ')">&lt;</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper(' > ')">&gt;</button>
+              <button class="helper-btn" type="button" onclick="app.insertHelper('!')">!</button>
+            </div>
+          </div>
+
+          <!-- 実行操作行 -->
+          <div class="action-row">
+            <button class="btn btn-primary" onclick="app.runUserCode()">▶ 実行して判定する</button>
+            <button class="btn btn-outline" onclick="app.resetCurrentLessonSheet()">シートとコードを初期化</button>
+          </div>
+
+          <!-- 実行ログ欄 -->
+          <div style="margin-top:14px;">
+            <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub);">実行ログ (Logger.log):</div>
+            <div id="execution-log" class="log-box empty">実行するとここにログが表示されます</div>
+          </div>
+        </div>
+
+        <!-- 判定結果アラート -->
+        <div id="judge-result-alert" class="hidden"></div>
+
+        <!-- クリア後コンテンツ（模範コード＆afterNote） -->
+        <div id="lesson-clear-content" class="hidden">
+          <div class="after-note-box">
+            <div style="font-weight:700; color:var(--success); margin-bottom:6px;">🍡 まるもちのポイント解説</div>
+            <div id="lesson-after-note"></div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub);">模範コード例：</div>
+            <div class="model-code-box" id="lesson-model-code"></div>
+          </div>
+
+          <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+            <button class="btn btn-success" id="btn-next-lesson" onclick="app.goToNextLesson()">次のレッスンへ進む →</button>
+          </div>
+        </div>
+
+        <!-- 3段階ヒント -->
+        <div class="hints-section">
+          <div style="font-size:0.9rem; font-weight:bold; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <span>💡 まるもちのヒント</span>
+            <span style="font-size:0.75rem; color:var(--text-sub); font-weight:normal;">困ったらクリックしてね（1つずつ開けます）</span>
+          </div>
+
+          <div class="hint-step">
+            <div class="hint-step-header" onclick="app.toggleHint(1)">
+              <span>ヒント 1: 考え方の第一歩</span>
+              <span id="hint-icon-1">▼</span>
+            </div>
+            <div class="hint-step-content hidden" id="hint-content-1"></div>
+          </div>
+
+          <div class="hint-step">
+            <div class="hint-step-header" onclick="app.toggleHint(2)">
+              <span>ヒント 2: 使う道具（メソッド）</span>
+              <span id="hint-icon-2">▼</span>
+            </div>
+            <div class="hint-step-content hidden" id="hint-content-2"></div>
+          </div>
+
+          <div class="hint-step">
+            <div class="hint-step-header" onclick="app.toggleHint(3)">
+              <span>ヒント 3: ほぼ答えの形</span>
+              <span id="hint-icon-3">▼</span>
+            </div>
+            <div class="hint-step-content hidden" id="hint-content-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 自由練習モード（Sandbox） -->
+    <div id="view-sandbox" class="hidden">
+      <div style="margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+        <button class="btn btn-outline btn-sm" onclick="app.showTop()">← マップに戻る</button>
+        <span style="font-size:0.9rem; font-weight:bold; color:var(--primary);">🛠 自由練習モード</span>
+      </div>
+
+      <div class="marumochi-box">
+        <div class="marumochi-avatar">
+          <div class="marumochi-face">
+            <div class="mochi-eyes"><div class="mochi-eye"></div><div class="mochi-eye"></div></div>
+            <div class="mochi-cheeks"><div class="mochi-cheek"></div><div class="mochi-cheek"></div></div>
+            <div class="mochi-mouth"></div>
+          </div>
+          <div class="marumochi-name">まるもち</div>
+        </div>
+        <div class="marumochi-speech">
+          ここでは自由にGASコードを書いて試せるよ！<br>
+          「売上」シートに対して値の読み書きや計算、新しい行の追加などを自由に実験してみてね🍡
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 練習シート「売上」</div>
+        <div class="sheet-wrapper">
+          <div class="sheet-tabs">
+            <div class="sheet-tab"><div class="sheet-tab-dot"></div>売上</div>
+          </div>
+          <div class="sheet-table-scroll">
+            <table class="sheet-table" id="sandbox-sheet-table"></table>
+          </div>
+        </div>
+
+        <div class="editor-container">
+          <div class="code-editor-header">
+            <span>自由入力エディタ</span>
+            <span style="font-size:0.75rem; color:#94a3b8;">Ctrl/Cmd+Enterで実行</span>
+          </div>
+          <textarea id="sandbox-code-input" class="code-textarea" spellcheck="false"></textarea>
+        </div>
+
+        <!-- 補助ボタン -->
+        <div class="helper-toolbar">
+          <div class="helper-row">
+            <span class="helper-label">部品:</span>
+            <button class="helper-btn component" type="button" onclick="app.insertSandboxHelper('function ')">function</button>
+            <button class="helper-btn component" type="button" onclick="app.insertSandboxHelper('Logger.log(')">Logger.log</button>
+            <button class="helper-btn component" type="button" onclick="app.insertSandboxHelper('.getRange(\'')">getRange</button>
+            <button class="helper-btn component" type="button" onclick="app.insertSandboxHelper('.getValue()')">getValue</button>
+            <button class="helper-btn component" type="button" onclick="app.insertSandboxHelper('.setValue(')">setValue</button>
+            <button class="helper-btn component" type="button" onclick="app.insertSandboxHelper('.appendRow([')">appendRow</button>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-primary" onclick="app.runSandboxCode()">▶ コードを実行する</button>
+          <button class="btn btn-outline" onclick="app.resetSandboxSheet()">シートを初期状態に戻す</button>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub);">実行ログ (Logger.log):</div>
+          <div id="sandbox-execution-log" class="log-box empty">実行するとここにログが表示されます</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- クリアお祝いモーダル -->
+  <div class="modal-overlay" id="celebration-modal">
+    <div class="modal-content">
+      <div class="modal-icon" id="celebration-icon">🎉</div>
+      <div class="modal-title" id="celebration-title">おめでとう！</div>
+      <div class="modal-desc" id="celebration-desc"></div>
+      <button class="btn btn-primary" onclick="app.closeModal()">やったね！次へ進む</button>
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <footer>
+    © RYO YOKOTA - まるもちGASドリル
+  </footer>
+
+  <script>
+    /* =======================================================================
+       1. 基本初期データ定義（練習シート「売上」）
+       ======================================================================= */
+    const INITIAL_SALES_DATA = [
+      ["日付", "スタンプ名", "個数", "金額"],
+      ["2026-11-06", "癒しのまるもち", 1, 190],
+      ["2026-11-08", "癒しのまるもち", 2, 380],
+      ["2026-11-10", "動く！癒しのまるもち", 1, 250],
+      ["2026-11-10", "癒しのまるもち", 3, 570],
+      ["2026-11-12", "あけおめ！まるもち2027", 0, 0]
+    ];
+
+    function cloneSheetData(data) {
+      return data.map(row => [...row]);
+    }
+
+    /* =======================================================================
+       2. モックAPI（SpreadsheetApp / Range / Sheet / Logger）
+       ======================================================================= */
+    class MockRange {
+      constructor(sheet, startRow, startCol, numRows = 1, numCols = 1) {
+        this.sheet = sheet;
+        this.startRow = startRow; // 1-indexed
+        this.startCol = startCol; // 1-indexed
+        this.numRows = numRows;
+        this.numCols = numCols;
+      }
+
+      getValue() {
+        const r = this.startRow - 1;
+        const c = this.startCol - 1;
+        if (r < 0 || r >= this.sheet.data.length) return "";
+        if (c < 0 || c >= (this.sheet.data[r] ? this.sheet.data[r].length : 0)) return "";
+        return this.sheet.data[r][c];
+      }
+
+      getValues() {
+        const result = [];
+        for (let r = 0; r < this.numRows; r++) {
+          const rowData = [];
+          const rowIndex = this.startRow - 1 + r;
+          for (let c = 0; c < this.numCols; c++) {
+            const colIndex = this.startCol - 1 + c;
+            if (this.sheet.data[rowIndex] && this.sheet.data[rowIndex][colIndex] !== undefined) {
+              rowData.push(this.sheet.data[rowIndex][colIndex]);
+            } else {
+              rowData.push("");
+            }
+          }
+          result.push(rowData);
+        }
+        return result;
+      }
+
+      setValue(value) {
+        for (let r = 0; r < this.numRows; r++) {
+          const rowIndex = this.startRow - 1 + r;
+          this.sheet.ensureCapacity(rowIndex, this.startCol - 1 + this.numCols);
+          for (let c = 0; c < this.numCols; c++) {
+            const colIndex = this.startCol - 1 + c;
+            this.sheet.data[rowIndex][colIndex] = value;
+            this.sheet.trackUpdatedCell(rowIndex, colIndex);
+          }
+        }
+        return this;
+      }
+
+      setValues(values2D) {
+        if (!Array.isArray(values2D)) {
+          throw new Error("setValues には2次元配列を指定してください（例: [[1, 2], [3, 4]]）");
+        }
+        for (let r = 0; r < values2D.length; r++) {
+          const rowIndex = this.startRow - 1 + r;
+          if (!Array.isArray(values2D[r])) continue;
+          this.sheet.ensureCapacity(rowIndex, this.startCol - 1 + values2D[r].length);
+          for (let c = 0; c < values2D[r].length; c++) {
+            const colIndex = this.startCol - 1 + c;
+            this.sheet.data[rowIndex][colIndex] = values2D[r][c];
+            this.sheet.trackUpdatedCell(rowIndex, colIndex);
+          }
+        }
+        return this;
+      }
+    }
+
+    class MockSheet {
+      constructor(name, data) {
+        this.name = name;
+        this.data = cloneSheetData(data);
+        this.updatedCells = new Set(); // "r,c"
+      }
+
+      ensureCapacity(row, col) {
+        while (this.data.length <= row) {
+          this.data.push([]);
+        }
+        for (let r = 0; r <= row; r++) {
+          while (this.data[r].length <= col) {
+            this.data[r].push("");
+          }
+        }
+      }
+
+      trackUpdatedCell(r, c) {
+        this.updatedCells.add(`${r},${c}`);
+      }
+
+      // A1形式または行・列番号でのRange取得
+      getRange(a, b, c, d) {
+        if (typeof a === "string") {
+          // A1表記のパース (例: 'A1', 'B2', 'C2:D4')
+          return this.parseA1Notation(a);
+        } else if (typeof a === "number" && typeof b === "number") {
+          const row = a;
+          const col = b;
+          const numRows = typeof c === "number" ? c : 1;
+          const numCols = typeof d === "number" ? d : 1;
+          return new MockRange(this, row, col, numRows, numCols);
+        }
+        throw new Error("getRange の引数が正しくありません。getRange('A1') または getRange(行, 列, 行数, 列数) を使ってください。");
+      }
+
+      parseA1Notation(a1) {
+        const parts = a1.replace(/\$/g, "").split(":");
+        const parseCell = (cellStr) => {
+          const match = cellStr.match(/^([A-Za-z]+)(\d+)$/);
+          if (!match) throw new Error(`セル表記 '${cellStr}' が正しくありません（例: 'A1', 'B2'）`);
+          const colStr = match[1].toUpperCase();
+          const row = parseInt(match[2], 10);
+          let col = 0;
+          for (let i = 0; i < colStr.length; i++) {
+            col = col * 26 + (colStr.charCodeAt(i) - 64);
+          }
+          return { row, col };
+        };
+
+        const start = parseCell(parts[0]);
+        if (parts.length === 1) {
+          return new MockRange(this, start.row, start.col, 1, 1);
+        } else {
+          const end = parseCell(parts[1]);
+          const numRows = Math.abs(end.row - start.row) + 1;
+          const numCols = Math.abs(end.col - start.col) + 1;
+          const minRow = Math.min(start.row, end.row);
+          const minCol = Math.min(start.col, end.col);
+          return new MockRange(this, minRow, minCol, numRows, numCols);
+        }
+      }
+
+      getLastRow() {
+        for (let r = this.data.length - 1; r >= 0; r--) {
+          const row = this.data[r];
+          if (row && row.some(cell => cell !== "" && cell !== null && cell !== undefined)) {
+            return r + 1;
+          }
+        }
+        return 0;
+      }
+
+      getLastColumn() {
+        let maxCol = 0;
+        for (const row of this.data) {
+          if (!row) continue;
+          for (let c = row.length - 1; c >= 0; c--) {
+            if (row[c] !== "" && row[c] !== null && row[c] !== undefined) {
+              if (c + 1 > maxCol) maxCol = c + 1;
+              break;
+            }
+          }
+        }
+        return maxCol;
+      }
+
+      appendRow(rowArray) {
+        if (!Array.isArray(rowArray)) {
+          throw new Error("appendRow には配列を指定してください（例: ['2026-11-15', 'まるもち', 1, 190]）");
+        }
+        const newRowIndex = this.getLastRow();
+        this.ensureCapacity(newRowIndex, rowArray.length - 1);
+        for (let c = 0; c < rowArray.length; c++) {
+          this.data[newRowIndex][c] = rowArray[c];
+          this.trackUpdatedCell(newRowIndex, c);
+        }
+      }
+    }
+
+    class MockSpreadsheet {
+      constructor(sheetsMap) {
+        this.sheets = sheetsMap; // { "売上": MockSheet }
+      }
+
+      getSheetByName(name) {
+        const s = this.sheets[name];
+        if (!s) {
+          const available = Object.keys(this.sheets).join(", ");
+          throw new Error(`シート '${name}' が見つかりません（存在するシート: ${available}）`);
+        }
+        return s;
+      }
+
+      getActiveSheet() {
+        const first = Object.keys(this.sheets)[0];
+        return this.sheets[first];
+      }
+    }
+
+    /* =======================================================================
+       3. ステージとレッスンデータ定義 (11レッスン実装 + 将来ステージ枠)
+       ======================================================================= */
+    const LESSONS_DATA = [
+      // --- プロローグ（超入門 5レッスン） ---
+      {
+        id: "p-01",
+        stageId: "prologue",
+        title: "GASってなに？",
+        type: "quiz",
+        explain: "こんにちは！まるもちだよ🍡<br>GAS（Google Apps Script）は、Googleが作った<strong>「スプレッドシートの自動化助手ロボット」</strong>なんだ。<br>人間が毎日カチカチ手作業でやっている集計やコピペを、プログラムのお願い文を書いておくだけで一瞬で代わりにやってくれるんだよ！",
+        question: "まるもちからの理解度クイズ！<br><strong>「GASを使うと、どんなことができるようになるかな？」</strong> 正しいと思うものを選んでね。",
+        quizOptions: [
+          { text: "スプレッドシートの入力・計算・コピペなどの手作業を自動でやってくれる", correct: true },
+          { text: "スマホの液晶画面を頑丈にして割れないようにしてくれる", correct: false },
+          { text: "キッチンのお米を自動でふっくら美味しく炊いてくれる", correct: false }
+        ],
+        hint1: "身近なスプレッドシートのお仕事を手伝ってくれるのがGASだよ。",
+        hint2: "液晶画面やお米炊飯はスマホや家電のお仕事だね🍡",
+        hint3: "一番上の『手作業を自動でやってくれる』を選んでみよう！",
+        afterNote: "大正解！GASはGoogleドライブの中で動くから、アプリを新しくインストールしなくてもブラウザさえあれば誰でもすぐ自動化を始められるのが一番の魅力なんだ！"
+      },
+      {
+        id: "p-02",
+        stageId: "prologue",
+        title: "プログラムは「お願い文」の集まり",
+        type: "code",
+        explain: "プログラムは、コンピュータへ届ける<strong>「お願いのお手紙」</strong>だよ。<br>一番大切なルールはたった1つ！<strong>『上から順番に1行ずつ実行される』</strong>ということ。<br><code>Logger.log('メッセージ');</code> と書くと、画面のログ欄にメッセージを届けてくれるよ！",
+        example: {
+          code: `function sample() {\n  Logger.log("1番目のお願い！");\n  Logger.log("2番目のお願い！");\n}`,
+          desc: "下の「例題を実行してみる」を押して、上から順番にログが出る様子を確かめてみよう！"
+        },
+        question: "<code>Logger.log</code> を使って、1行目に <code>まるもち</code>、2行目に <code>だいすき</code> とログに出力してみよう！",
+        starterCode: `function myLesson() {\n  // ここにコードを書いてみよう\n  Logger.log("まるもち");\n  \n}`,
+        check: (sheet, logs) => {
+          const joined = logs.join("\n");
+          if (logs.length >= 2 && logs[0].includes("まるもち") && logs[1].includes("だいすき")) {
+            return { pass: true, msg: "バッチリ！上から順番にメッセージが届いたね🍡" };
+          }
+          if (joined.includes("まるもち") && joined.includes("だいすき")) {
+            return { pass: true, msg: "合格！上から順に実行されたよ。" };
+          }
+          return { pass: false, msg: "ログに『まるもち』と『だいすき』が順番に出ているか確認してみてね！" };
+        },
+        hint1: "2行目に Logger.log(\"だいすき\"); を書き足してみよう。",
+        hint2: "文字を囲むダブルクォーテーション \" \" を忘れずに付けよう。",
+        hint3: "Logger.log(\"まるもち\"); の次の行に Logger.log(\"だいすき\"); と書けば完成だよ！",
+        modelCode: `function myLesson() {\n  Logger.log("まるもち");\n  Logger.log("だいすき");\n}`,
+        afterNote: "プログラムは上から下へ流れる！この基本感覚が掴めれば、どんな複雑なコードも1行ずつの積み重ねとして読めるようになるよ！"
+      },
+      {
+        id: "p-03",
+        stageId: "prologue",
+        title: "セルの値を読んでみよう",
+        type: "code",
+        explain: "スプレッドシートのマス目のことを<strong>「セル」</strong>と呼ぶよ。<br>セルの値を取ってくるには、<br>①シートを選ぶ：<code>SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上')</code><br>②セルを指定して読む：<code>sheet.getRange('B2').getValue()</code><br>とお願いするんだ！",
+        example: {
+          code: `function readDate() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const date = sheet.getRange('A2').getValue();\n  Logger.log(date);\n}`,
+          desc: "A2セル（一番最初の売上日付）を読んでログに出力する例だよ。"
+        },
+        question: "用意されたコードをそのまま「実行して判定する」を押して、B2セルのスタンプ名（<code>癒しのまるもち</code>）がログに読めることを確認してみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const val = sheet.getRange('B2').getValue();\n  Logger.log(val);\n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => l.includes("癒しのまるもち"));
+          if (found) {
+            return { pass: true, msg: "お見事！B2セルの値がちゃんと読み取れたね🍡" };
+          }
+          return { pass: false, msg: "ログに『癒しのまるもち』が出力されていないみたい。実行ボタンを押してみてね！" };
+        },
+        hint1: "今回はコードがすでに完成しているよ！そのまま「実行して判定する」を押してみてね。",
+        hint2: "getRange('B2') はB列の2行目を指しているよ。",
+        hint3: "画面下の青い「▶ 実行して判定する」ボタンをポチッと押すだけでOKだよ！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const val = sheet.getRange('B2').getValue();\n  Logger.log(val);\n}`,
+        afterNote: "<code>getRange('セル名').getValue()</code> はGASの超基本！この呪文でスプレッドシートのどんなマス目のデータも取り出せるんだ！"
+      },
+      {
+        id: "p-04",
+        stageId: "prologue",
+        title: "セルの値を書き換えてみよう",
+        type: "code",
+        explain: "読むだけでなく、セルに値を書き込むこともできるよ！<br>書き込みには <code>range.setValue(新しい値)</code> を使うんだ。<br>実行すると、下のプレビュー表が本当にパッと書き換わるよ。見ててね！",
+        example: {
+          code: `function setSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C6').setValue(1);\n}`,
+          desc: "C6セルの個数を 1 に書き換える例だよ。"
+        },
+        question: "売上シートの <strong>D6セル</strong>（現在は 0）に、金額 <code>500</code> を書き込んでみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // D6セルに 500 を書き込んでみよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const val = sheet.getRange("D6").getValue();
+          if (Number(val) === 500) {
+            return { pass: true, msg: "すごい！D6セルが 500 に書き換わったよ！" };
+          }
+          return { pass: false, msg: `D6セルの現在の値は '${val}' だよ。500 になるように書き込んでみよう！` };
+        },
+        hint1: "sheet.getRange('D6') でD6セルを指定できるよ。",
+        hint2: ".setValue(500) を後ろにくっつけてみよう！",
+        hint3: "sheet.getRange('D6').setValue(500); と書いて実行してみてね！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('D6').setValue(500);\n}`,
+        afterNote: "セルの値が変わった瞬間のワクワクがGASの醍醐味！これで『読む』と『書く』の両方をマスターしたよ！"
+      },
+      {
+        id: "p-05",
+        stageId: "prologue",
+        title: "エラーは怖くない",
+        type: "code",
+        explain: "プログラミングをしていると、赤い文字で「エラー」が出ることがあるよ。<br>でも絶対に怖がらなくて大丈夫！エラーは怒っているんじゃなくて、<strong>『ここが読めなかったから教えて！』</strong>というコンピュータからの優しい質問なんだ🍡",
+        example: {
+          code: `function errorSample() {\n  // Spead... とスペルミスしている例\n  // SpeadSheetApp.getActiveSheet();\n}`,
+          desc: "1文字でもスペルが違うとコンピュータは分からなくなっちゃうんだ。"
+        },
+        question: "下のコードにはスペルミス（打ち間違い）があるよ。直して実行し、ログに <code>エラーをなおしたよ！</code> を表示させよう！",
+        starterCode: `function myLesson() {\n  // 'Loger' になっていて 'g' が1つ足りないよ！直してみよう\n  Loger.log("エラーをなおしたよ！");\n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => l.includes("エラーをなおしたよ！"));
+          if (found) {
+            return { pass: true, msg: "素晴らしい！打ち間違いを見事に見破って修正できたね🍡" };
+          }
+          return { pass: false, msg: "まだエラーが出ているか、ログに目的の文字が出ていないよ。もう一度確認してみてね！" };
+        },
+        hint1: "「Loger」の文字に注目！正しい単語は「Logger」だよ。",
+        hint2: "g をもう1つ足して Logger.log に直そう。",
+        hint3: "Logger.log(\"エラーをなおしたよ！\"); に直して実行してみてね！",
+        modelCode: `function myLesson() {\n  Logger.log("エラーをなおしたよ！");\n}`,
+        afterNote: "プロのエンジニアでも毎日のようにエラーと会話しているよ。エラーメッセージを見て落ち着いて直せば百発百中！"
+      },
+
+      // --- Stage 0（JavaScriptの基礎 6レッスン） ---
+      {
+        id: "s0-01",
+        stageId: "stage-0",
+        title: "変数（let / const）",
+        type: "code",
+        explain: "値を入れておく<strong>「名札付きの箱」</strong>が変数だよ！<br>・<code>const</code>：あとから中身を変えない大切な値（定数）<br>・<code>let</code>：途中で中身が変わる値（変数）<br>箱に入れておけば、同じ値を何度も使えて便利なんだ！",
+        example: {
+          code: `function boxSample() {\n  const stampName = "癒しのまるもち";\n  let count = 2;\n  count = count + 1; // 3になる\n  Logger.log(stampName + ": " + count + "個");\n}`,
+          desc: "変数を使うと、計算途中の値も分かりやすくキープできます。"
+        },
+        question: "変数 <code>newCount = 5</code> を作り、<strong>C6セル</strong>（あけおめ！まるもち2027の個数、現在は0）に <code>setValue(newCount)</code> で書き込んでみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // ここで変数 newCount に 5 を入れてみよう\n  const newCount = 5;\n  \n  // C6セルに newCount を書き込もう\n  \n}`,
+        check: (sheet, logs) => {
+          const val = sheet.getRange("C6").getValue();
+          if (Number(val) === 5) {
+            return { pass: true, msg: "完璧！変数に入れた5がしっかりとセルに書き込まれたよ！" };
+          }
+          return { pass: false, msg: `C6セルは今 '${val}' だよ。5 が書き込まれるように書いてみよう！` };
+        },
+        hint1: "sheet.getRange('C6').setValue(...) を使おう。",
+        hint2: "カッコの中に直接 5 と書く代わりに、変数名 newCount を渡すよ。",
+        hint3: "sheet.getRange('C6').setValue(newCount); を追加すれば完成！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newCount = 5;\n  sheet.getRange('C6').setValue(newCount);\n}`,
+        afterNote: "変数のおかげで、数値の意味が人間にも分かりやすくなるよ。GASでは基本的に <code>const</code> を使い、値を変えたいときだけ <code>let</code> を使うのがキレイな書き方だよ！"
+      },
+      {
+        id: "s0-02",
+        stageId: "stage-0",
+        title: "文字列と数値（連結と計算）",
+        type: "code",
+        explain: "プログラムでは<strong>「文字」</strong>と<strong>「数字」</strong>を区別するよ！<br>・文字同士を <code>+</code> すると：文字がピタッとくっつく（<code>'まる' + 'もち'</code> → <code>'まるもち'</code>）<br>・数字同士を <code>+</code> すると：足し算になる（<code>100 + 200</code> → <code>300</code>）<br>文字は必ず <code>' '</code> か <code>\" \"</code> で囲もう！",
+        example: {
+          code: `function calcSample() {\n  const text = "まるもち" + "★"; // "まるもち★"\n  const total = 190 * 2; // 380\n  Logger.log(text + " 合計: " + total + "円");\n}`,
+          desc: "文字のくっつけと数値の掛け算の例だよ。"
+        },
+        question: "B2セルのスタンプ名（癒しのまるもち）を読み出し、後ろに文字列 <code> ★人気</code> を <code>+</code> でくっつけて、<strong>B2セル</strong>に書き戻してみよう！（「癒しのまるもち ★人気」になれば合格！）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const currentName = sheet.getRange('B2').getValue();\n  // currentName と " ★人気" を + でつなげよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const val = sheet.getRange("B2").getValue();
+          if (String(val).trim() === "癒しのまるもち ★人気") {
+            return { pass: true, msg: "大正解！文字列の連結がキレイにできたね🍡" };
+          }
+          return { pass: false, msg: `B2セルの値は今 '${val}' だよ。『癒しのまるもち ★人気』になるようにしてみてね！` };
+        },
+        hint1: "const newName = currentName + \" ★人気\"; で文字をつなげられるよ。",
+        hint2: "つながった newName を sheet.getRange('B2').setValue(...) で書き戻そう。",
+        hint3: "sheet.getRange('B2').setValue(currentName + \" ★人気\"); でも一発でOK！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const currentName = sheet.getRange('B2').getValue();\n  sheet.getRange('B2').setValue(currentName + " ★人気");\n}`,
+        afterNote: "文字列の連結ができると、メールの件名に『〇〇様、ご注文ありがとうございます』とお名前を自動で埋め込んだりできるようになるよ！"
+      },
+      {
+        id: "s0-03",
+        stageId: "stage-0",
+        title: "if（条件で分ける）",
+        type: "code",
+        explain: "<strong>「もし〇〇なら、これをする」</strong>という枝分かれを作るのが <code>if</code> 文だよ！<br><pre>if (条件) {\n  // 条件が合っていたら実行\n}</pre>等しいかどうか比べるときは <code>===</code> を使うよ！",
+        example: {
+          code: `function checkStock() {\n  const count = 0;\n  if (count === 0) {\n    Logger.log("在庫がありません！");\n  }\n}`,
+          desc: "countが0の時だけ警告ログを出す例だよ。"
+        },
+        question: "C6セルの個数を読み出し、<strong>もし個数が 0 なら</strong>、B6セルの文字を <code>完売</code> に書き換えてみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const count = sheet.getRange('C6').getValue();\n  // もし count が 0 なら、B6セルに '完売' を書き込もう\n  if (count === 0) {\n    \n  }\n}`,
+        check: (sheet, logs) => {
+          const val = sheet.getRange("B6").getValue();
+          if (String(val) === "完売") {
+            return { pass: true, msg: "すばらしい！if文の条件分岐が大成功🍡" };
+          }
+          return { pass: false, msg: `B6セルの値は今 '${val}' だよ。個数が0のときに『完売』と書き込んでみよう！` };
+        },
+        hint1: "ifの波カッコ { } の中に書き込み処理を書こう。",
+        hint2: "sheet.getRange('B6').setValue('完売'); を中に書けばOKだよ。",
+        hint3: "if (count === 0) { sheet.getRange('B6').setValue('完売'); } と書いてみてね！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const count = sheet.getRange('C6').getValue();\n  if (count === 0) {\n    sheet.getRange('B6').setValue('完売');\n  }\n}`,
+        afterNote: "条件分岐ができると、『点数が80点以上なら合格』『金額が1万円以上なら送料無料』など、ビジネスのルールをそのまま自動化できるようになるよ！"
+      },
+      {
+        id: "s0-04",
+        stageId: "stage-0",
+        title: "for（繰り返し）",
+        type: "code",
+        explain: "何十行、何百行もあるデータを1行ずつ手で書くのは大変！<br>決まった回数をぐるぐる繰り返すのが <code>for</code> 文だよ。<br><code>for (let i = 2; i <= 6; i++)</code> と書けば、行番号 2 から 6 まで順番に処理できるんだ！",
+        example: {
+          code: `function loopLog() {\n  for (let i = 1; i <= 3; i++) {\n    Logger.log(i + "回目のまるもち！");\n  }\n}`,
+          desc: "1から3まで順番にカウントアップして繰り返す例だよ。"
+        },
+        question: "for文を使って、売上シートの2行目から6行目までの金額（D列: D2〜D6）をすべて足し算し、その<strong>合計金額を D7セル</strong>に書き込んでみよう！（190+380+250+570+0 = 1390）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  let sum = 0;\n  for (let i = 2; i <= 6; i++) {\n    const price = sheet.getRange(i, 4).getValue(); // i行目・4列目(D列)\n    sum = sum + price;\n  }\n  // 合計 sum を D7セルに書き込もう！\n  \n}`,
+        check: (sheet, logs) => {
+          const val = sheet.getRange("D7").getValue();
+          if (Math.abs(Number(val) - 1390) < 0.01) {
+            return { pass: true, msg: "パーフェクト！ループで全行を正しく合算できたね🍡" };
+          }
+          return { pass: false, msg: `D7セルの値は今 '${val}' だよ。合計の 1390 になるように書き込んでみよう！` };
+        },
+        hint1: "forループが終わったあとに D7 セルへ書き込みをしよう。",
+        hint2: "sheet.getRange('D7').setValue(sum); または getRange(7, 4) を使おう。",
+        hint3: "最後に sheet.getRange('D7').setValue(sum); を1行書き足せば完成だよ！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  let sum = 0;\n  for (let i = 2; i <= 6; i++) {\n    const price = sheet.getRange(i, 4).getValue();\n    sum = sum + price;\n  }\n  sheet.getRange('D7').setValue(sum);\n}`,
+        afterNote: "100行でも1万行でも、for文ならコンピュータが一瞬で計算してくれるよ！自動化のパワーを最も実感できる武器だね！"
+      },
+      {
+        id: "s0-05",
+        stageId: "stage-0",
+        title: "配列（値の並びと添え字）",
+        type: "code",
+        explain: "複数のデータを1つにまとめて箱詰めしたのが<strong>「配列（はいれつ）」</strong>だよ。<br><code>['2026-11-15', 'まるもち', 4, 760]</code> のように <code>[ ]</code> で囲むよ。<br>シートの最後に新しい行を追加する <code>sheet.appendRow(配列)</code> との相性は抜群なんだ！",
+        example: {
+          code: `function arraySample() {\n  const fruits = ["りんご", "みかん", "もも"];\n  Logger.log("1番目は: " + fruits[0]); // 0から数えるよ\n}`,
+          desc: "配列の要素は 0 から順番に番号（インデックス）が振られるよ。"
+        },
+        question: "新しいスタンプのデータ <code>const newRow = [\"2026-11-15\", \"すやすやまるもち\", 4, 760];</code> を用意したよ。<code>sheet.appendRow(newRow)</code> を使って、表の一番下に新しい行を追加してみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newRow = ["2026-11-15", "すやすやまるもち", 4, 760];\n  // sheet.appendRow を使って表に追加してみよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const lastRow = sheet.getLastRow();
+          if (lastRow >= 7) {
+            const name = sheet.getRange(7, 2).getValue();
+            const count = sheet.getRange(7, 3).getValue();
+            const price = sheet.getRange(7, 4).getValue();
+            if (name === "すやすやまるもち" && Number(count) === 4 && Number(price) === 760) {
+              return { pass: true, msg: "大成功！新しい行がキレイに追加されたよ🍡" };
+            }
+          }
+          return { pass: false, msg: "7行目に『すやすやまるもち』のデータが追加されているか確認してみてね！" };
+        },
+        hint1: "sheet.appendRow(...) のカッコの中に追加したい配列を入れるよ。",
+        hint2: "sheet.appendRow(newRow); と書いてみよう。",
+        hint3: "sheet.appendRow(newRow); を実行すると、7行目にスッとデータが入るよ！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newRow = ["2026-11-15", "すやすやまるもち", 4, 760];\n  sheet.appendRow(newRow);\n}`,
+        afterNote: "<code>appendRow</code> はフォームの送信データや日々の記録をログ追記するときに毎日大活躍する、超定番メソッドだよ！"
+      },
+      {
+        id: "s0-06",
+        stageId: "stage-0",
+        title: "関数を作る（function、引数と戻り値）",
+        type: "code",
+        explain: "決まった計算や処理をひとまとめにして、名前をつけた道具が<strong>「関数（かんすう）」</strong>だよ！<br>・<strong>引数（ひきすう）</strong>：関数に渡す材料<br>・<strong>戻り値（return）</strong>：関数が計算して返してくれる結果<br>関数を作ると、コードがスッキリして同じ計算を何度でも使い回せるよ！",
+        example: {
+          code: `// 個数と単価から金額を計算する関数\nfunction calcAmount(count, unitPrice) {\n  return count * unitPrice;\n}`,
+          desc: "count と unitPrice を掛け算して戻り値として返す関数の例だよ。"
+        },
+        question: "個数と単価を掛け算して返す関数 <code>calcTotal(count, unitPrice)</code> を完成させ、それを使って個数 3、単価 200 の金額（600）を計算し、<strong>D6セル</strong>に書き込んでみよう！",
+        starterCode: `function calcTotal(count, unitPrice) {\n  // count と unitPrice を掛け算して return しよう\n  return count * unitPrice;\n}\n\nfunction myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // calcTotal を使って 3個 × 200円 を計算！\n  const total = calcTotal(3, 200);\n  // total (600) を D6セルに書き込もう\n  \n}`,
+        check: (sheet, logs) => {
+          const val = sheet.getRange("D6").getValue();
+          if (Math.abs(Number(val) - 600) < 0.01) {
+            return { pass: true, msg: "完璧！！自作の関数で見事に金額を計算してセルに反映できたね🍡" };
+          }
+          return { pass: false, msg: `D6セルの値は今 '${val}' だよ。600 になるように書き込んでみよう！` };
+        },
+        hint1: "sheet.getRange('D6').setValue(total); を追加しよう。",
+        hint2: "calcTotal(3, 200) で計算結果の 600 が変数 total に入るよ。",
+        hint3: "最後に sheet.getRange('D6').setValue(total); を書けば完成！",
+        modelCode: `function calcTotal(count, unitPrice) {\n  return count * unitPrice;\n}\n\nfunction myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const total = calcTotal(3, 200);\n  sheet.getRange('D6').setValue(total);\n}`,
+        afterNote: "おめでとう！これで Stage 0 の JavaScript基礎も全クリだよ！関数が作れるようになった君は、もう立派なプログラマーの仲間入りだね🍡"
+      }
+    ];
+
+    // 全ステージ一覧定義（近日公開ステージ含む）
+    const STAGES_CONFIG = [
+      {
+        id: "prologue",
+        badge: "プロローグ",
+        title: "GASってなに？超入門",
+        locked: false,
+        lessonIds: ["p-01", "p-02", "p-03", "p-04", "p-05"]
+      },
+      {
+        id: "stage-0",
+        badge: "Stage 0",
+        title: "JavaScriptの基礎（変数・条件・ループ）",
+        locked: false,
+        lessonIds: ["s0-01", "s0-02", "s0-03", "s0-04", "s0-05", "s0-06"]
+      },
+      {
+        id: "stage-1",
+        badge: "Stage 1",
+        title: "セルの読み書きマスター（範囲・一括処理）",
+        locked: true,
+        desc: "近日公開予定！getValues / setValues で高速一括処理を学ぶよ。"
+      },
+      {
+        id: "stage-2",
+        badge: "Stage 2",
+        title: "条件分岐と自動判定（合否・アラート）",
+        locked: true,
+        desc: "近日公開予定！実務でよくあるデータチェックを自動化。"
+      },
+      {
+        id: "stage-3",
+        badge: "Stage 3",
+        title: "ループで一括データ加工",
+        locked: true,
+        desc: "近日公開予定！千件のデータも数秒で整形・クレンジング。"
+      },
+      {
+        id: "stage-4",
+        badge: "Stage 4",
+        title: "実践！売上自動集計＆通知システム",
+        locked: true,
+        desc: "近日公開予定！売上表の自動日計とGmail/LINE連携に挑戦。"
+      }
+    ];
+
+    /* =======================================================================
+       4. アプリ本体ロジック (App Controller)
+       ======================================================================= */
+    class MarumochiApp {
+      constructor() {
+        this.progressKey = "gas_marumochi_progress_v1";
+        this.modalClearedKey = "gas_marumochi_cleared_modals_v1";
+        this.progress = this.loadProgress();
+        this.clearedModals = this.loadClearedModals();
+
+        this.currentLesson = null;
+        this.currentSheet = null; // レッスン用MockSheet
+        this.sandboxSheet = null; // 自由練習用MockSheet
+        this.selectedQuizIndex = null;
+
+        this.initDOM();
+        this.initSandbox();
+        this.renderStageList();
+        this.updateProgressSummary();
+      }
+
+      loadProgress() {
+        try {
+          const raw = localStorage.getItem(this.progressKey);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      saveProgress() {
+        try {
+          localStorage.setItem(this.progressKey, JSON.stringify(this.progress));
+        } catch (e) {}
+      }
+
+      loadClearedModals() {
+        try {
+          const raw = localStorage.getItem(this.modalClearedKey);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      saveClearedModals() {
+        try {
+          localStorage.setItem(this.modalClearedKey, JSON.stringify(this.clearedModals));
+        } catch (e) {}
+      }
+
+      initDOM() {
+        // Tabキー対応（textarea内でタブを入力可能にする）
+        const textareas = [document.getElementById("code-input"), document.getElementById("sandbox-code-input")];
+        textareas.forEach(ta => {
+          if (!ta) return;
+          ta.addEventListener("keydown", (e) => {
+            if (e.key === "Tab") {
+              e.preventDefault();
+              const start = ta.selectionStart;
+              const end = ta.selectionEnd;
+              ta.value = ta.value.substring(0, start) + "  " + ta.value.substring(end);
+              ta.selectionStart = ta.selectionEnd = start + 2;
+            } else if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+              e.preventDefault();
+              if (ta.id === "code-input") {
+                this.runUserCode();
+              } else {
+                this.runSandboxCode();
+              }
+            }
+          });
+        });
+      }
+
+      // 進捗率とヘッダーなどの更新
+      updateProgressSummary() {
+        const total = LESSONS_DATA.length;
+        const clearedCount = Object.keys(this.progress).filter(id => this.progress[id]).length;
+        const ratioText = `${clearedCount} / ${total} 完了`;
+        const percentage = Math.round((clearedCount / total) * 100);
+
+        document.getElementById("top-progress-ratio").textContent = ratioText;
+        document.getElementById("top-progress-bar").style.width = `${percentage}%`;
+      }
+
+      // トップ画面の描画
+      renderStageList() {
+        const container = document.getElementById("stage-list-container");
+        container.innerHTML = "";
+
+        STAGES_CONFIG.forEach(stage => {
+          const stageSec = document.createElement("div");
+          stageSec.className = "stage-section";
+
+          // ヘッダー
+          const header = document.createElement("div");
+          header.className = "stage-header";
+          header.innerHTML = `
+            <span class="stage-badge ${stage.locked ? 'locked' : ''}">${stage.badge}</span>
+            <span class="stage-title">${stage.title}</span>
+          `;
+          stageSec.appendChild(header);
+
+          if (stage.locked) {
+            // ロック中（近日公開）表示
+            const lockedCard = document.createElement("div");
+            lockedCard.className = "stage-locked-card";
+            lockedCard.innerHTML = `🔒 <strong>${stage.badge}（近日公開）</strong><br>${stage.desc || 'お楽しみに！'}`;
+            stageSec.appendChild(lockedCard);
+          } else {
+            // レッスン一覧
+            const list = document.createElement("div");
+            list.className = "lesson-list";
+
+            stage.lessonIds.forEach(id => {
+              const lesson = LESSONS_DATA.find(l => l.id === id);
+              if (!lesson) return;
+
+              const isDone = !!this.progress[lesson.id];
+              const item = document.createElement("div");
+              item.className = `lesson-item ${isDone ? 'completed' : ''}`;
+              item.onclick = () => this.openLesson(lesson.id);
+
+              item.innerHTML = `
+                <div class="lesson-info">
+                  <span class="lesson-number">${lesson.id.toUpperCase()}</span>
+                  <span class="lesson-title-text">${lesson.title}</span>
+                </div>
+                <div class="lesson-status-icon">${isDone ? '✅' : '⚪'}</div>
+              `;
+              list.appendChild(item);
+            });
+            stageSec.appendChild(list);
+          }
+
+          container.appendChild(stageSec);
+        });
+      }
+
+      // 画面切り替え
+      showTop() {
+        document.getElementById("view-top").classList.remove("hidden");
+        document.getElementById("view-lesson").classList.add("hidden");
+        document.getElementById("view-sandbox").classList.add("hidden");
+        this.renderStageList();
+        this.updateProgressSummary();
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+
+      showSandbox() {
+        document.getElementById("view-top").classList.add("hidden");
+        document.getElementById("view-lesson").classList.add("hidden");
+        document.getElementById("view-sandbox").classList.remove("hidden");
+        this.renderSandboxSheet();
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+
+      // レッスンを開く
+      openLesson(lessonId) {
+        const lesson = LESSONS_DATA.find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        this.currentLesson = lesson;
+        this.currentSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        this.selectedQuizIndex = null;
+
+        // UI設定
+        const stage = STAGES_CONFIG.find(s => s.id === lesson.stageId);
+        document.getElementById("lesson-stage-indicator").textContent = `${stage ? stage.badge : ''} / ${lesson.id.toUpperCase()}`;
+        document.getElementById("lesson-explain").innerHTML = lesson.explain;
+        document.getElementById("lesson-question-title").innerHTML = `🎯 レッスン問題: ${lesson.title}`;
+        document.getElementById("lesson-question-body").innerHTML = lesson.question;
+
+        // 例題設定
+        const exampleCard = document.getElementById("example-card");
+        if (lesson.example) {
+          exampleCard.classList.remove("hidden");
+          document.getElementById("example-desc").innerHTML = lesson.example.desc;
+          document.getElementById("example-code").textContent = lesson.example.code;
+          const exLog = document.getElementById("example-log");
+          exLog.textContent = "実行ログがここに表示されます";
+          exLog.classList.add("empty");
+        } else {
+          exampleCard.classList.add("hidden");
+        }
+
+        // タイプごとのUI切り替え（quiz or code）
+        const quizBox = document.getElementById("quiz-container");
+        const codeBox = document.getElementById("code-task-container");
+
+        if (lesson.type === "quiz") {
+          quizBox.classList.remove("hidden");
+          codeBox.classList.add("hidden");
+          this.renderQuizOptions(lesson.quizOptions);
+        } else {
+          quizBox.classList.add("hidden");
+          codeBox.classList.remove("hidden");
+          const codeInput = document.getElementById("code-input");
+          codeInput.value = lesson.starterCode || "";
+          // ログ初期化
+          const logBox = document.getElementById("execution-log");
+          logBox.textContent = "実行するとここにログが表示されます";
+          logBox.classList.add("empty");
+        }
+
+        // 判定結果・クリアエリアの非表示初期化
+        document.getElementById("judge-result-alert").className = "hidden";
+        document.getElementById("lesson-clear-content").classList.add("hidden");
+
+        // ヒント初期化
+        for (let i = 1; i <= 3; i++) {
+          const content = document.getElementById(`hint-content-${i}`);
+          const icon = document.getElementById(`hint-icon-${i}`);
+          content.classList.add("hidden");
+          icon.textContent = "▼";
+          content.innerHTML = lesson[`hint${i}`] || "ヒントはありません";
+        }
+
+        // シート描画
+        this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+
+        // 画面表示切り替え
+        document.getElementById("view-top").classList.add("hidden");
+        document.getElementById("view-sandbox").classList.add("hidden");
+        document.getElementById("view-lesson").classList.remove("hidden");
+
+        // 要件：開いたら画面はレッスンの先頭が表示されること（入力欄に自動フォーカスしてスクロールさせない）
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+
+      // クイズ選択肢の描画
+      renderQuizOptions(options) {
+        const container = document.getElementById("quiz-options");
+        container.innerHTML = "";
+        const keys = ["A", "B", "C", "D"];
+
+        options.forEach((opt, idx) => {
+          const optDiv = document.createElement("div");
+          optDiv.className = `quiz-option ${this.selectedQuizIndex === idx ? 'selected' : ''}`;
+          optDiv.onclick = () => {
+            this.selectedQuizIndex = idx;
+            this.renderQuizOptions(options);
+          };
+
+          optDiv.innerHTML = `
+            <div class="quiz-option-key">${keys[idx] || (idx + 1)}</div>
+            <div>${opt.text}</div>
+          `;
+          container.appendChild(optDiv);
+        });
+      }
+
+      submitQuiz() {
+        if (this.selectedQuizIndex === null) {
+          alert("選択肢をどれか1つ選んでね！");
+          return;
+        }
+
+        const lesson = this.currentLesson;
+        const selected = lesson.quizOptions[this.selectedQuizIndex];
+        const alertBox = document.getElementById("judge-result-alert");
+
+        if (selected.correct) {
+          alertBox.className = "result-alert success";
+          alertBox.innerHTML = `🎉 <strong>正解！</strong><br>${lesson.afterNote}`;
+          this.handleLessonCleared();
+        } else {
+          alertBox.className = "result-alert error";
+          alertBox.innerHTML = `🍡 <strong>おしい！</strong><br>もう一度よく考えて、別の選択肢を選んでみてね！`;
+        }
+      }
+
+      // シートテーブルの描画
+      renderSheetTable(mockSheet, tableId) {
+        const table = document.getElementById(tableId);
+        if (!table) return;
+        table.innerHTML = "";
+
+        const data = mockSheet.data;
+        const maxCols = Math.max(...data.map(r => r ? r.length : 0), 4);
+
+        // 列見出し (A, B, C...)
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        const emptyTh = document.createElement("th");
+        emptyTh.className = "row-header";
+        emptyTh.textContent = "";
+        headerRow.appendChild(emptyTh);
+
+        for (let c = 0; c < maxCols; c++) {
+          const th = document.createElement("th");
+          th.textContent = String.fromCharCode(65 + c);
+          headerRow.appendChild(th);
+        }
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // 行データ
+        const tbody = document.createElement("tbody");
+        for (let r = 0; r < data.length; r++) {
+          const tr = document.createElement("tr");
+          // 行番号ヘッダー (1, 2, 3...)
+          const rowTh = document.createElement("th");
+          rowTh.className = "row-header";
+          rowTh.textContent = r + 1;
+          tr.appendChild(rowTh);
+
+          const rowData = data[r] || [];
+          for (let c = 0; c < maxCols; c++) {
+            const td = document.createElement("td");
+            const val = rowData[c] !== undefined ? rowData[c] : "";
+            td.textContent = val;
+
+            // 更新されたセルのハイライト
+            if (mockSheet.updatedCells.has(`${r},${c}`)) {
+              td.classList.add("cell-updated");
+            }
+            tr.appendChild(td);
+          }
+          tbody.appendChild(tr);
+        }
+        table.appendChild(tbody);
+      }
+
+      // 入力補助ボタンクリック時のテキスト挿入
+      insertHelper(snippet) {
+        const ta = document.getElementById("code-input");
+        this.insertTextAtCursor(ta, snippet);
+      }
+
+      insertSandboxHelper(snippet) {
+        const ta = document.getElementById("sandbox-code-input");
+        this.insertTextAtCursor(ta, snippet);
+      }
+
+      insertTextAtCursor(textarea, text) {
+        if (!textarea) return;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const original = textarea.value;
+
+        textarea.value = original.substring(0, start) + text + original.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + text.length;
+        textarea.focus();
+      }
+
+      // レッスンのシート・コードのリセット
+      resetCurrentLessonSheet() {
+        if (!this.currentLesson) return;
+        this.currentSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+        document.getElementById("code-input").value = this.currentLesson.starterCode || "";
+        const logBox = document.getElementById("execution-log");
+        logBox.textContent = "リセットしました。実行するとここにログが表示されます";
+        logBox.classList.add("empty");
+        document.getElementById("judge-result-alert").className = "hidden";
+      }
+
+      // 例題の実行
+      runExample() {
+        if (!this.currentLesson || !this.currentLesson.example) return;
+        const logs = [];
+        const logger = {
+          log: (...args) => {
+            logs.push(args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" "));
+          }
+        };
+
+        const testSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        const spreadsheet = new MockSpreadsheet({ "売上": testSheet });
+        const spreadsheetApp = {
+          getActiveSpreadsheet: () => spreadsheet,
+          getActiveSheet: () => testSheet
+        };
+
+        try {
+          const fn = new Function("SpreadsheetApp", "Logger", "console", `${this.currentLesson.example.code}\n;if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
+          fn(spreadsheetApp, logger, logger);
+
+          const exLog = document.getElementById("example-log");
+          if (logs.length > 0) {
+            exLog.textContent = logs.join("\n");
+            exLog.classList.remove("empty");
+          } else {
+            exLog.textContent = "(ログ出力はありませんでした)";
+            exLog.classList.remove("empty");
+          }
+        } catch (e) {
+          const exLog = document.getElementById("example-log");
+          exLog.textContent = `エラー: ${e.message}`;
+          exLog.classList.remove("empty");
+        }
+      }
+
+      // ユーザーコードの実行と判定
+      runUserCode() {
+        if (!this.currentLesson) return;
+
+        // 要件：実行のたびにシートはレッスンの初期状態にリセットしてから実行すること
+        this.currentSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+
+        const code = document.getElementById("code-input").value;
+        const logs = [];
+        const logger = {
+          log: (...args) => {
+            logs.push(args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" "));
+          }
+        };
+
+        const spreadsheet = new MockSpreadsheet({ "売上": this.currentSheet });
+        const spreadsheetApp = {
+          getActiveSpreadsheet: () => spreadsheet,
+          getActiveSheet: () => this.currentSheet
+        };
+
+        const logBox = document.getElementById("execution-log");
+        const alertBox = document.getElementById("judge-result-alert");
+
+        try {
+          // myLesson() または直書きコードを実行できるようにラッパー
+          const wrapped = `
+            ${code}
+            ;if (typeof myLesson === 'function') {
+              myLesson();
+            }
+          `;
+          const runFn = new Function("SpreadsheetApp", "Logger", "console", wrapped);
+          runFn(spreadsheetApp, logger, logger);
+
+          // ログ表示
+          if (logs.length > 0) {
+            logBox.textContent = logs.join("\n");
+            logBox.classList.remove("empty");
+          } else {
+            logBox.textContent = "(ログ出力はありません)";
+            logBox.classList.remove("empty");
+          }
+
+          // 表の更新
+          this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+
+          // 判定 (check)
+          if (typeof this.currentLesson.check === "function") {
+            const result = this.currentLesson.check(this.currentSheet, logs);
+            if (result.pass) {
+              alertBox.className = "result-alert success";
+              alertBox.innerHTML = `🎉 <strong>正解！</strong><br>${result.msg || '素晴らしい出来栄えです！'}`;
+              this.handleLessonCleared();
+            } else {
+              alertBox.className = "result-alert error";
+              alertBox.innerHTML = `🍡 <strong>おしい！あと一歩！</strong><br>${result.msg}`;
+            }
+          }
+        } catch (err) {
+          // エラーハンドリング（日本語補助説明つき）
+          this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+          const friendlyExplanation = this.getFriendlyErrorMessage(err);
+          logBox.textContent = `エラー発生: ${err.name}\n${err.message}`;
+          logBox.classList.remove("empty");
+
+          alertBox.className = "result-alert error";
+          alertBox.innerHTML = `
+            <strong>⚠️ エラーが発生しました</strong><br>
+            <div style="margin:4px 0; font-family:var(--font-mono); font-size:0.85rem; color:#b02a37;">${err.name}: ${err.message}</div>
+            <div style="margin-top:6px; font-size:0.9rem; color:#495057;">💡 まるもちのアドバイス:<br>${friendlyExplanation}</div>
+          `;
+        }
+      }
+
+      // 日本語の優しいエラー補助説明
+      getFriendlyErrorMessage(err) {
+        const msg = err.message || "";
+        const name = err.name || "";
+
+        if (name === "ReferenceError") {
+          return "宣言されていない名前の変数や関数を呼び出しているよ。『スペルミス（打ち間違い）』がないか、変数なら <code>const</code> や <code>let</code> で宣言してあるか確認してみよう！";
+        }
+        if (name === "TypeError") {
+          return "存在しないメソッドを呼び出したり、ドット . の前が空っぽ（null/undefined）になっているよ。『getRange』や『setValue』の綴り、シートが正しく取れているかを確認してみよう！";
+        }
+        if (name === "SyntaxError") {
+          return "JavaScriptの文法に誤りがあるよ。カッコ <code>()</code> や波カッコ <code>{}</code>、ダブルクォーテーション <code>\"</code> がちゃんと対になって閉じているか見てみてね！";
+        }
+        if (msg.includes("getRange")) {
+          return "getRange の引数指定が間違っているかも！<code>getRange('A1')</code> や <code>getRange(行, 列)</code> の形になっているかチェックしてね。";
+        }
+        return "プログラムが途中で止まってしまったよ。ヒントを1つずつ開いて、書き方を見直してみてね！";
+      }
+
+      // レッスンクリア時の共通処理
+      handleLessonCleared() {
+        const lesson = this.currentLesson;
+        this.progress[lesson.id] = true;
+        this.saveProgress();
+
+        // 模範コードと afterNote の表示
+        const clearContent = document.getElementById("lesson-clear-content");
+        clearContent.classList.remove("hidden");
+        document.getElementById("lesson-after-note").innerHTML = lesson.afterNote || "よく頑張ったね！";
+
+        const modelBox = document.getElementById("lesson-model-code");
+        if (lesson.modelCode) {
+          modelBox.parentElement.style.display = "block";
+          modelBox.textContent = lesson.modelCode;
+        } else {
+          modelBox.parentElement.style.display = "none";
+        }
+
+        // 紙吹雪を少し舞わせる
+        triggerConfetti(30);
+
+        // ステージ全クリア or 全体全クリアのチェック
+        this.checkCelebrations(lesson);
+      }
+
+      // お祝いモーダルの判定
+      checkCelebrations(currentLesson) {
+        const currentStage = STAGES_CONFIG.find(s => s.id === currentLesson.stageId);
+        if (!currentStage) return;
+
+        // 1. ステージ全クリアチェック
+        const isStageCleared = currentStage.lessonIds.every(id => this.progress[id]);
+        const stageModalKey = `stage_${currentStage.id}`;
+
+        if (isStageCleared && !this.clearedModals[stageModalKey]) {
+          this.clearedModals[stageModalKey] = true;
+          this.saveClearedModals();
+          this.showModal(
+            "🎉",
+            `${currentStage.badge} クリアおめでとう！`,
+            `『${currentStage.title}』の全レッスンを完全制覇したよ！<br>まるもちも大喜び🍡 次のステージへ進んでさらにレベルアップしよう！`
+          );
+          triggerConfetti(80);
+          return;
+        }
+
+        // 2. 実装済み全レッスンクリアチェック（動的に総数を数える）
+        const totalLessons = LESSONS_DATA.length;
+        const totalCleared = Object.keys(this.progress).filter(id => this.progress[id]).length;
+
+        if (totalCleared >= totalLessons && !this.clearedModals["all_cleared"]) {
+          this.clearedModals["all_cleared"] = true;
+          this.saveClearedModals();
+          this.showModal(
+            "👑",
+            "全レッスン完全制覇！おめでとう！",
+            `すごい！まるもちGASドリルの実装済み全${totalLessons}レッスンをすべてクリアしたよ！<br>もう君はスプレッドシート自動化の立派な達人だね！本当にお疲れ様でした🍡✨`
+          );
+          triggerConfetti(120);
+        }
+      }
+
+      showModal(icon, title, desc) {
+        document.getElementById("celebration-icon").textContent = icon;
+        document.getElementById("celebration-title").textContent = title;
+        document.getElementById("celebration-desc").innerHTML = desc;
+        document.getElementById("celebration-modal").classList.add("active");
+      }
+
+      closeModal() {
+        document.getElementById("celebration-modal").classList.remove("active");
+      }
+
+      // 次のレッスンへ進む
+      goToNextLesson() {
+        if (!this.currentLesson) return;
+        const currentIndex = LESSONS_DATA.findIndex(l => l.id === this.currentLesson.id);
+        if (currentIndex >= 0 && currentIndex < LESSONS_DATA.length - 1) {
+          const nextLesson = LESSONS_DATA[currentIndex + 1];
+          this.openLesson(nextLesson.id);
+        } else {
+          // 最後のレッスンだった場合はトップへ
+          this.showTop();
+        }
+      }
+
+      // ヒントの開閉
+      toggleHint(level) {
+        const content = document.getElementById(`hint-content-${level}`);
+        const icon = document.getElementById(`hint-icon-${level}`);
+        if (!content) return;
+
+        const isHidden = content.classList.contains("hidden");
+        if (isHidden) {
+          content.classList.remove("hidden");
+          icon.textContent = "▲";
+        } else {
+          content.classList.add("hidden");
+          icon.textContent = "▼";
+        }
+      }
+
+      // 進捗リセット
+      resetAllProgress() {
+        if (confirm("学習の進捗をすべてリセットしますか？")) {
+          this.progress = {};
+          this.clearedModals = {};
+          localStorage.removeItem(this.progressKey);
+          localStorage.removeItem(this.modalClearedKey);
+          this.renderStageList();
+          this.updateProgressSummary();
+        }
+      }
+
+      /* =======================================================================
+         5. 自由練習モード（Sandbox）ロジック
+         ======================================================================= */
+      initSandbox() {
+        this.sandboxSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        const defaultCode = `// 自由練習モードへようこそ！\nfunction practice() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  \n  // 例: A列〜D列の値をログに表示してみよう\n  const lastRow = sheet.getLastRow();\n  Logger.log("現在のデータ行数: " + lastRow);\n  \n  // 自由にコードを書いて試してみてね！\n}\n\npractice();`;
+        document.getElementById("sandbox-code-input").value = defaultCode;
+      }
+
+      resetSandboxSheet() {
+        this.sandboxSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        this.renderSandboxSheet();
+        const logBox = document.getElementById("sandbox-execution-log");
+        logBox.textContent = "シートを初期状態にリセットしました";
+        logBox.classList.add("empty");
+      }
+
+      renderSandboxSheet() {
+        this.renderSheetTable(this.sandboxSheet, "sandbox-sheet-table");
+      }
+
+      runSandboxCode() {
+        const code = document.getElementById("sandbox-code-input").value;
+        const logs = [];
+        const logger = {
+          log: (...args) => {
+            logs.push(args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" "));
+          }
+        };
+
+        const spreadsheet = new MockSpreadsheet({ "売上": this.sandboxSheet });
+        const spreadsheetApp = {
+          getActiveSpreadsheet: () => spreadsheet,
+          getActiveSheet: () => this.sandboxSheet
+        };
+
+        const logBox = document.getElementById("sandbox-execution-log");
+
+        try {
+          const fn = new Function("SpreadsheetApp", "Logger", "console", code);
+          fn(spreadsheetApp, logger, logger);
+
+          if (logs.length > 0) {
+            logBox.textContent = logs.join("\n");
+            logBox.classList.remove("empty");
+          } else {
+            logBox.textContent = "(実行完了: ログ出力はありませんでした)";
+            logBox.classList.remove("empty");
+          }
+
+          this.renderSandboxSheet();
+        } catch (err) {
+          this.renderSandboxSheet();
+          logBox.textContent = `エラー発生: ${err.name}\n${err.message}\n\n💡 まるもちのヒント:\n${this.getFriendlyErrorMessage(err)}`;
+          logBox.classList.remove("empty");
+        }
+      }
+    }
+
+    /* =======================================================================
+       6. 軽量紙吹雪（Confetti）エフェクト（外部ライブラリなし）
+       ======================================================================= */
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    let animationFrameId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function triggerConfetti(count = 50) {
+      const colors = ["#1A73E8", "#34A853", "#FBBC05", "#EA4335", "#FF8DA1", "#A770EF"];
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: window.innerWidth * (0.2 + Math.random() * 0.6),
+          y: window.innerHeight * 0.4,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.8) * 14,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 10,
+          opacity: 1
+        });
+      }
+
+      if (!animationFrameId) {
+        updateConfetti();
+      }
+    }
+
+    function updateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35; // 重力
+        p.vx *= 0.98; // 空気抵抗
+        p.rotation += p.vRot;
+        p.opacity -= 0.008;
+
+        if (p.opacity <= 0 || p.y > canvas.height) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      }
+
+      if (particles.length > 0) {
+        animationFrameId = requestAnimationFrame(updateConfetti);
+      } else {
+        animationFrameId = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // アプリ初期化
+    let app;
+    window.addEventListener("DOMContentLoaded", () => {
+      app = new MarumochiApp();
+    });
+  </script>
+</body>
+</html>
