@@ -226,9 +226,21 @@
     }
     .marumochi-speech {
       flex: 1;
+      min-width: 0;
       font-size: 1rem;
       line-height: 1.6;
       color: var(--text-main);
+      overflow-wrap: break-word;
+    }
+    .marumochi-speech code {
+      overflow-wrap: anywhere;
+    }
+    .marumochi-speech pre {
+      overflow-x: auto;
+      white-space: pre;
+    }
+    code {
+      overflow-wrap: anywhere;
     }
 
     /* カード・セクション */
@@ -1929,6 +1941,20 @@
         });
       }
 
+      // 画面の一番上へ戻す（フォーカス追従やスクロール復元に負けないよう、複数タイミングで実行）
+      scrollToTop() {
+        const doScroll = () => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          if (document.body) document.body.scrollTop = 0;
+        };
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+        doScroll();
+        requestAnimationFrame(doScroll);
+        setTimeout(doScroll, 60);
+        setTimeout(doScroll, 250);
+      }
+
       // 画面切り替え
       showTop() {
         document.getElementById("view-top").classList.remove("hidden");
@@ -1936,7 +1962,7 @@
         document.getElementById("view-sandbox").classList.add("hidden");
         this.renderStageList();
         this.updateProgressSummary();
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        this.scrollToTop();
       }
 
       showSandbox() {
@@ -1944,7 +1970,7 @@
         document.getElementById("view-lesson").classList.add("hidden");
         document.getElementById("view-sandbox").classList.remove("hidden");
         this.renderSandboxSheet();
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        this.scrollToTop();
       }
 
       // レッスンを開く
@@ -2017,7 +2043,7 @@
         document.getElementById("view-lesson").classList.remove("hidden");
 
         // 要件：開いたら画面はレッスンの先頭が表示されること（入力欄に自動フォーカスしてスクロールさせない）
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        this.scrollToTop();
       }
 
       // クイズ選択肢の描画
