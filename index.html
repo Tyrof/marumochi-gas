@@ -839,8 +839,96 @@
         </div>
       </div>
 
+      <!-- 使い方ガイドへのボタン -->
+      <button class="btn btn-primary" onclick="app.showGuide()" style="width:100%; margin-bottom:16px; padding:14px;">📖 実物のGASの使い方（はじめての人向け）</button>
+
       <!-- ステージリスト -->
       <div id="stage-list-container"></div>
+    </div>
+
+    <!-- 使い方ガイド画面 -->
+    <div id="view-guide" class="hidden">
+      <div style="margin-bottom: 16px;">
+        <button class="btn btn-outline btn-sm" onclick="app.showTop()">← マップに戻る</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📖 実物のGoogle Apps Script（GAS）の使い方</div>
+        <p style="line-height:1.7; margin:0;">このドリルで練習したコードは、実物のGASでもそのまま使えます。まずは実物の画面を開いて、1回動かしてみましょう。</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">1. GASのエディタを開く</div>
+        <div style="line-height:1.8;">
+          ・Googleスプレッドシートを開く（新規でも練習用でもOK）<br>
+          ・上のメニュー「拡張機能」→「Apps Script」をクリック<br>
+          ・新しいタブでコードを書く画面（エディタ）が開く。これがGASのプラットフォームで、コードはGoogleのサーバー上で動く
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">2. エディタ画面の見方</div>
+        <div style="line-height:1.8;">
+          ・中央：コードを書く場所（最初から書いてある myFunction は消してOK）<br>
+          ・上のプルダウン：実行する関数を選ぶところ<br>
+          ・上のボタン類：保存（フロッピーのマーク）と実行（▶のマーク）<br>
+          ・実行すると、下に「実行ログ」が出る
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">3. まず試すコード</div>
+        <div class="model-code-box">function helloGas() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  sheet.getRange('A1').setValue('こんにちは、GAS！');
+  Logger.log('A1に書き込みました');
+}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4. 保存して実行する</div>
+        <div style="line-height:1.8;">
+          ・保存ボタンを押す（または Ctrl+S、Macは ⌘+S）<br>
+          ・プルダウンで helloGas が選ばれていることを確認して「実行」を押す
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">5. 初回だけ出る「権限の承認」</div>
+        <div style="line-height:1.8;">
+          ・最初の実行だけ、権限の確認画面が出る（自分で作ったものでも必ず出るので、怖がらなくて大丈夫）<br>
+          ・「権限を確認」→ 自分のGoogleアカウントを選ぶ<br>
+          ・「このアプリは確認されていません」と出たら「詳細」→「（プロジェクト名）に移動」→「許可」の順に進む<br>
+          ・許可すると実行がそのまま続く
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">6. 結果を確認する</div>
+        <div style="line-height:1.8;">
+          ・スプレッドシートのタブに戻ると、A1に「こんにちは、GAS！」と入っている<br>
+          ・エディタの下の実行ログに「A1に書き込みました」と出ていれば成功。ドリルの「実行ログ」と同じ役割
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">7. このドリルとのつながり</div>
+        <div style="line-height:1.8;">
+          ・ドリルで練習した getValue / setValue / getValues などは、実物でもそのまま使える命令<br>
+          ・ドリルで書いたコードを実物のエディタに貼って試すのが、上達への近道
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">8. つまずきやすいところ</div>
+        <div style="line-height:1.8;">
+          ・実行する関数を間違えた：プルダウンで関数名を確認する<br>
+          ・シートが見つからないエラー：getSheetByName('売上') の名前が、実際のシート名と一致しているか確認する<br>
+          ・変更が反映されない：保存し忘れが多い。実行前に Ctrl+S
+        </div>
+      </div>
+
+      <button class="btn btn-outline" onclick="app.showTop()" style="width:100%;">← ステージ地図にもどる</button>
     </div>
 
     <!-- 2. レッスン画面 -->
@@ -1961,6 +2049,7 @@
         document.getElementById("view-top").classList.remove("hidden");
         document.getElementById("view-lesson").classList.add("hidden");
         document.getElementById("view-sandbox").classList.add("hidden");
+        document.getElementById("view-guide").classList.add("hidden");
         this.renderStageList();
         this.updateProgressSummary();
         this.scrollToTop();
@@ -1970,7 +2059,16 @@
         document.getElementById("view-top").classList.add("hidden");
         document.getElementById("view-lesson").classList.add("hidden");
         document.getElementById("view-sandbox").classList.remove("hidden");
+        document.getElementById("view-guide").classList.add("hidden");
         this.renderSandboxSheet();
+        this.scrollToTop();
+      }
+
+      showGuide() {
+        document.getElementById("view-top").classList.add("hidden");
+        document.getElementById("view-lesson").classList.add("hidden");
+        document.getElementById("view-sandbox").classList.add("hidden");
+        document.getElementById("view-guide").classList.remove("hidden");
         this.scrollToTop();
       }
 
@@ -2041,6 +2139,7 @@
         // 画面表示切り替え
         document.getElementById("view-top").classList.add("hidden");
         document.getElementById("view-sandbox").classList.add("hidden");
+        document.getElementById("view-guide").classList.add("hidden");
         document.getElementById("view-lesson").classList.remove("hidden");
 
         // 要件：開いたら画面はレッスンの先頭が表示されること（入力欄に自動フォーカスしてスクロールさせない）
