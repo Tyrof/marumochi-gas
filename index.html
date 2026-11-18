@@ -1193,6 +1193,21 @@
         <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
           <button class="btn btn-sm btn-outline" onclick="app.runExample()">例題を実行してみる</button>
         </div>
+        <!-- 例題のプレビュー表 -->
+        <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub); margin:12px 0 4px;">📊 例題のプレビュー表「売上」：</div>
+        <div class="sheet-wrapper">
+          <div class="sheet-tabs">
+            <div class="sheet-tab">
+              <div class="sheet-tab-dot"></div>
+              <span>売上</span>
+            </div>
+          </div>
+          <div class="sheet-table-scroll">
+            <table class="sheet-table" id="example-sheet-table">
+              <!-- 動的生成 -->
+            </table>
+          </div>
+        </div>
         <!-- 例題ログ -->
         <div id="example-log" class="log-box empty" style="margin-top:8px;">実行ログがここに表示されます</div>
       </div>
@@ -2324,6 +2339,8 @@
           const exLog = document.getElementById("example-log");
           exLog.textContent = "実行ログがここに表示されます";
           exLog.classList.add("empty");
+          this.exampleSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+          this.renderSheetTable(this.exampleSheet, "example-sheet-table");
         } else {
           exampleCard.classList.add("hidden");
         }
@@ -2512,6 +2529,7 @@
         };
 
         const testSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        const beforeData = cloneSheetData(testSheet.data);
         const spreadsheet = new MockSpreadsheet({ "売上": testSheet });
         const spreadsheetApp = {
           getActiveSpreadsheet: () => spreadsheet,
@@ -2522,19 +2540,47 @@
           const fn = new Function("SpreadsheetApp", "Logger", "console", `${this.currentLesson.example.code}\n;if(typeof example==='function')example();if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
           fn(spreadsheetApp, logger, logger);
 
+          // 変化したセルを「C6（3 → 1）」の形でまとめる
+          const changes = [];
+          const sortedCells = [...testSheet.updatedCells].sort((a, b) => {
+            const pa = a.split(",").map(Number);
+            const pb = b.split(",").map(Number);
+            return pa[0] - pb[0] || pa[1] - pb[1];
+          });
+          for (const key of sortedCells) {
+            const parts = key.split(",").map(Number);
+            const r = parts[0];
+            const c = parts[1];
+            const beforeVal = (beforeData[r] && beforeData[r][c] !== undefined) ? beforeData[r][c] : "";
+            const afterVal = (testSheet.data[r] && testSheet.data[r][c] !== undefined) ? testSheet.data[r][c] : "";
+            if (String(beforeVal) !== String(afterVal)) {
+              changes.push(`${String.fromCharCode(65 + c)}${r + 1}（${beforeVal === "" ? "空" : beforeVal} → ${afterVal === "" ? "空" : afterVal}）`);
+            }
+          }
+
+          const lines = [...logs];
+          if (changes.length > 0) {
+            const shown = changes.slice(0, 6).join("、");
+            const rest = changes.length > 6 ? `、ほか${changes.length - 6}件` : "";
+            lines.push(`✏️ 変わったセル：${shown}${rest}`);
+          }
+
           const exLog = document.getElementById("example-log");
-          if (logs.length > 0) {
-            exLog.textContent = logs.join("\n");
-            exLog.classList.remove("empty");
+          if (lines.length > 0) {
+            exLog.textContent = lines.join("\n");
           } else {
             exLog.textContent = "(ログ出力はありませんでした)";
-            exLog.classList.remove("empty");
           }
+          exLog.classList.remove("empty");
         } catch (e) {
           const exLog = document.getElementById("example-log");
           exLog.textContent = `エラー: ${e.message}`;
           exLog.classList.remove("empty");
         }
+
+        // 例題のプレビュー表を更新（変化したセルはハイライトされる）
+        this.exampleSheet = testSheet;
+        this.renderSheetTable(testSheet, "example-sheet-table");
       }
 
       // ユーザーコードの実行と判定
