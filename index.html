@@ -915,7 +915,11 @@
               <button class="helper-btn component" type="button" onclick="app.insertHelper('Logger.log(')">Logger.log</button>
               <button class="helper-btn component" type="button" onclick="app.insertHelper('.getRange(\'')">getRange</button>
               <button class="helper-btn component" type="button" onclick="app.insertHelper('.getValue()')">getValue</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('.getValues()')">getValues</button>
               <button class="helper-btn component" type="button" onclick="app.insertHelper('.setValue(')">setValue</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('.setValues(')">setValues</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('.getLastRow()')">getLastRow</button>
+              <button class="helper-btn component" type="button" onclick="app.insertHelper('.appendRow([')">appendRow</button>
               <button class="helper-btn component" type="button" onclick="app.insertHelper('const ')">const</button>
               <button class="helper-btn component" type="button" onclick="app.insertHelper('let ')">let</button>
             </div>
@@ -1580,6 +1584,162 @@
         hint3: "最後に sheet.getRange('D6').setValue(total); を書けば完成！",
         modelCode: `function calcTotal(count, unitPrice) {\n  return count * unitPrice;\n}\n\nfunction myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const total = calcTotal(3, 200);\n  sheet.getRange('D6').setValue(total);\n}`,
         afterNote: "おめでとう！これで Stage 0 の JavaScript基礎も全クリだよ！関数が作れるようになった君は、もう立派なプログラマーの仲間入りだね🍡"
+      },
+
+      // --- Stage 1（セルの読み書きマスター 6レッスン） ---
+      {
+        id: "s1-01",
+        stageId: "stage-1",
+        title: "セルの値を取得する",
+        type: "code",
+        explain: "セルの値を読み取る基本をおさらいしよう！<br><code>sheet.getRange('セル名').getValue()</code> を使うと、指定したマス目（セル）に入っているデータを1つ取り出せるよ。<br>今回は「売上」シートから1行目のデータである <strong>D2セル</strong>（最初の金額）を読み取ってみよう！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const stamp = sheet.getRange('B2').getValue();\n  Logger.log("スタンプ名: " + stamp);\n}`,
+          desc: "B2セルのスタンプ名を取得してログに表示する例だよ。"
+        },
+        question: "売上シートの <strong>D2セル</strong>（金額: 190）を <code>getRange('D2').getValue()</code> で読み取り、<code>Logger.log()</code> で表示してみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // D2セルの値を読み取って Logger.log で表示しよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => l.includes("190"));
+          if (found) {
+            return { pass: true, msg: "バッチリ！D2セルの金額 190 をしっかり読み取れたね🍡" };
+          }
+          return { pass: false, msg: "ログに『190』が出力されていないよ。getRange('D2').getValue() を Logger.log してみよう！" };
+        },
+        hint1: "sheet.getRange('D2').getValue() でD2セルの値を取得できるよ。",
+        hint2: "取得した値を変数に入れてから Logger.log(変数) するか、Logger.log(sheet.getRange('D2').getValue()) と直接書いてみよう。",
+        hint3: "const price = sheet.getRange('D2').getValue(); Logger.log(price); と書けば完成！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const price = sheet.getRange('D2').getValue();\n  Logger.log(price);\n}`,
+        afterNote: "<code>getRange('セル名').getValue()</code> はGASの超基本中の基本！まずはピンポイントで1つのセルを狙い撃ちで取得できるようになったね！"
+      },
+      {
+        id: "s1-02",
+        stageId: "stage-1",
+        title: "セルに書き込む",
+        type: "code",
+        explain: "今度はセルに値を書き込む基本だよ！<br><code>sheet.getRange('セル名').setValue(値)</code> を使うと、指定したセルの中身を新しい値に書き換えることができるんだ。<br>実行すると下のシートプレビューがリアルタイムに書き換わるよ！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C3').setValue(10);\n  Logger.log("C3を10に書き換えたよ！");\n}`,
+          desc: "C3セルの個数を 10 に書き換える例だよ。"
+        },
+        question: "売上シートの <strong>C2セル</strong>（個数: 現在は 1）を、<code>setValue()</code> を使って <code>5</code> に書き換えてみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // C2セルの個数を 5 に書き換えてみよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const val = sheet.getRange("C2").getValue();
+          if (Number(val) === 5) {
+            return { pass: true, msg: "お見事！C2セルの値が 5 に書き換わったよ🍡" };
+          }
+          return { pass: false, msg: `C2セルの現在の値は '${val}' だよ。5 になるように書き込んでみてね！` };
+        },
+        hint1: "sheet.getRange('C2') でC2セルを選ぼう。",
+        hint2: ".setValue(5) を後ろにくっつけて実行してみよう！",
+        hint3: "sheet.getRange('C2').setValue(5); と書けばOKだよ！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C2').setValue(5);\n}`,
+        afterNote: "ナイス書き込み！<code>setValue(値)</code> は数値だけでなく文字列や日付もそのまま書き込める万能メソッドだよ！"
+      },
+      {
+        id: "s1-03",
+        stageId: "stage-1",
+        title: "範囲をまとめて取得する",
+        type: "code",
+        explain: "1マスずつ <code>getValue()</code> すると、何度もシートにアクセスして実行が遅くなっちゃうんだ。<br>そこで大活躍するのが <strong><code>getValues()</code></strong>（最後に s が付くよ）！<br><code>sheet.getRange('A2:D6').getValues()</code> と書くと、範囲全体のデータが<strong>「2次元配列」</strong>として一瞬で手に入るんだ。<br>・1行目: <code>values[0]</code><br>・2行目: <code>values[1]</code><br>行も列も <code>0</code> から数えるよ！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const rows = sheet.getRange('A2:D6').getValues();\n  // 最初の行(インデックス0)のスタンプ名(B列=インデックス1)\n  Logger.log("1行目のスタンプ: " + rows[0][1]);\n}`,
+          desc: "A2:D6の範囲を一括取得して、1行目・2列目を取り出す例だよ。"
+        },
+        question: "<code>getRange('A2:D6').getValues()</code> で範囲をまとめて取得し、配列の<strong>2行目のスタンプ名（インデックス <code>[1][1]</code>）</strong>を <code>Logger.log()</code> で表示してみよう！（「癒しのまるもち」が表示されれば合格！）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // A2:D6 の範囲を getValues() でまとめて取得しよう\n  const values = sheet.getRange('A2:D6').getValues();\n  \n  // 2行目のスタンプ名（[1][1]）を Logger.log で表示してみよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => l.includes("癒しのまるもち"));
+          if (found) {
+            return { pass: true, msg: "すごい！getValues() で範囲をまとめて取り出して2行目のデータを読めたね🍡" };
+          }
+          return { pass: false, msg: "ログに『癒しのまるもち』が出ていないよ。values[1][1] を Logger.log してみよう！" };
+        },
+        hint1: "取得した values は2次元配列になっているよ。",
+        hint2: "2行目（インデックス 1）のスタンプ名列（B列＝インデックス 1）は values[1][1] でアクセスできるよ。",
+        hint3: "Logger.log(values[1][1]); を書き足して実行してみよう！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const values = sheet.getRange('A2:D6').getValues();\n  Logger.log(values[1][1]);\n}`,
+        afterNote: "<code>getValues()</code> は実務のGAS高速化で一番重要なテクニック！何千行のデータも1回でガバッとメモリに読み込めるから、処理スピードが何十倍も速くなるんだ！"
+      },
+      {
+        id: "s1-04",
+        stageId: "stage-1",
+        title: "範囲にまとめて書く",
+        type: "code",
+        explain: "読み込みと同じく、書き込みも <strong><code>setValues(2次元配列)</code></strong> を使えば一括でドカンと書き込めるよ！<br>注意点はただ1つ、<strong>「範囲の行数・列数」と「渡す2次元配列の形」をピッタリ合わせること</strong>。<br>例えば縦2マス（F1:F2）に書くときは、1行目 <code>['メモ']</code> と2行目 <code>['確認済み']</code> をまとめた <code>[['メモ'], ['確認済み']]</code> を渡すよ！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // E1:E2 に見出しと値をまとめて書く例\n  sheet.getRange('E1:E2').setValues([['区分'], ['通常']]);\n}`,
+          desc: "縦2マスの範囲（E1:E2）にまとめて2次元配列を書き込む例だよ。"
+        },
+        question: "売上シートの <strong>F1:F2</strong> の範囲に、<code>setValues()</code> を使って <code>[['メモ'], ['確認済み']]</code> をまとめて書いてみよう！（F2セルが「確認済み」になれば合格！）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // F1:F2 の範囲に [['メモ'], ['確認済み']] をまとめて書き込もう！\n  \n}`,
+        check: (sheet, logs) => {
+          const valF2 = sheet.getRange("F2").getValue();
+          if (String(valF2).trim() === "確認済み") {
+            return { pass: true, msg: "大成功！F1に『メモ』、F2に『確認済み』が一括で書き込まれたよ🍡" };
+          }
+          return { pass: false, msg: `F2セルの値は今 '${valF2}' だよ。setValues([['メモ'], ['確認済み']]) で書き込んでみてね！` };
+        },
+        hint1: "sheet.getRange('F1:F2') で範囲を指定しよう。",
+        hint2: ".setValues([['メモ'], ['確認済み']]) を繋げよう。配列のカッコ [ ] が二重になっている点に注意！",
+        hint3: "sheet.getRange('F1:F2').setValues([['メモ'], ['確認済み']]); と書いて実行してみてね！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('F1:F2').setValues([['メモ'], ['確認済み']]);\n}`,
+        afterNote: "素晴らしい！1マスずつ setValue すると画面がチラつくけど、<code>setValues</code> なら一瞬で表全体を書き換えられるよ。GASマスターへの大きな一歩だね！"
+      },
+      {
+        id: "s1-05",
+        stageId: "stage-1",
+        title: "最終行を知る",
+        type: "code",
+        explain: "シートの行数はデータが増えるたびにどんどん変わるよね。<br>そんなとき<strong>「今、データは何行目まである？」</strong>を自動で調べてくれるのが <strong><code>sheet.getLastRow()</code></strong> だよ！<br>現在データは6行目まで入っているので <code>6</code> が返ってくるよ。<br>これと <code>sheet.getRange(lastRow, 列番号)</code> を組み合わせれば、いつでも最新の行を取り出せるんだ！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const last = sheet.getLastRow();\n  Logger.log("データがある最後の行番号: " + last);\n}`,
+          desc: "getLastRow() で最後の行番号を取得してログに出す例だよ。"
+        },
+        question: "<code>getLastRow()</code> で最終行の番号を求め、その行の<strong>日付（A列＝1列目）</strong>を読み取って <code>Logger.log()</code> で表示してみよう！（ログに「2026-11-12」が出れば合格！）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // 最終行の行番号を取得しよう\n  const lastRow = sheet.getLastRow();\n  \n  // その行のA列（行番号: lastRow, 列番号: 1）を読み取って Logger.log で表示しよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => l.includes("2026-11-12"));
+          if (found) {
+            return { pass: true, msg: "パーフェクト！最終行の日付 2026-11-12 をしっかり取得できたね🍡" };
+          }
+          return { pass: false, msg: "ログに『2026-11-12』が出力されていないよ。getRange(lastRow, 1).getValue() をログに出してみよう！" };
+        },
+        hint1: "sheet.getRange(lastRow, 1) で最終行のA列（1列目）を指定できるよ。",
+        hint2: "getValue() でその日付を取得して、Logger.log に渡そう。",
+        hint3: "const lastDate = sheet.getRange(lastRow, 1).getValue(); Logger.log(lastDate); と書いてみてね！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const lastRow = sheet.getLastRow();\n  const lastDate = sheet.getRange(lastRow, 1).getValue();\n  Logger.log(lastDate);\n}`,
+        afterNote: "<code>getLastRow()</code> は日報や売上ログを扱うGASで必須のテクニック！行数が10行でも1万行でも、自動で一番下の行を瞬時に見つけてくれるよ！"
+      },
+      {
+        id: "s1-06",
+        stageId: "stage-1",
+        title: "行を追加する",
+        type: "code",
+        explain: "表の一番最後に新しいデータをサッと書き足したいときは <strong><code>sheet.appendRow(配列)</code></strong> が便利！<br>わざわざ最終行の番号を調べなくても、自動的に一番下の行を見つけて新しい行を追加してくれるんだ。<br>渡すデータは <code>['2026-11-13', '癒しのまるもち', 1, 190]</code> のように、1行分の配列でOKだよ！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.appendRow(["2026-11-12", "新作スタンプ", 1, 200]);\n  Logger.log("新しい行を追加したよ！");\n}`,
+          desc: "表の末尾に新しいスタンプ売上行を追加する例だよ。"
+        },
+        question: "<code>appendRow()</code> を使って、新しい売上データ <code>['2026-11-13', '癒しのまるもち', 1, 190]</code> を表の一番下に追加してみよう！（7行目のA列が「2026-11-13」になれば合格！）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newRow = ['2026-11-13', '癒しのまるもち', 1, 190];\n  // sheet.appendRow を使って新しい行を追加しよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const lastRow = sheet.getLastRow();
+          if (lastRow >= 7) {
+            const date = sheet.getRange(7, 1).getValue();
+            const name = sheet.getRange(7, 2).getValue();
+            if (String(date).trim() === "2026-11-13" && String(name).trim() === "癒しのまるもち") {
+              return { pass: true, msg: "大成功！！7行目に新しい売上データがピタッと追加されたよ🍡" };
+            }
+          }
+          return { pass: false, msg: "7行目に ['2026-11-13', '癒しのまるもち', 1, 190] が追加されているか確認してみてね！" };
+        },
+        hint1: "sheet.appendRow(追加したい配列) を呼び出そう。",
+        hint2: "変数 newRow に追加するデータが入っているよ。",
+        hint3: "sheet.appendRow(newRow); と1行書いて実行してみよう！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newRow = ['2026-11-13', '癒しのまるもち', 1, 190];\n  sheet.appendRow(newRow);\n}`,
+        afterNote: "おめでとう！これで Stage 1『セルの読み書きマスター』を全制覇だよ！単一セルの読み書きから、一括処理（getValues/setValues）、最終行の判定、行追加まで、スプレッドシート操作の根幹を完全マスターしたね🍡✨"
       }
     ];
 
@@ -1603,8 +1763,8 @@
         id: "stage-1",
         badge: "Stage 1",
         title: "セルの読み書きマスター（範囲・一括処理）",
-        locked: true,
-        desc: "近日公開予定！getValues / setValues で高速一括処理を学ぶよ。"
+        locked: false,
+        lessonIds: ["s1-01", "s1-02", "s1-03", "s1-04", "s1-05", "s1-06"]
       },
       {
         id: "stage-2",
@@ -2006,7 +2166,7 @@
         };
 
         try {
-          const fn = new Function("SpreadsheetApp", "Logger", "console", `${this.currentLesson.example.code}\n;if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
+          const fn = new Function("SpreadsheetApp", "Logger", "console", `${this.currentLesson.example.code}\n;if(typeof example==='function')example();if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
           fn(spreadsheetApp, logger, logger);
 
           const exLog = document.getElementById("example-log");
