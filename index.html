@@ -1757,10 +1757,10 @@
         stageId: "prologue",
         title: "セルの値を読んでみよう",
         type: "code",
-        explain: "スプレッドシートのマス目のことを<strong>「セル」</strong>と呼ぶよ。<br>セルの値を取ってくるには、<br>①シートを選ぶ：<code>SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上')</code><br>②セルを指定して読む：<code>sheet.getRange('B2').getValue()</code><br>とお願いするんだ！",
+        explain: "スプレッドシートのマス目のことを<strong>「セル」</strong>と呼ぶよ。<br>セルの値を読むコードは長く見えるけど、<strong>部品ごとに意味が決まっている</strong>から、分解すれば怖くないよ。<br><br><strong>①シートを選ぶ</strong><br><code>SpreadsheetApp</code> ＝ スプレッドシートを操作する「受付」の名前<br><code>.getActiveSpreadsheet()</code> ＝ 「今開いているファイルをください」<br><code>.getSheetByName('売上')</code> ＝ 「その中の『売上』シートをください」<br>ドット（ . ）は「〜の」と読むと分かりやすいよ。左から右へ、だんだん絞り込んでいくイメージ。<br>取ってきたシートは <code>const sheet =</code> で、「sheet」という名札の箱に入れておくんだ。<br><br><strong>②セルを指定して読む</strong><br><code>sheet.getRange('A2')</code> ＝ 「sheetのA2のマスを指定して」<br><code>.getValue()</code> ＝ 「その中身を取ってきて」<br><br>最後に <code>Logger.log(値)</code> で、取ってきた値を作業報告（ログ欄）に出せば確認できるよ（p-02の復習だね）。",
         example: {
           code: `function readDate() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const date = sheet.getRange('A2').getValue();\n  Logger.log(date);\n}`,
-          desc: "A2セル（一番最初の売上日付）を読んでログに出力する例だよ。"
+          desc: "上の説明と見比べながら、「例題を実行してみる」を押してみよう。A2セル（一番最初の売上日付）を読んで、ログに出力する例だよ。"
         },
         question: "用意されたコードをそのまま「実行して判定する」を押して、B2セルのスタンプ名（<code>癒しのまるもち</code>）がログに読めることを確認してみよう！",
         starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const val = sheet.getRange('B2').getValue();\n  Logger.log(val);\n}`,
