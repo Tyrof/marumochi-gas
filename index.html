@@ -543,22 +543,37 @@
       border-bottom: 1px solid var(--sheet-grid);
     }
     .sheet-tab {
-      background: #ffffff;
+      background: #e8eaed;
       border: 1px solid var(--sheet-grid);
       border-bottom: none;
       border-radius: 6px 6px 0 0;
       padding: 4px 14px;
       font-size: 0.8rem;
-      font-weight: bold;
-      color: var(--text-main);
+      font-weight: 600;
+      color: var(--text-sub);
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .sheet-tab:hover {
+      background: #f1f3f4;
+      color: var(--text-main);
+    }
+    .sheet-tab.active {
+      background: #ffffff;
+      color: var(--primary);
+      font-weight: bold;
     }
     .sheet-tab-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
+      background: #bdc1c6;
+    }
+    .sheet-tab.active .sheet-tab-dot {
       background: var(--success);
     }
     .sheet-table-scroll {
@@ -1194,12 +1209,17 @@
           <button class="btn btn-sm btn-outline" onclick="app.runExample()">例題を実行してみる</button>
         </div>
         <!-- 例題のプレビュー表 -->
-        <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub); margin:12px 0 4px;">📊 例題のプレビュー表「売上」：</div>
+        <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub); margin:12px 0 4px;" id="example-sheet-title">📊 例題のプレビュー表：</div>
         <div class="sheet-wrapper">
-          <div class="sheet-tabs">
-            <div class="sheet-tab">
-              <div class="sheet-tab-dot"></div>
-              <span>売上</span>
+          <div class="sheet-tabs" id="example-sheet-tabs">
+            <div class="sheet-tab active" data-sheet="売上" onclick="app.switchExampleSheet('売上')">
+              <div class="sheet-tab-dot"></div><span>売上</span>
+            </div>
+            <div class="sheet-tab" data-sheet="顧客" onclick="app.switchExampleSheet('顧客')">
+              <div class="sheet-tab-dot"></div><span>顧客</span>
+            </div>
+            <div class="sheet-tab" data-sheet="レポート" onclick="app.switchExampleSheet('レポート')">
+              <div class="sheet-tab-dot"></div><span>レポート</span>
             </div>
           </div>
           <div class="sheet-table-scroll">
@@ -1218,12 +1238,17 @@
         <div id="lesson-question-body" style="font-size:1rem; margin-bottom:14px; line-height:1.6;"></div>
 
         <!-- 疑似スプレッドシート表示 -->
-        <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub); margin-bottom:4px;">📊 練習シート「売上」の現在の状態：</div>
+        <div style="font-size:0.85rem; font-weight:bold; color:var(--text-sub); margin-bottom:4px;">📊 練習シート（タブで切り替え可能）：</div>
         <div class="sheet-wrapper">
-          <div class="sheet-tabs">
-            <div class="sheet-tab">
-              <div class="sheet-tab-dot"></div>
-              <span id="lesson-sheet-tab-name">売上</span>
+          <div class="sheet-tabs" id="lesson-sheet-tabs">
+            <div class="sheet-tab active" data-sheet="売上" onclick="app.switchLessonSheet('売上')">
+              <div class="sheet-tab-dot"></div><span>売上</span>
+            </div>
+            <div class="sheet-tab" data-sheet="顧客" onclick="app.switchLessonSheet('顧客')">
+              <div class="sheet-tab-dot"></div><span>顧客</span>
+            </div>
+            <div class="sheet-tab" data-sheet="レポート" onclick="app.switchLessonSheet('レポート')">
+              <div class="sheet-tab-dot"></div><span>レポート</span>
             </div>
           </div>
           <div class="sheet-table-scroll">
@@ -1380,10 +1405,18 @@
       </div>
 
       <div class="card">
-        <div class="card-title">📊 練習シート「売上」</div>
+        <div class="card-title">📊 練習スプレッドシート（タブで切り替え可能）</div>
         <div class="sheet-wrapper">
-          <div class="sheet-tabs">
-            <div class="sheet-tab"><div class="sheet-tab-dot"></div>売上</div>
+          <div class="sheet-tabs" id="sandbox-sheet-tabs">
+            <div class="sheet-tab active" data-sheet="売上" onclick="app.switchSandboxSheet('売上')">
+              <div class="sheet-tab-dot"></div><span>売上</span>
+            </div>
+            <div class="sheet-tab" data-sheet="顧客" onclick="app.switchSandboxSheet('顧客')">
+              <div class="sheet-tab-dot"></div><span>顧客</span>
+            </div>
+            <div class="sheet-tab" data-sheet="レポート" onclick="app.switchSandboxSheet('レポート')">
+              <div class="sheet-tab-dot"></div><span>レポート</span>
+            </div>
           </div>
           <div class="sheet-table-scroll">
             <table class="sheet-table" id="sandbox-sheet-table"></table>
@@ -1441,7 +1474,7 @@
 
   <script>
     /* =======================================================================
-       1. 基本初期データ定義（練習シート「売上」）
+       1. 基本初期データ定義（練習シート「売上」「顧客」「レポート」）
        ======================================================================= */
     const INITIAL_SALES_DATA = [
       ["日付", "スタンプ名", "個数", "金額"],
@@ -1452,8 +1485,30 @@
       ["2026-11-12", "あけおめ！まるもち2027", 0, 0]
     ];
 
+    const INITIAL_CUSTOMER_DATA = [
+      ["名前", "地域"],
+      ["さくら", "関東"],
+      ["たろう", "関西"],
+      ["はな", "関東"],
+      ["ゆうき", "九州"],
+      ["さくら", "関西"],
+      ["もも", "関東"]
+    ];
+
+    const INITIAL_REPORT_DATA = [
+      ["項目", "値"]
+    ];
+
     function cloneSheetData(data) {
       return data.map(row => [...row]);
+    }
+
+    function createMockSheets() {
+      return {
+        "売上": new MockSheet("売上", INITIAL_SALES_DATA),
+        "顧客": new MockSheet("顧客", INITIAL_CUSTOMER_DATA),
+        "レポート": new MockSheet("レポート", INITIAL_REPORT_DATA)
+      };
     }
 
     /* =======================================================================
@@ -2083,6 +2138,174 @@
         hint3: "sheet.appendRow(newRow); と1行書いて実行してみよう！",
         modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newRow = ['2026-11-13', '癒しのまるもち', 1, 190];\n  sheet.appendRow(newRow);\n}`,
         afterNote: "おめでとう！これで Stage 1『セルの読み書きマスター』を全制覇だよ！単一セルの読み書きから、一括処理（getValues/setValues）、最終行の判定、行追加まで、スプレッドシート操作の根幹を完全マスターしたね🍡✨"
+      },
+
+      // --- Stage 2（条件分岐と自動判定・集計 6レッスン） ---
+      {
+        id: "s2-01",
+        stageId: "stage-2",
+        title: "ループで合計する",
+        type: "code",
+        defaultSheet: "売上",
+        explain: "データを1行ずつ順番に見て計算していくのがプログラミングの醍醐味だよ！<br>合計を溜めておく変数 <code>let total = 0;</code> を作って、forループの中で <code>total += values[i][0];</code> と足し算していくんだ。<br>データが何百行あっても、この基本パターンだけで一瞬で合計を出せるよ！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const values = sheet.getRange('C2:C6').getValues(); // 個数列\n  let countSum = 0;\n  for (let i = 0; i < values.length; i++) {\n    countSum += values[i][0];\n  }\n  Logger.log("個数の合計: " + countSum);\n}`,
+          desc: "C列（個数）をループで合計してログに表示する例だよ。"
+        },
+        question: "売上シートの <strong>D2:D6（金額）</strong>をforループで合計し、<code>Logger.log()</code> で合計金額（<strong>1390</strong>）を表示してみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const values = sheet.getRange('D2:D6').getValues();\n  \n  let total = 0;\n  // forループで total に金額を足していこう\n  for (let i = 0; i < values.length; i++) {\n    total += values[i][0];\n  }\n  \n  // 合計 total を Logger.log で表示しよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => l.includes("1390"));
+          if (found) {
+            return { pass: true, msg: "大正解！売上金額の合計 1390 を正しく計算できたね🍡" };
+          }
+          return { pass: false, msg: "ログに『1390』が出力されていないよ。合計した total を Logger.log(total) で表示してみよう！" };
+        },
+        hint1: "values[i][0] で各行の金額を取り出せるよ。",
+        hint2: "forループの中で total += values[i][0]; と足し算しよう。",
+        hint3: "forループの外で Logger.log(total); と書けば完成！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const values = sheet.getRange('D2:D6').getValues();\n  let total = 0;\n  for (let i = 0; i < values.length; i++) {\n    total += values[i][0];\n  }\n  Logger.log(total);\n}`,
+        afterNote: "ループでの合計（アキュムレータ・パターン）は実務で最もよく使う鉄板コード！行数が増えても <code>values.length</code> を使っていれば自動で最後まで計算してくれるよ！"
+      },
+      {
+        id: "s2-02",
+        stageId: "stage-2",
+        title: "条件で集計する",
+        type: "code",
+        defaultSheet: "顧客",
+        explain: "すべての行を合計するだけでなく、<strong>『もし〇〇なら数える』</strong>という条件付き集計をしてみよう！<br>件数を数える変数 <code>let count = 0;</code> を用意して、ループの中で <code>if (region === '関東') { count++; }</code> と書くことで、関東の人だけをカウントできるよ！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const values = sheet.getRange('B2:B7').getValues();\n  let kansaiCount = 0;\n  for (let i = 0; i < values.length; i++) {\n    if (values[i][0] === '関西') {\n      kansaiCount++;\n    }\n  }\n  Logger.log("関西の顧客数: " + kansaiCount);\n}`,
+          desc: "地域が「関西」の顧客を数える例だよ（2人）。"
+        },
+        question: "新しい練習シート<strong>「顧客」</strong>を使うよ！<br>顧客シートの <strong>B2:B7（地域）</strong>をループで見て、地域が<strong>「関東」</strong>の顧客だけを数え、<code>Logger.log()</code> で件数（<strong>3</strong>）を表示してみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const values = sheet.getRange('B2:B7').getValues();\n  \n  let count = 0;\n  // ループの中で「もし関東なら count を 1 増やす」処理を書こう！\n  for (let i = 0; i < values.length; i++) {\n    const region = values[i][0];\n    if (region === '関東') {\n      count++;\n    }\n  }\n  \n  // count を Logger.log で表示しよう！\n  \n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => /\b3\b/.test(l) || l.includes("3"));
+          if (found) {
+            return { pass: true, msg: "バッチリ！関東の顧客3名を正しくカウントできたね🍡" };
+          }
+          return { pass: false, msg: "ログに『3』が出力されていないよ。count を Logger.log(count) で表示してみてね！" };
+        },
+        hint1: "顧客シートを開くには getSheetByName('顧客') を使うよ。",
+        hint2: "if (region === '関東') の中で count++ を行おう。",
+        hint3: "ループの後に Logger.log(count); を書けば完成だよ！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const values = sheet.getRange('B2:B7').getValues();\n  let count = 0;\n  for (let i = 0; i < values.length; i++) {\n    if (values[i][0] === '関東') {\n      count++;\n    }\n  }\n  Logger.log(count);\n}`,
+        afterNote: "ExcelのCOUNTIF関数と同じ集計がGASでできたね！『金額が1000円以上』『未納フラグが立っている』など、どんな複雑な条件でも自由に集計できるのがGASの強みだよ！"
+      },
+      {
+        id: "s2-03",
+        stageId: "stage-2",
+        title: "重複チェック",
+        type: "code",
+        defaultSheet: "顧客",
+        explain: "名簿に同じ人が2回登録されていないか調べる『重複チェック』だよ！<br>名前ごとの登場回数を数えるには、オブジェクト（連想配列）<code>const counts = {};</code> を使うと便利！<br><code>counts[name] = (counts[name] || 0) + 1;</code> と集計したあと、回数が2以上のものを探すんだ。",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const names = sheet.getRange('A2:A7').getValues();\n  let sakuraCount = 0;\n  for (let i = 0; i < names.length; i++) {\n    if (names[i][0] === 'さくら') sakuraCount++;\n  }\n  Logger.log("さくらの出現回数: " + sakuraCount);\n}`,
+          desc: "特定の名前に着目して出現回数を数える例だよ。"
+        },
+        question: "顧客シートの <strong>A2:A7（名前）</strong>を調べて、2回以上出てくる名前（<strong>さくら</strong>）を <code>Logger.log()</code> で表示してみよう！",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const values = sheet.getRange('A2:A7').getValues();\n  \n  // 各名前の登場回数を数えるオブジェクト\n  const counts = {};\n  for (let i = 0; i < values.length; i++) {\n    const name = values[i][0];\n    counts[name] = (counts[name] || 0) + 1;\n  }\n  \n  // 2回以上登場する名前を探して Logger.log で表示しよう！\n  for (const name in counts) {\n    if (counts[name] >= 2) {\n      Logger.log(name);\n    }\n  }\n}`,
+        check: (sheet, logs) => {
+          const found = logs.some(l => l.includes("さくら"));
+          if (found) {
+            return { pass: true, msg: "見事！重複している『さくら』さんをしっかり発見できたね🍡" };
+          }
+          return { pass: false, msg: "ログに『さくら』が出力されていないよ。counts[name] >= 2 の条件を確認してみてね！" };
+        },
+        hint1: "starterCode を読むと、名前ごとの回数を counts オブジェクトに数えているよ。",
+        hint2: "for (const name in counts) で各名前の回数をチェックできるよ。",
+        hint3: "counts[name] >= 2 のときに Logger.log(name); を実行すると『さくら』が表示されるよ！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const values = sheet.getRange('A2:A7').getValues();\n  const counts = {};\n  for (let i = 0; i < values.length; i++) {\n    const name = values[i][0];\n    counts[name] = (counts[name] || 0) + 1;\n  }\n  for (const name in counts) {\n    if (counts[name] >= 2) {\n      Logger.log(name);\n    }\n  }\n}`,
+        afterNote: "重複データの検知は実務のデータクレンジングで一番相談されるテーマ！オブジェクトを使って1回数えてしまえば、何千件のデータでも重複が一瞬で洗い出せるよ！"
+      },
+      {
+        id: "s2-04",
+        stageId: "stage-2",
+        title: "並び替える",
+        type: "code",
+        defaultSheet: "売上",
+        explain: "売上ランキングを作るときなどに必須なのが<strong>「並び替え（ソート）」</strong>！<br>配列の <code>sort()</code> メソッドを使うと、並び順を自在に入れ替えられるよ。<br>2次元配列を行ごとに並び替えるには：<br><code>values.sort((a, b) => b[3] - a[3]);</code><br>（D列はインデックス3なので、<code>b[3] - a[3]</code> で大きい順＝降順になるよ）<br>並び替えた配列を <code>setValues()</code> でシートに書き戻せば完了！",
+        example: {
+          code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const values = sheet.getRange('A2:D6').getValues();\n  values.sort((a, b) => b[2] - a[2]); // 個数の多い順\n  sheet.getRange('A2:D6').setValues(values);\n  Logger.log("個数の多い順に並び替えたよ！");\n}`,
+          desc: "個数（C列）の大きい順に並び替えてシートを更新する例だよ。"
+        },
+        question: "売上シートの <strong>A2:D6</strong> を<strong>金額（D列: インデックス 3）の大きい順（降順）</strong>に並び替え、<code>setValues()</code> で同じ範囲に書き戻してみよう！（D2が570、D6が0になれば合格！）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const range = sheet.getRange('A2:D6');\n  const values = range.getValues();\n  \n  // 金額（D列 = インデックス3）の大きい順に並び替えよう！\n  values.sort((a, b) => b[3] - a[3]);\n  \n  // setValues で同じ範囲に書き戻そう！\n  \n}`,
+        check: (sheet, logs, sheets) => {
+          const targetSheet = (sheets && sheets["売上"]) || sheet;
+          const d2 = Number(targetSheet.getRange("D2").getValue());
+          const d6 = Number(targetSheet.getRange("D6").getValue());
+          if (d2 === 570 && d6 === 0) {
+            return { pass: true, msg: "素晴らしい！売上金額の大きい順に並び替えられたね🍡" };
+          }
+          return { pass: false, msg: `D2は現在 ${d2}、D6は現在 ${d6} だよ。D2が 570、D6が 0 になるように書き戻してみてね！` };
+        },
+        hint1: "values.sort((a, b) => b[3] - a[3]); で金額の大きい順に並ぶよ。",
+        hint2: "並び替えた values を range.setValues(values); で書き戻そう。",
+        hint3: "range.setValues(values); を追加して実行すればOK！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const range = sheet.getRange('A2:D6');\n  const values = range.getValues();\n  values.sort((a, b) => b[3] - a[3]);\n  range.setValues(values);\n}`,
+        afterNote: "メモリ上で配列を並び替えてから <code>setValues</code> で1回で書き戻す！これがGASで一番スマートで高速な並び替え方法だよ！"
+      },
+      {
+        id: "s2-05",
+        stageId: "stage-2",
+        title: "表記ゆれの整形",
+        type: "code",
+        defaultSheet: "顧客",
+        explain: "ユーザーが入力したデータには、前後に余分な空白（スペース）が入っていることがよくあるよね。<br>これをキレイに取り除くのが <strong><code>trim()</code></strong> メソッドだよ！<br>・<code>'　さくら　'.trim()</code> → <code>'さくら'</code><br>全角スペースも半角スペースも両方一気に削ってくれるから、データ比較や検索の前に必須の処理なんだ！",
+        example: {
+          code: `function example() {\n  const text = "  まるもち  ";\n  const cleanText = text.trim();\n  Logger.log("整形前: [" + text + "]");\n  Logger.log("整形後: [" + cleanText + "]");\n}`,
+          desc: "trim() で前後の空白を取り除く例だよ。"
+        },
+        question: "顧客シートの <strong>D2セル</strong> に、前後に全角スペースの入った <code>'　さくら　'</code> をいったん <code>setValue()</code> で入れ、それを <code>trim()</code> で空白を除いてから同じD2セルに書き戻してみよう！（D2がキレイな『さくら』になれば合格！）",
+        starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  // まず D2 に余計な空白付きの文字を入れます\n  sheet.getRange('D2').setValue('　さくら　');\n  \n  // D2 の値を取得し、trim() で空白を取り除こう！\n  const rawValue = sheet.getRange('D2').getValue();\n  const cleanValue = rawValue.trim();\n  \n  // キレイにした cleanValue を D2 に書き戻そう！\n  \n}`,
+        check: (sheet, logs, sheets) => {
+          const targetSheet = (sheets && sheets["顧客"]) || sheet;
+          const d2 = targetSheet.getRange("D2").getValue();
+          if (d2 === "さくら") {
+            return { pass: true, msg: "パーフェクト！前後の空白を trim() でキレイに消去できたね🍡" };
+          }
+          return { pass: false, msg: `D2の値は今 '${d2}' だよ。余分な空白を取り除いて『さくら』にしよう！` };
+        },
+        hint1: "rawValue.trim() で前後のスペースが取り除かれるよ。",
+        hint2: "sheet.getRange('D2').setValue(cleanValue); で書き戻そう。",
+        hint3: "最後に sheet.getRange('D2').setValue(cleanValue); を追加して実行してみてね！",
+        modelCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  sheet.getRange('D2').setValue('　さくら　');\n  const rawValue = sheet.getRange('D2').getValue();\n  const cleanValue = rawValue.trim();\n  sheet.getRange('D2').setValue(cleanValue);\n}`,
+        afterNote: "空白が1つ混ざっているだけで『一致しない』と判定されてしまうのがプログラムの落とし穴。<code>trim()</code> で表記ゆれを整える習慣をつけておくと、バグを未然に防げるよ！"
+      },
+      {
+        id: "s2-06",
+        stageId: "stage-2",
+        title: "集計結果を別シートに書く",
+        type: "code",
+        defaultSheet: "レポート",
+        explain: "実務では、元データのあるシートから集計して<strong>『レポート用の別シートに結果をまとめる』</strong>のが大定番！<br><code>SpreadsheetApp.getActiveSpreadsheet().getSheetByName('レポート')</code> でレポート用シートを取得して、計算結果を書き込もう。<br>今回は A2に「売上合計」、B2に 1390、A3に「関東の顧客数」、B3に 3 を書き込むよ！",
+        example: {
+          code: `function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const reportSheet = ss.getSheetByName('レポート');\n  reportSheet.getRange('A2').setValue('テスト項目');\n  reportSheet.getRange('B2').setValue(100);\n  Logger.log("レポートシートに書き込みました！");\n}`,
+          desc: "別シート（レポート）を取得して書き込む例だよ。"
+        },
+        question: "集計結果を新シート<strong>「レポート」</strong>にまとめよう！<br>「レポート」シートの <strong>A2に '売上合計'、B2に 1390</strong>、<strong>A3に '関東の顧客数'、B3に 3</strong> を <code>setValue()</code> で書き込んでみよう！",
+        starterCode: `function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const reportSheet = ss.getSheetByName('レポート');\n  \n  // A2に「売上合計」、B2に 1390 を書こう\n  reportSheet.getRange('A2').setValue('売上合計');\n  reportSheet.getRange('B2').setValue(1390);\n  \n  // A3に「関東の顧客数」、B3に 3 を書こう！\n  \n}`,
+        check: (sheet, logs, sheets) => {
+          const reportSheet = (sheets && sheets["レポート"]) || sheet;
+          const b2 = Number(reportSheet.getRange("B2").getValue());
+          const b3 = Number(reportSheet.getRange("B3").getValue());
+          const a2 = String(reportSheet.getRange("A2").getValue()).trim();
+          const a3 = String(reportSheet.getRange("A3").getValue()).trim();
+          if (b2 === 1390 && b3 === 3 && a2 === "売上合計" && a3 === "関東の顧客数") {
+            return { pass: true, msg: "完璧！！！別シートへのレポート集計出力が見事に完成したね🍡✨" };
+          }
+          if (b2 === 1390 && b3 === 3) {
+            return { pass: true, msg: "合格！B2に1390、B3に3が正しく書き込まれたよ🍡" };
+          }
+          return { pass: false, msg: `レポートシートの B2は ${b2}、B3は ${b3} だよ。B2に 1390、B3に 3 を書き込んでみてね！` };
+        },
+        hint1: "reportSheet.getRange('A3').setValue('関東の顧客数'); を追加しよう。",
+        hint2: "reportSheet.getRange('B3').setValue(3); で数値を書き込もう。",
+        hint3: "A3とB3の2行を追加して実行すれば完成だよ！",
+        modelCode: `function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const reportSheet = ss.getSheetByName('レポート');\n  reportSheet.getRange('A2').setValue('売上合計');\n  reportSheet.getRange('B2').setValue(1390);\n  reportSheet.getRange('A3').setValue('関東の顧客数');\n  reportSheet.getRange('B3').setValue(3);\n}`,
+        afterNote: "おめでとう！！！これで Stage 2『条件分岐と自動判定・集計』も全制覇だよ！複数シートの連携と自動集計レポート作成までできるようになって、もう立派なGASエンジニアだね🍡🎉"
       }
     ];
 
@@ -2113,8 +2336,8 @@
         id: "stage-2",
         badge: "Stage 2",
         title: "条件分岐と自動判定（合否・アラート）",
-        locked: true,
-        desc: "近日公開予定！実務でよくあるデータチェックを自動化。"
+        locked: false,
+        lessonIds: ["s2-01", "s2-02", "s2-03", "s2-04", "s2-05", "s2-06"]
       },
       {
         id: "stage-3",
@@ -2143,8 +2366,12 @@
         this.clearedModals = this.loadClearedModals();
 
         this.currentLesson = null;
-        this.currentSheet = null; // レッスン用MockSheet
-        this.sandboxSheet = null; // 自由練習用MockSheet
+        this.currentSheets = createMockSheets();
+        this.activeLessonSheetName = "売上";
+        this.sandboxSheets = createMockSheets();
+        this.activeSandboxSheetName = "売上";
+        this.exampleSheets = createMockSheets();
+        this.activeExampleSheetName = "売上";
         this.selectedQuizIndex = null;
 
         this.initDOM();
@@ -2320,7 +2547,10 @@
         if (!lesson) return;
 
         this.currentLesson = lesson;
-        this.currentSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        this.currentSheets = createMockSheets();
+        const defSheet = lesson.defaultSheet || "売上";
+        this.activeLessonSheetName = defSheet;
+        this.updateLessonSheetTabs();
         this.selectedQuizIndex = null;
 
         // UI設定
@@ -2339,8 +2569,10 @@
           const exLog = document.getElementById("example-log");
           exLog.textContent = "実行ログがここに表示されます";
           exLog.classList.add("empty");
-          this.exampleSheet = new MockSheet("売上", INITIAL_SALES_DATA);
-          this.renderSheetTable(this.exampleSheet, "example-sheet-table");
+          this.exampleSheets = createMockSheets();
+          this.activeExampleSheetName = defSheet;
+          this.updateExampleSheetTabs();
+          this.renderSheetTable(this.exampleSheets[defSheet], "example-sheet-table");
         } else {
           exampleCard.classList.add("hidden");
         }
@@ -2378,7 +2610,7 @@
         }
 
         // シート描画
-        this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+        this.renderSheetTable(this.currentSheets[defSheet], "lesson-sheet-table");
 
         // 画面表示切り替え
         document.getElementById("view-top").classList.add("hidden");
@@ -2388,6 +2620,64 @@
 
         // 要件：開いたら画面はレッスンの先頭が表示されること（入力欄に自動フォーカスしてスクロールさせない）
         this.scrollToTop();
+      }
+
+      // タブ切り替えメソッド群
+      switchLessonSheet(sheetName) {
+        this.activeLessonSheetName = sheetName;
+        this.updateLessonSheetTabs();
+        if (this.currentSheets && this.currentSheets[sheetName]) {
+          this.renderSheetTable(this.currentSheets[sheetName], "lesson-sheet-table");
+        }
+      }
+
+      updateLessonSheetTabs() {
+        const tabs = document.querySelectorAll("#lesson-sheet-tabs .sheet-tab");
+        tabs.forEach(tab => {
+          if (tab.getAttribute("data-sheet") === this.activeLessonSheetName) {
+            tab.classList.add("active");
+          } else {
+            tab.classList.remove("active");
+          }
+        });
+      }
+
+      switchSandboxSheet(sheetName) {
+        this.activeSandboxSheetName = sheetName;
+        this.updateSandboxSheetTabs();
+        if (this.sandboxSheets && this.sandboxSheets[sheetName]) {
+          this.renderSheetTable(this.sandboxSheets[sheetName], "sandbox-sheet-table");
+        }
+      }
+
+      updateSandboxSheetTabs() {
+        const tabs = document.querySelectorAll("#sandbox-sheet-tabs .sheet-tab");
+        tabs.forEach(tab => {
+          if (tab.getAttribute("data-sheet") === this.activeSandboxSheetName) {
+            tab.classList.add("active");
+          } else {
+            tab.classList.remove("active");
+          }
+        });
+      }
+
+      switchExampleSheet(sheetName) {
+        this.activeExampleSheetName = sheetName;
+        this.updateExampleSheetTabs();
+        if (this.exampleSheets && this.exampleSheets[sheetName]) {
+          this.renderSheetTable(this.exampleSheets[sheetName], "example-sheet-table");
+        }
+      }
+
+      updateExampleSheetTabs() {
+        const tabs = document.querySelectorAll("#example-sheet-tabs .sheet-tab");
+        tabs.forEach(tab => {
+          if (tab.getAttribute("data-sheet") === this.activeExampleSheetName) {
+            tab.classList.add("active");
+          } else {
+            tab.classList.remove("active");
+          }
+        });
       }
 
       // クイズ選択肢の描画
@@ -2509,8 +2799,11 @@
       // レッスンのシート・コードのリセット
       resetCurrentLessonSheet() {
         if (!this.currentLesson) return;
-        this.currentSheet = new MockSheet("売上", INITIAL_SALES_DATA);
-        this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+        this.currentSheets = createMockSheets();
+        const defSheet = this.currentLesson.defaultSheet || "売上";
+        this.activeLessonSheetName = defSheet;
+        this.updateLessonSheetTabs();
+        this.renderSheetTable(this.currentSheets[defSheet], "lesson-sheet-table");
         document.getElementById("code-input").value = this.currentLesson.starterCode || "";
         const logBox = document.getElementById("execution-log");
         logBox.textContent = "リセットしました。実行するとここにログが表示されます";
@@ -2528,33 +2821,46 @@
           }
         };
 
-        const testSheet = new MockSheet("売上", INITIAL_SALES_DATA);
-        const beforeData = cloneSheetData(testSheet.data);
-        const spreadsheet = new MockSpreadsheet({ "売上": testSheet });
+        this.exampleSheets = createMockSheets();
+        const defSheet = this.currentLesson.defaultSheet || "売上";
+        this.activeExampleSheetName = defSheet;
+        this.updateExampleSheetTabs();
+
+        const beforeDataMap = {};
+        for (const name in this.exampleSheets) {
+          beforeDataMap[name] = cloneSheetData(this.exampleSheets[name].data);
+        }
+
+        const spreadsheet = new MockSpreadsheet(this.exampleSheets);
         const spreadsheetApp = {
           getActiveSpreadsheet: () => spreadsheet,
-          getActiveSheet: () => testSheet
+          getActiveSheet: () => this.exampleSheets[defSheet]
         };
 
         try {
           const fn = new Function("SpreadsheetApp", "Logger", "console", `${this.currentLesson.example.code}\n;if(typeof example==='function')example();if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
           fn(spreadsheetApp, logger, logger);
 
-          // 変化したセルを「C6（3 → 1）」の形でまとめる
+          // 変化したセルを「C6（3 → 1）」の形でまとめる（複数シート対応）
           const changes = [];
-          const sortedCells = [...testSheet.updatedCells].sort((a, b) => {
-            const pa = a.split(",").map(Number);
-            const pb = b.split(",").map(Number);
-            return pa[0] - pb[0] || pa[1] - pb[1];
-          });
-          for (const key of sortedCells) {
-            const parts = key.split(",").map(Number);
-            const r = parts[0];
-            const c = parts[1];
-            const beforeVal = (beforeData[r] && beforeData[r][c] !== undefined) ? beforeData[r][c] : "";
-            const afterVal = (testSheet.data[r] && testSheet.data[r][c] !== undefined) ? testSheet.data[r][c] : "";
-            if (String(beforeVal) !== String(afterVal)) {
-              changes.push(`${String.fromCharCode(65 + c)}${r + 1}（${beforeVal === "" ? "空" : beforeVal} → ${afterVal === "" ? "空" : afterVal}）`);
+          for (const sheetName in this.exampleSheets) {
+            const sheet = this.exampleSheets[sheetName];
+            const beforeData = beforeDataMap[sheetName] || [];
+            const sortedCells = [...sheet.updatedCells].sort((a, b) => {
+              const pa = a.split(",").map(Number);
+              const pb = b.split(",").map(Number);
+              return pa[0] - pb[0] || pa[1] - pb[1];
+            });
+            for (const key of sortedCells) {
+              const parts = key.split(",").map(Number);
+              const r = parts[0];
+              const c = parts[1];
+              const beforeVal = (beforeData[r] && beforeData[r][c] !== undefined) ? beforeData[r][c] : "";
+              const afterVal = (sheet.data[r] && sheet.data[r][c] !== undefined) ? sheet.data[r][c] : "";
+              if (String(beforeVal) !== String(afterVal)) {
+                const prefix = sheetName !== defSheet ? `${sheetName}!` : "";
+                changes.push(`${prefix}${String.fromCharCode(65 + c)}${r + 1}（${beforeVal === "" ? "空" : beforeVal} → ${afterVal === "" ? "空" : afterVal}）`);
+              }
             }
           }
 
@@ -2579,8 +2885,7 @@
         }
 
         // 例題のプレビュー表を更新（変化したセルはハイライトされる）
-        this.exampleSheet = testSheet;
-        this.renderSheetTable(testSheet, "example-sheet-table");
+        this.renderSheetTable(this.exampleSheets[this.activeExampleSheetName], "example-sheet-table");
       }
 
       // ユーザーコードの実行と判定
@@ -2588,7 +2893,8 @@
         if (!this.currentLesson) return;
 
         // 要件：実行のたびにシートはレッスンの初期状態にリセットしてから実行すること
-        this.currentSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        this.currentSheets = createMockSheets();
+        const defSheet = this.currentLesson.defaultSheet || "売上";
 
         const code = document.getElementById("code-input").value;
         const logs = [];
@@ -2598,10 +2904,10 @@
           }
         };
 
-        const spreadsheet = new MockSpreadsheet({ "売上": this.currentSheet });
+        const spreadsheet = new MockSpreadsheet(this.currentSheets);
         const spreadsheetApp = {
           getActiveSpreadsheet: () => spreadsheet,
-          getActiveSheet: () => this.currentSheet
+          getActiveSheet: () => this.currentSheets[defSheet]
         };
 
         const logBox = document.getElementById("execution-log");
@@ -2627,12 +2933,13 @@
             logBox.classList.remove("empty");
           }
 
-          // 表の更新
-          this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+          // 表の更新（現在アクティブなタブのシート）
+          const activeSheet = this.currentSheets[this.activeLessonSheetName || defSheet];
+          this.renderSheetTable(activeSheet, "lesson-sheet-table");
 
           // 判定 (check)
           if (typeof this.currentLesson.check === "function") {
-            const result = this.currentLesson.check(this.currentSheet, logs);
+            const result = this.currentLesson.check(this.currentSheets[defSheet], logs, this.currentSheets);
             if (result.pass) {
               alertBox.className = "result-alert success";
               alertBox.innerHTML = `🎉 <strong>正解！</strong><br>${result.msg || '素晴らしい出来栄えです！'}`;
@@ -2644,7 +2951,8 @@
           }
         } catch (err) {
           // エラーハンドリング（日本語補助説明つき）
-          this.renderSheetTable(this.currentSheet, "lesson-sheet-table");
+          const activeSheet = this.currentSheets[this.activeLessonSheetName || defSheet];
+          this.renderSheetTable(activeSheet, "lesson-sheet-table");
           const friendlyExplanation = this.getFriendlyErrorMessage(err);
           logBox.textContent = `エラー発生: ${err.name}\n${err.message}`;
           logBox.classList.remove("empty");
@@ -2797,13 +3105,15 @@
          5. 自由練習モード（Sandbox）ロジック
          ======================================================================= */
       initSandbox() {
-        this.sandboxSheet = new MockSheet("売上", INITIAL_SALES_DATA);
-        const defaultCode = `// 自由練習モードへようこそ！\nfunction practice() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  \n  // 例: A列〜D列の値をログに表示してみよう\n  const lastRow = sheet.getLastRow();\n  Logger.log("現在のデータ行数: " + lastRow);\n  \n  // 自由にコードを書いて試してみてね！\n}\n\npractice();`;
+        this.sandboxSheets = createMockSheets();
+        this.activeSandboxSheetName = "売上";
+        const defaultCode = `// 自由練習モードへようこそ！\nfunction practice() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const sales = ss.getSheetByName('売上');\n  const customer = ss.getSheetByName('顧客');\n  \n  // 「売上」「顧客」「レポート」の3つのシートを自由に使えます\n  Logger.log("売上の行数: " + sales.getLastRow());\n  Logger.log("顧客の行数: " + customer.getLastRow());\n}\n\npractice();`;
         document.getElementById("sandbox-code-input").value = defaultCode;
       }
 
       resetSandboxSheet() {
-        this.sandboxSheet = new MockSheet("売上", INITIAL_SALES_DATA);
+        this.sandboxSheets = createMockSheets();
+        this.updateSandboxSheetTabs();
         this.renderSandboxSheet();
         const logBox = document.getElementById("sandbox-execution-log");
         logBox.textContent = "シートを初期状態にリセットしました";
@@ -2811,7 +3121,11 @@
       }
 
       renderSandboxSheet() {
-        this.renderSheetTable(this.sandboxSheet, "sandbox-sheet-table");
+        this.updateSandboxSheetTabs();
+        const sheet = this.sandboxSheets[this.activeSandboxSheetName || "売上"];
+        if (sheet) {
+          this.renderSheetTable(sheet, "sandbox-sheet-table");
+        }
       }
 
       runSandboxCode() {
@@ -2823,10 +3137,10 @@
           }
         };
 
-        const spreadsheet = new MockSpreadsheet({ "売上": this.sandboxSheet });
+        const spreadsheet = new MockSpreadsheet(this.sandboxSheets);
         const spreadsheetApp = {
           getActiveSpreadsheet: () => spreadsheet,
-          getActiveSheet: () => this.sandboxSheet
+          getActiveSheet: () => this.sandboxSheets[this.activeSandboxSheetName || "売上"]
         };
 
         const logBox = document.getElementById("sandbox-execution-log");
