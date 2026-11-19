@@ -1180,6 +1180,7 @@
         <button class="btn btn-outline btn-sm" onclick="app.showTop()">← マップに戻る</button>
         <span id="lesson-stage-indicator" style="font-size:0.85rem; font-weight:bold; color:var(--text-sub);"></span>
       </div>
+      <h2 id="lesson-title" style="font-size:1.3rem; font-weight:bold; color:var(--text-main); margin:2px 0 14px; line-height:1.4;"></h2>
 
       <!-- まるもち解説吹き出し -->
       <div class="marumochi-box">
@@ -2556,6 +2557,7 @@
         // UI設定
         const stage = STAGES_CONFIG.find(s => s.id === lesson.stageId);
         document.getElementById("lesson-stage-indicator").textContent = `${stage ? stage.badge : ''} / ${lesson.id.toUpperCase()}`;
+        document.getElementById("lesson-title").textContent = lesson.title;
         document.getElementById("lesson-explain").innerHTML = lesson.explain;
         document.getElementById("lesson-question-title").innerHTML = `🎯 レッスン問題: ${lesson.title}`;
         document.getElementById("lesson-question-body").innerHTML = lesson.question;
