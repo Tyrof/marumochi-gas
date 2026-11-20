@@ -1269,6 +1269,9 @@
             <div class="sheet-tab" data-sheet="回答" onclick="app.switchLessonSheet('回答')">
               <div class="sheet-tab-dot"></div><span>回答</span>
             </div>
+            <div class="sheet-tab" data-sheet="問い合わせ" onclick="app.switchLessonSheet('問い合わせ')">
+              <div class="sheet-tab-dot"></div><span>問い合わせ</span>
+            </div>
           </div>
           <div class="sheet-table-scroll">
             <table class="sheet-table" id="lesson-sheet-table">
@@ -1445,6 +1448,9 @@
             <div class="sheet-tab" data-sheet="回答" onclick="app.switchSandboxSheet('回答')">
               <div class="sheet-tab-dot"></div><span>回答</span>
             </div>
+            <div class="sheet-tab" data-sheet="問い合わせ" onclick="app.switchSandboxSheet('問い合わせ')">
+              <div class="sheet-tab-dot"></div><span>問い合わせ</span>
+            </div>
           </div>
           <div class="sheet-table-scroll">
             <table class="sheet-table" id="sandbox-sheet-table"></table>
@@ -1556,6 +1562,13 @@
       ["もも", 5]
     ];
 
+    const INITIAL_INQUIRY_DATA = [
+      ["名前", "メール", "本文"],
+      ["　さくら　", " sakura@example.com ", " スタンプについて "],
+      ["たろう", "tarou@example.com", "　注文確認"],
+      [" はな ", "hana@example.com ", "感想　"]
+    ];
+
 
     function cloneSheetData(data) {
       return data.map(row => [...row]);
@@ -1568,7 +1581,8 @@
         "レポート": new MockSheet("レポート", INITIAL_REPORT_DATA),
         "商品": new MockSheet("商品", INITIAL_PRODUCTS_DATA),
         "注文": new MockSheet("注文", INITIAL_ORDERS_DATA),
-        "回答": new MockSheet("回答", INITIAL_SURVEY_DATA)
+        "回答": new MockSheet("回答", INITIAL_SURVEY_DATA),
+        "問い合わせ": new MockSheet("問い合わせ", INITIAL_INQUIRY_DATA)
       };
     }
 
@@ -1831,6 +1845,23 @@
             this.sheets[name].spreadsheet = this;
           }
         }
+      }
+
+      insertSheet(name, optIndex) {
+        if (!name) {
+          let i = 1;
+          while (this.sheets[`シート${i}`]) {
+            i++;
+          }
+          name = `シート${i}`;
+        }
+        if (this.sheets[name]) {
+          throw new Error(`シート '${name}' は既に存在しています`);
+        }
+        const newSheet = new MockSheet(name, []);
+        newSheet.spreadsheet = this;
+        this.sheets[name] = newSheet;
+        return newSheet;
       }
 
       getSheetByName(name) {
@@ -2777,6 +2808,297 @@
         hint3: "最後に reportSheet.getRange('A2').setValue('満足度5の人数') と reportSheet.getRange('B2').setValue(count5) を実行しよう！",
         modelCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const surveySheet = ss.getSheetByName('回答');\n  const reportSheet = ss.getSheetByName('レポート');\n  let count5 = 0;\n  for (let r = 2; r <= 6; r++) {\n    const score = surveySheet.getRange(r, 2).getValue();\n    if (score === 5) {\n      count5++;\n    }\n  }\n  reportSheet.getRange('A2').setValue('満足度5の人数');\n  reportSheet.getRange('B2').setValue(count5);\n}",
         afterNote: "おめでとうございます！Googleフォーム回答の自動集計からレポート出力まで、実務で今すぐ使える強力な自動化スキルを完全に身につけました。Stage 3制覇、本当にお見事です🍡✨"
+      },
+      {
+        id: "g-01",
+        stageId: "stage-4",
+        title: "月次レポートを自動で作る",
+        type: "code",
+        defaultSheet: "レポート",
+        explain: "実務の月次処理では、売上データ全体から<strong>「売上合計」「販売個数の合計」「平均単価（売上合計÷データ件数）」</strong>を自動計算してレポートシートにまとめる作業が毎月発生します。<br><br>" +
+          "<strong>1. 部品の意味</strong><br>" +
+          "・<code>const salesSheet = ss.getSheetByName('売上');</code> ＝ 売上シートを取得<br>" +
+          "・<code>const reportSheet = ss.getSheetByName('レポート');</code> ＝ 結果を書くレポートシートを取得<br>" +
+          "・<code>salesSheet.getRange(2, 1, 5, 4).getValues();</code> ＝ 2行目から全データ行（5件分）をまとめて取得<br>" +
+          "・<code>totalSales += row[3];</code> ＝ 4列目（D列・金額）を合計に加算<br>" +
+          "・<code>totalCount += row[2];</code> ＝ 3列目（C列・個数）を合計に加算<br>" +
+          "・<code>reportSheet.getRange('A2').setValue('売上合計');</code> ＝ A2セルに項目名を設定<br>" +
+          "・<code>reportSheet.getRange('B2').setValue(totalSales);</code> ＝ B2セルに計算した数値を設定<br><br>" +
+          "<strong>2. つなげた全体のコード</strong><br>" +
+          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
+          "const salesSheet = ss.getSheetByName('売上');\n" +
+          "const reportSheet = ss.getSheetByName('レポート');\n\n" +
+          "const values = salesSheet.getRange(2, 1, 5, 4).getValues();\n" +
+          "let totalSales = 0;\n" +
+          "let totalCount = 0;\n\n" +
+          "for (let i = 0; i < values.length; i++) {\n" +
+          "  totalCount += values[i][2]; // C列（個数）\n" +
+          "  totalSales += values[i][3]; // D列（金額）\n" +
+          "}\n\n" +
+          "const avg = totalSales / values.length;\n\n" +
+          "reportSheet.getRange('A2').setValue('売上合計');\n" +
+          "reportSheet.getRange('B2').setValue(totalSales);\n" +
+          "reportSheet.getRange('A3').setValue('販売個数');\n" +
+          "reportSheet.getRange('B3').setValue(totalCount);\n" +
+          "reportSheet.getRange('A4').setValue('平均単価');\n" +
+          "reportSheet.getRange('B4').setValue(avg);</pre><br>" +
+          "<strong>3. 行ごとの役割</strong><br>" +
+          "・1〜3行目：スプレッドシートから「売上」と「レポート」の2つのシートを取得して準備します。<br>" +
+          "・5〜7行目：売上シートのデータ範囲（A2:D6）を取得し、合計用の変数を0で初期化します。<br>" +
+          "・9〜12行目：ループで各行の個数（C列）と金額（D列）を足し上げます。<br>" +
+          "・14行目：売上合計を行数（5行）で割って平均単価（1390 ÷ 5 ＝ 278）を算出します。<br>" +
+          "・16〜21行目：レポートシートのA2〜B4にそれぞれの項目名と計算数値を書き込みます。",
+        example: {
+          desc: "売上シートから売上合計（1390）を計算し、レポートシートのA2に「売上合計」、B2に合計値を書き込む例です。",
+          code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const reportSheet = ss.getSheetByName('レポート');\n  const values = salesSheet.getRange(2, 1, 5, 4).getValues();\n  let sum = 0;\n  for (let i = 0; i < values.length; i++) {\n    sum += values[i][3];\n  }\n  reportSheet.getRange('A2').setValue('売上合計');\n  reportSheet.getRange('B2').setValue(sum);\n  Logger.log('売上合計: ' + sum);\n}"
+        },
+        question: "「売上」シートから売上合計・販売個数の合計・平均単価（売上合計÷データ行数）を計算し、「レポート」シートに書き込んでください。<br><br>" +
+          "・A2に「売上合計」、B2に <strong>1390</strong><br>" +
+          "・A3に「販売個数」、B3に <strong>7</strong><br>" +
+          "・A4に「平均単価」、B4に <strong>278</strong><br><br>" +
+          "それぞれ <code>setValue()</code> で入れてみよう！",
+        starterCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const reportSheet = ss.getSheetByName('レポート');\n  \n  // 売上シートのデータを取得して集計しよう\n  \n}",
+        check: (sheet, logs, sheets) => {
+          const report = sheets && sheets["レポート"] ? sheets["レポート"] : sheet;
+          const b2 = Number(report.getRange("B2").getValue());
+          const b3 = Number(report.getRange("B3").getValue());
+          const b4 = Number(report.getRange("B4").getValue());
+          if (b2 === 1390 && b3 === 7 && b4 === 278) {
+            return { pass: true, msg: "売上合計 1390、販売個数 7、平均単価 278 を正しくレポートシートに書き込めました！" };
+          }
+          return {
+            pass: false,
+            msg: `レポートシートの数値が一致しません。<br>B2(売上合計): ${b2}（正解: 1390）<br>B3(販売個数): ${b3}（正解: 7）<br>B4(平均単価): ${b4}（正解: 278）`
+          };
+        },
+        hint1: "salesSheet.getRange(2, 1, 5, 4).getValues() でデータ行全体を取得できます。個数は行[2]、金額は行[3]です。",
+        hint2: "平均単価は totalSales / values.length で計算できます（1390 / 5 = 278）。",
+        hint3: "reportSheet.getRange('A2').setValue('売上合計'); reportSheet.getRange('B2').setValue(totalSales); のように順番に書き込みましょう。",
+        modelCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const reportSheet = ss.getSheetByName('レポート');\n  \n  const values = salesSheet.getRange(2, 1, 5, 4).getValues();\n  let totalSales = 0;\n  let totalCount = 0;\n  for (let i = 0; i < values.length; i++) {\n    totalCount += values[i][2];\n    totalSales += values[i][3];\n  }\n  const avg = totalSales / values.length;\n  \n  reportSheet.getRange('A2').setValue('売上合計');\n  reportSheet.getRange('B2').setValue(totalSales);\n  reportSheet.getRange('A3').setValue('販売個数');\n  reportSheet.getRange('B3').setValue(totalCount);\n  reportSheet.getRange('A4').setValue('平均単価');\n  reportSheet.getRange('B4').setValue(avg);\n}",
+        afterNote: "お見事！実務でも「元データから数値を取り出して集計し、報告用シートを自動生成する」処理は定番中の定番です🍡"
+      },
+      {
+        id: "g-02",
+        stageId: "stage-4",
+        title: "請求書を自動で作る",
+        type: "code",
+        defaultSheet: "注文",
+        explain: "複数のシートを組み合わせて、指定の顧客専用の<strong>「請求書」シートを新規作成して自動出力</strong>してみましょう！<br><br>" +
+          "<strong>1. 部品の意味</strong><br>" +
+          "・<code>ss.insertSheet('請求書');</code> ＝ 「請求書」という名前の新しいシートを作成する<br>" +
+          "・<code>orderSheet.getRange('A2:D9').getValues();</code> ＝ 注文データ一覧を取得する<br>" +
+          "・<code>prodSheet.getRange('A2:D5').getValues();</code> ＝ 商品マスタ一覧を取得する<br>" +
+          "・みきさんの注文は注文ID 5（顧客名「みき」、商品ID 2、個数 3）<br>" +
+          "・商品ID 2 の商品は「動く！癒しのまるもち」、単価 250<br>" +
+          "・合計金額は 3 × 250 ＝ 750<br>" +
+          "・<code>invoiceSheet.getRange('A1').setValue('請求書');</code> ＝ 作成したシートに値を書き込む<br><br>" +
+          "<strong>2. つなげた全体のコード</strong><br>" +
+          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
+          "const invoiceSheet = ss.insertSheet('請求書');\n\n" +
+          "invoiceSheet.getRange('A1').setValue('請求書');\n" +
+          "invoiceSheet.getRange('A2').setValue('宛先');\n" +
+          "invoiceSheet.getRange('B2').setValue('みき様');\n" +
+          "invoiceSheet.getRange('A3').setValue('商品名');\n" +
+          "invoiceSheet.getRange('B3').setValue('動く！癒しのまるもち');\n" +
+          "invoiceSheet.getRange('A4').setValue('個数');\n" +
+          "invoiceSheet.getRange('B4').setValue(3);\n" +
+          "invoiceSheet.getRange('A5').setValue('単価');\n" +
+          "invoiceSheet.getRange('B5').setValue(250);\n" +
+          "invoiceSheet.getRange('A6').setValue('合計');\n" +
+          "invoiceSheet.getRange('B6').setValue(750);</pre><br>" +
+          "<strong>3. 行ごとの役割</strong><br>" +
+          "・1〜2行目：<code>ss.insertSheet('請求書')</code> で新しい白紙のシートを作成します。<br>" +
+          "・4行目：A1セルに大見出し「請求書」を書き込みます。<br>" +
+          "・5〜6行目：A2に項目名「宛先」、B2に「みき様」を設定します。<br>" +
+          "・7〜8行目：A3に「商品名」、B3に商品マスタから特定した「動く！癒しのまるもち」を設定します。<br>" +
+          "・9〜10行目：A4に「個数」、B4に注文個数 3 を設定します。<br>" +
+          "・11〜12行目：A5に「単価」、B5に単価 250 を設定します。<br>" +
+          "・13〜14行目：A6に「合計」、B6に計算した合計金額 750 を設定します。",
+        example: {
+          desc: "ss.insertSheet('テスト') で新しいシートを作り、A1セルに文字を書き込む例です。",
+          code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const testSheet = ss.insertSheet('テスト');\n  testSheet.getRange('A1').setValue('新規作成シート');\n  Logger.log('シート「テスト」を作成しました');\n}"
+        },
+        question: "注文シートと商品シートを組み合わせて、顧客「みき」の請求書を新しいシート「請求書」に作ってください。<br><br>" +
+          "・<code>ss.insertSheet('請求書')</code> でシートを作成<br>" +
+          "・A1に「請求書」<br>" +
+          "・A2に「宛先」、B2に「みき様」<br>" +
+          "・A3に「商品名」、B3に「動く！癒しのまるもち」<br>" +
+          "・A4に「個数」、B4に 3<br>" +
+          "・A5に「単価」、B5に 250<br>" +
+          "・A6に「合計」、B6に 750<br><br>" +
+          "※みきの注文は注文ID 5 の1件だけ（商品ID 2 を 3個）です。",
+        starterCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  // 新しいシート「請求書」を作って必要な項目を書き込もう\n  \n}",
+        check: (sheet, logs, sheets) => {
+          if (!sheets || !sheets["請求書"]) {
+            return { pass: false, msg: "シート「請求書」が作成されていません。ss.insertSheet('請求書') を実行してください。" };
+          }
+          const invoice = sheets["請求書"];
+          const b2 = String(invoice.getRange("B2").getValue());
+          const b6 = Number(invoice.getRange("B6").getValue());
+          if (!b2.includes("みき")) {
+            return { pass: false, msg: `B2セルに「みき」が含まれていません（現在: ${b2 || '空'}）。` };
+          }
+          if (b6 !== 750) {
+            return { pass: false, msg: `B6セル（合計）が 750 ではありません（現在: ${b6}）。` };
+          }
+          return { pass: true, msg: "新しいシート「請求書」を作成し、みき様の請求書を完璧に出力できました！" };
+        },
+        hint1: "まずは const invoiceSheet = ss.insertSheet('請求書'); で新しいシートを作成します。",
+        hint2: "invoiceSheet.getRange('A1').setValue('請求書'); で見出しを書きます。",
+        hint3: "B2に「みき様」、B3に「動く！癒しのまるもち」、B4に 3、B5に 250、B6に 750 をそれぞれ setValue していきましょう。",
+        modelCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const invoiceSheet = ss.insertSheet('請求書');\n  \n  invoiceSheet.getRange('A1').setValue('請求書');\n  invoiceSheet.getRange('A2').setValue('宛先');\n  invoiceSheet.getRange('B2').setValue('みき様');\n  invoiceSheet.getRange('A3').setValue('商品名');\n  invoiceSheet.getRange('B3').setValue('動く！癒しのまるもち');\n  invoiceSheet.getRange('A4').setValue('個数');\n  invoiceSheet.getRange('B4').setValue(3);\n  invoiceSheet.getRange('A5').setValue('単価');\n  invoiceSheet.getRange('B5').setValue(250);\n  invoiceSheet.getRange('A6').setValue('合計');\n  invoiceSheet.getRange('B6').setValue(750);\n}",
+        afterNote: "素晴らしい！コードでシートを新設して書類を自動生成できるようになると、請求書や納品書の発行がワンクリックで完了しますね✨"
+      },
+      {
+        id: "g-03",
+        stageId: "stage-4",
+        title: "問い合わせを整形する",
+        type: "code",
+        defaultSheet: "問い合わせ",
+        explain: "Webフォームなどから届く自由入力データには、名前やメールの前後に不要な<strong>半角スペースや全角スペース（余白）</strong>が混ざることがよくあります。<br>GASで前後の空白を自動除去（trim）して、クリーンな「整形結果」シートへ書き出してみましょう！<br><br>" +
+          "<strong>1. 部品の意味</strong><br>" +
+          "・<code>String(val).trim()</code> ＝ 前後の半角・全角空白を取り除いた文字列を返す<br>" +
+          "・<code>ss.insertSheet('整形結果');</code> ＝ 整形後のデータを保存する新しいシートを作る<br>" +
+          "・<code>inquirySheet.getRange('A1:C4').getValues();</code> ＝ 見出し行を含む全データを2次元配列で取得<br>" +
+          "・ループで各セルの値に <code>trim()</code> を適用して新しい2次元配列を作成<br>" +
+          "・<code>cleanSheet.getRange(1, 1, 4, 3).setValues(cleanValues);</code> ＝ 整形結果を一括書き込み<br><br>" +
+          "<strong>2. つなげた全体のコード</strong><br>" +
+          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
+          "const inquirySheet = ss.getSheetByName('問い合わせ');\n" +
+          "const cleanSheet = ss.insertSheet('整形結果');\n\n" +
+          "const rawValues = inquirySheet.getRange('A1:C4').getValues();\n" +
+          "const cleanValues = [];\n\n" +
+          "for (let r = 0; r < rawValues.length; r++) {\n" +
+          "  const row = [];\n" +
+          "  for (let c = 0; c < rawValues[r].length; c++) {\n" +
+          "    row.push(String(rawValues[r][c]).trim());\n" +
+          "  }\n" +
+          "  cleanValues.push(row);\n" +
+          "}\n\n" +
+          "cleanSheet.getRange(1, 1, cleanValues.length, 3).setValues(cleanValues);</pre><br>" +
+          "<strong>3. 行ごとの役割</strong><br>" +
+          "・1〜3行目：「問い合わせ」シートを取得し、書き出し用の新しい「整形結果」シートを作成します。<br>" +
+          "・5〜6行目：元の全セル（A1:C4）を2次元配列で取得し、整形後を格納する空配列を用意します。<br>" +
+          "・8〜14行目：行・列の二重ループで各セルの値を <code>trim()</code> で空白除去し、新しい行配列を作って追加します。<br>" +
+          "・16行目：<code>setValues()</code> を使って「整形結果」シートへ一括書き込みします。",
+        example: {
+          desc: "前後に半角・全角空白が含まれる文字列を String(val).trim() で整形する例です。",
+          code: "function example() {\n  const raw = '　さくら　';\n  const cleaned = String(raw).trim();\n  Logger.log('整形前: [' + raw + ']');\n  Logger.log('整形後: [' + cleaned + ']');\n}"
+        },
+        question: "「問い合わせ」シートの名前・メール・本文から前後の空白（半角・全角）を取り除き、新しいシート「整形結果」に書き出してください（見出し行も元のまま付けてください）。<br><br>" +
+          "・<code>ss.insertSheet('整形結果')</code> でシートを作成<br>" +
+          "・1行目の見出しも含めて、各セルの前後の余白を <code>trim()</code> で除去<br>" +
+          "・「整形結果」シートの 1行1列目から <code>setValues()</code> で書き出し",
+        starterCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const inquirySheet = ss.getSheetByName('問い合わせ');\n  const cleanSheet = ss.insertSheet('整形結果');\n  \n  // 問い合わせシートの全データを読み込み、前後の余白を取り除いて書き出そう\n  \n}",
+        check: (sheet, logs, sheets) => {
+          if (!sheets || !sheets["整形結果"]) {
+            return { pass: false, msg: "シート「整形結果」が作成されていません。ss.insertSheet('整形結果') を実行してください。" };
+          }
+          const clean = sheets["整形結果"];
+          const a2 = String(clean.getRange("A2").getValue());
+          const b2 = String(clean.getRange("B2").getValue());
+          const c2 = String(clean.getRange("C2").getValue());
+
+          if (a2 !== "さくら" || b2 !== "sakura@example.com" || c2 !== "スタンプについて") {
+            return {
+              pass: false,
+              msg: `2行目のデータが正しく整形されていません。<br>A2(名前): '${a2}' (正解: 'さくら')<br>B2(メール): '${b2}' (正解: 'sakura@example.com')<br>C2(本文): '${c2}' (正解: 'スタンプについて')`
+            };
+          }
+          return { pass: true, msg: "問い合わせデータの余分な余白をきれいに除去し、整形結果シートに出力できました！" };
+        },
+        hint1: "二重ループを使って各セルに String(cell).trim() を実行すると、全角・半角どちらのスペースもきれいに除去できます。",
+        hint2: "見出し行（1行目）もそのまま含めて処理すれば、cleanSheet.getRange(1, 1, cleanValues.length, 3).setValues(cleanValues) で一括反映できます。",
+        hint3: "A2が「さくら」、B2が「sakura@example.com」、C2が「スタンプについて」になっていればクリアです。",
+        modelCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const inquirySheet = ss.getSheetByName('問い合わせ');\n  const cleanSheet = ss.insertSheet('整形結果');\n  \n  const rawValues = inquirySheet.getRange('A1:C4').getValues();\n  const cleanValues = [];\n  for (let r = 0; r < rawValues.length; r++) {\n    const row = [];\n    for (let c = 0; c < rawValues[r].length; c++) {\n      row.push(String(rawValues[r][c]).trim());\n    }\n    cleanValues.push(row);\n  }\n  cleanSheet.getRange(1, 1, cleanValues.length, 3).setValues(cleanValues);\n}",
+        afterNote: "見事なデータクリーニングです！実務でのデータ連携や名簿管理において、余白のクレンジングは最重要スキルの1つです🍵"
+      },
+      {
+        id: "boss",
+        stageId: "stage-4",
+        title: "卒業試験：集計して、書いて、送る",
+        badge: "BOSS",
+        type: "code",
+        defaultSheet: "レポート",
+        explain: "いよいよ最後の卒業試験です！<br>これまでに学んだ<strong>「複数シートの参照」「商品マスタの価格照合」「売上計算」「レポートシートへの出力」「MailAppによるメール通知」</strong>を1つの関数に統合して、完全自動化システムを完成させましょう！<br><br>" +
+          "<strong>1. 部品の意味</strong><br>" +
+          "・<code>productSheet.getRange('A2:D5').getValues();</code> ＝ 商品IDと価格のマスタを取得<br>" +
+          "・<code>orderSheet.getRange('A2:D9').getValues();</code> ＝ 全8件の注文データを取得<br>" +
+          "・商品IDごとの単価（ID 1: 190円、ID 2: 250円、ID 3: 250円、ID 4: 480円）を使って、各注文の金額を計算して加算<br>" +
+          "・全注文の総売上は 2760、注文件数は 8<br>" +
+          "・<code>reportSheet.getRange('A2').setValue('総売上');</code> / <code>getRange('B2').setValue(2760);</code><br>" +
+          "・<code>reportSheet.getRange('A3').setValue('注文件数');</code> / <code>getRange('B3').setValue(8);</code><br>" +
+          "・<code>MailApp.sendEmail('boss@example.com', '月次レポート', '総売上: 2760円、注文件数: 8件です。');</code> ＝ 報告メールを送信<br><br>" +
+          "<strong>2. つなげた全体のコード</strong><br>" +
+          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
+          "const orderSheet = ss.getSheetByName('注文');\n" +
+          "const productSheet = ss.getSheetByName('商品');\n" +
+          "const reportSheet = ss.getSheetByName('レポート');\n\n" +
+          "// 商品マスタの価格マップを作成\n" +
+          "const prodValues = productSheet.getRange('A2:D5').getValues();\n" +
+          "const priceMap = {};\n" +
+          "for (let i = 0; i < prodValues.length; i++) {\n" +
+          "  priceMap[prodValues[i][0]] = prodValues[i][3];\n" +
+          "}\n\n" +
+          "// 全注文の金額を集計\n" +
+          "const orderValues = orderSheet.getRange('A2:D9').getValues();\n" +
+          "let totalSales = 0;\n" +
+          "for (let i = 0; i < orderValues.length; i++) {\n" +
+          "  const prodId = orderValues[i][2];\n" +
+          "  const qty = orderValues[i][3];\n" +
+          "  totalSales += (priceMap[prodId] || 0) * qty;\n" +
+          "}\n\n" +
+          "// レポートシートに書き出し\n" +
+          "reportSheet.getRange('A2').setValue('総売上');\n" +
+          "reportSheet.getRange('B2').setValue(totalSales);\n" +
+          "reportSheet.getRange('A3').setValue('注文件数');\n" +
+          "reportSheet.getRange('B3').setValue(orderValues.length);\n\n" +
+          "// メールで完了報告を送信\n" +
+          "MailApp.sendEmail('manager@example.com', '月次レポート', '今月の総売上は ' + totalSales + ' 円、注文件数は ' + orderValues.length + ' 件です。');</pre><br>" +
+          "<strong>3. 行ごとの役割</strong><br>" +
+          "・1〜4行目：「注文」「商品」「レポート」の3つのシートを取得します。<br>" +
+          "・6〜11行目：商品シートから各商品の単価をオブジェクト（辞書）にマッピングします。<br>" +
+          "・13〜19行目：注文データをループし、商品IDの単価×個数を計算して総売上（2760）を算出します。<br>" +
+          "・21〜25行目：レポートシートのA2に「総売上」、B2に 2760、A3に「注文件数」、B3に 8 を書き込みます。<br>" +
+          "・27〜28行目：MailAppで件名「月次レポート」の報告メールを送信します。",
+        example: {
+          desc: "レポートシートに合計値を書き込み、メールで通知する一連の流れを実行する例です。",
+          code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const reportSheet = ss.getSheetByName('レポート');\n  reportSheet.getRange('A2').setValue('総売上');\n  reportSheet.getRange('B2').setValue(2760);\n  reportSheet.getRange('A3').setValue('注文件数');\n  reportSheet.getRange('B3').setValue(8);\n  MailApp.sendEmail('test@example.com', '月次レポート', '集計完了しました。');\n  Logger.log('レポート記入とメール送信が完了しました');\n}"
+        },
+        question: "注文シートと商品シートを組み合わせて全注文の売上総額を計算し、「レポート」シートに書き込んで報告メールを送信してください。<br><br>" +
+          "・レポートシートの A2 に「総売上」、B2 に <strong>2760</strong><br>" +
+          "・レポートシートの A3 に「注文件数」、B3 に <strong>8</strong><br>" +
+          "・<code>MailApp.sendEmail()</code> で件名「<strong>月次レポート</strong>」のメールを送信する",
+        starterCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const orderSheet = ss.getSheetByName('注文');\n  const productSheet = ss.getSheetByName('商品');\n  const reportSheet = ss.getSheetByName('レポート');\n  \n  // 1. 商品と注文から総売上（2760）と注文件数（8）を計算しよう\n  \n  // 2. レポートシートの A2:B3 に書き込もう\n  \n  // 3. MailApp で件名「月次レポート」のメールを送ろう\n  \n}",
+        check: (sheet, logs, sheets, extra) => {
+          const report = sheets && sheets["レポート"] ? sheets["レポート"] : sheet;
+          const b2 = Number(report.getRange("B2").getValue());
+          const b3 = Number(report.getRange("B3").getValue());
+
+          if (b2 !== 2760 || b3 !== 8) {
+            return {
+              pass: false,
+              msg: `レポートシートの集計値が一致しません。<br>B2(総売上): ${b2}（正解: 2760）<br>B3(注文件数): ${b3}（正解: 8）`
+            };
+          }
+
+          const hasMailLog = (extra && extra.mailApp && extra.mailApp.sentEmails && extra.mailApp.sentEmails.some(m => m.subject && m.subject.includes("月次レポート"))) ||
+            logs.some(l => l.includes("月次レポート"));
+
+          if (!hasMailLog) {
+            return {
+              pass: false,
+              msg: "件名に「月次レポート」が含まれるメールが送信されていません。MailApp.sendEmail(...) を実行してください。"
+            };
+          }
+
+          return { pass: true, msg: "売上集計・レポート書き込み・メール通知のすべてを完璧に完遂しました！卒業おめでとうございます！" };
+        },
+        hint1: "商品シートの単価：商品1は190円、商品2は250円、商品3は250円、商品4は480円です。",
+        hint2: "全8件の注文（個数×単価）を合計すると2760になります。A2に「総売上」、B2に2760、A3に「注文件数」、B3に8を設定します。",
+        hint3: "MailApp.sendEmail('admin@example.com', '月次レポート', '売上総額は2760円です'); を呼び出しましょう。",
+        modelCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const orderSheet = ss.getSheetByName('注文');\n  const productSheet = ss.getSheetByName('商品');\n  const reportSheet = ss.getSheetByName('レポート');\n  \n  const prodValues = productSheet.getRange('A2:D5').getValues();\n  const priceMap = {};\n  for (let i = 0; i < prodValues.length; i++) {\n    priceMap[prodValues[i][0]] = prodValues[i][3];\n  }\n  \n  const orderValues = orderSheet.getRange('A2:D9').getValues();\n  let totalSales = 0;\n  for (let i = 0; i < orderValues.length; i++) {\n    const prodId = orderValues[i][2];\n    const qty = orderValues[i][3];\n    totalSales += (priceMap[prodId] || 0) * qty;\n  }\n  \n  reportSheet.getRange('A2').setValue('総売上');\n  reportSheet.getRange('B2').setValue(totalSales);\n  reportSheet.getRange('A3').setValue('注文件数');\n  reportSheet.getRange('B3').setValue(orderValues.length);\n  \n  MailApp.sendEmail('manager@example.com', '月次レポート', '今月の総売上は ' + totalSales + ' 円、注文件数は ' + orderValues.length + ' 件です。');\n}",
+        afterNote: "👑 卒業試験合格！おめでとうございます！！複数の表を連携させ、書類を作成し、メール通知まで自動化できるあなたは真のGASマスターです🍡🎉"
       }
     ];
 
@@ -2819,10 +3141,10 @@
       },
       {
         id: "stage-4",
-        badge: "Stage 4",
-        title: "実践！売上自動集計＆通知システム",
-        locked: true,
-        desc: "近日公開予定！売上表の自動日計とGmail/LINE連携に挑戦。"
+        badge: "Stage 4（卒業編）",
+        title: "実践自動化プロジェクト",
+        locked: false,
+        lessonIds: ["g-01", "g-02", "g-03", "boss"]
       }
     ];
 
@@ -3313,7 +3635,8 @@
         const spreadsheet = new MockSpreadsheet(this.exampleSheets);
         const spreadsheetApp = {
           getActiveSpreadsheet: () => spreadsheet,
-          getActiveSheet: () => this.exampleSheets[defSheet]
+          getActiveSheet: () => this.exampleSheets[defSheet],
+          insertSheet: (name) => spreadsheet.insertSheet(name)
         };
         const utilities = MockUtilities;
         const mailApp = new MockMailApp(logger);
@@ -3360,6 +3683,13 @@
             lines.push(`✏️ 変わったセル：${shown}${rest}`);
           }
 
+          // 新規シート作成に対応してタブを再描画
+          this.updateExampleSheetTabs();
+          const curSheet = this.exampleSheets[this.activeExampleSheetName || defSheet];
+          if (curSheet) {
+            this.renderSheetTable(curSheet, "example-sheet-table");
+          }
+
           const exLog = document.getElementById("example-log");
           if (lines.length > 0) {
             exLog.textContent = lines.join("\n");
@@ -3398,7 +3728,8 @@
         const spreadsheet = new MockSpreadsheet(this.currentSheets);
         const spreadsheetApp = {
           getActiveSpreadsheet: () => spreadsheet,
-          getActiveSheet: () => this.currentSheets[defSheet]
+          getActiveSheet: () => this.currentSheets[defSheet],
+          insertSheet: (name) => spreadsheet.insertSheet(name)
         };
         const utilities = MockUtilities;
         const mailApp = new MockMailApp(logger);
@@ -3541,13 +3872,15 @@
 
         if (totalCleared >= totalLessons && !this.clearedModals["all_cleared"]) {
           this.clearedModals["all_cleared"] = true;
+          this.clearedModals[stageModalKey] = true;
           this.saveClearedModals();
           this.showModal(
-            "👑",
-            "全レッスン完全制覇！おめでとう！",
-            `すごい！まるもちGASドリルの実装済み全${totalLessons}レッスンをすべてクリアしたよ！<br>もう君はスプレッドシート自動化の立派な達人だね！本当にお疲れ様でした🍡✨`
+            "🎓",
+            "㊗️ 全33レッスン完全制覇＆卒業おめでとう！",
+            `おめでとうございます！！<br>Stage 4（卒業編）を含む全${totalLessons}レッスンをすべてクリアし、GASドリルを見事卒業しました！🎓✨<br>実務の自動化テクニックを身につけたあなたは、もう本物のGASマスターです🍡🎉`
           );
-          triggerConfetti(120);
+          triggerConfetti(200);
+          return;
         }
       }
 
