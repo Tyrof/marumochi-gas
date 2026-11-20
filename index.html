@@ -1884,7 +1884,7 @@
         stageId: "stage-0",
         title: "if（条件で分ける）",
         type: "code",
-        explain: "<strong>「もし〇〇なら、これをする」</strong>という枝分かれを作るのが <code>if</code> 文だよ！<br><pre>if (条件) {\n  // 条件が合っていたら実行\n}</pre>等しいかどうか比べるときは <code>===</code> を使うよ！",
+        explain: "<strong>「もし〇〇なら、これをする」</strong>という枝分かれを作るのが <code>if</code> 文だよ！<br>部品の意味はこう：<code>count === 0</code>＝「count の箱の中身が 0 と等しいかを比べる」（<code>===</code> は「等しいか」の比べ方で、1個の <code>=</code>＝代入とは別物）／<code>{ }</code>＝「条件が合っていたときだけ実行する範囲」／<code>sheet.getRange('B6').setValue('完売')</code>＝p-04でやった「B6のマスに『完売』と書き込む」お願い。<br>つなげた全体はこう：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst count = sheet.getRange('C6').getValue();\nif (count === 0) {\n  sheet.getRange('B6').setValue('完売');\n}</pre><br>行ごとの役割：1行目「売上シートを取って sheet の箱へ」／2行目「C6の個数を取って count の箱へ」／3行目「もし count が 0 なら」／4行目「B6に『完売』と書き込む」。C6の個数は 0 だから条件が合って、B6が『完売』になるよ。もし 0 じゃなかったら、{ } の中は実行されず何も変わらないんだ。",
         example: {
           code: `function checkStock() {\n  const count = 0;\n  if (count === 0) {\n    Logger.log("在庫がありません！");\n  }\n}`,
           desc: "countが0の時だけ警告ログを出す例だよ。"
@@ -1991,7 +1991,7 @@
         stageId: "stage-1",
         title: "セルの値を取得する",
         type: "code",
-        explain: "セルの値を読み取る基本をおさらいしよう！<br><code>sheet.getRange('セル名').getValue()</code> を使うと、指定したマス目（セル）に入っているデータを1つ取り出せるよ。<br>今回は「売上」シートから1行目のデータである <strong>D2セル</strong>（最初の金額）を読み取ってみよう！",
+        explain: "セルの値を読み取る基本をおさらいしよう！p-03でやったのと同じ流れだよ。<br>部品の意味はこう：<code>sheet</code>＝「売上シートを取ってきた箱」（1行目で作る）／<code>.getRange('D2')</code>＝「D2のマスを指定して」／<code>.getValue()</code>＝「その中身を取ってきて」／<code>Logger.log(...)</code>＝「作業報告（ログ欄）に出して」。<br>つなげた全体はこう：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst price = sheet.getRange('D2').getValue();\nLogger.log(price);</pre><br>行ごとの役割：1行目「売上シートを取って sheet の箱へ」／2行目「D2の金額を取って price の箱へ」／3行目「price の中身（190）をログ欄に報告する」。",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const stamp = sheet.getRange('B2').getValue();\n  Logger.log("スタンプ名: " + stamp);\n}`,
           desc: "B2セルのスタンプ名を取得してログに表示する例だよ。"
@@ -2016,7 +2016,7 @@
         stageId: "stage-1",
         title: "セルに書き込む",
         type: "code",
-        explain: "今度はセルに値を書き込む基本だよ！<br><code>sheet.getRange('セル名').setValue(値)</code> を使うと、指定したセルの中身を新しい値に書き換えることができるんだ。<br>実行すると下のシートプレビューがリアルタイムに書き換わるよ！",
+        explain: "今度はセルに値を書き込む基本だよ！p-04でやったのと同じ流れだよ。<br>部品の意味はこう：<code>sheet</code>＝「売上シートを取ってきた箱」／<code>.getRange('C2')</code>＝「C2のマスを指定して」／<code>.setValue(5)</code>＝「そこに 5 を書き込んで」。<br>つなげた全体はこう：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nsheet.getRange('C2').setValue(5);</pre><br>行ごとの役割：1行目「売上シートを取って sheet の箱へ」／2行目「C2の個数を 5 に書き換える」。実行すると下のシートプレビューがリアルタイムに書き換わるよ！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C3').setValue(10);\n  Logger.log("C3を10に書き換えたよ！");\n}`,
           desc: "C3セルの個数を 10 に書き換える例だよ。"
