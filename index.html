@@ -2021,7 +2021,7 @@
         stageId: "prologue",
         title: "プログラムは「お願い文」の集まり",
         type: "code",
-        explain: "プログラムは、コンピュータへ届ける<strong>「お願いのお手紙」</strong>だよ。<br>一番大切なルールはたった1つ！<strong>『上から順番に1行ずつ実行される』</strong>ということ。<br><br>ここで最初の命令を覚えよう。<code>Logger.log('メッセージ');</code> は、<strong>「ログ欄に『メッセージ』と表示して」</strong>というお願いそのものだよ。<br>ログ欄は、プログラムが「今こうやったよ！」と<strong>作業報告を表示する場所</strong>。セルには何も書かれず、報告だけが出るんだ。<br>たとえば <code>Logger.log('こんにちは');</code> を実行すると、ログ欄に「こんにちは」と1行出るよ！",
+        explain: "まず完成形から見てみよう：<code>Logger.log('こんにちは');</code><br>実行すると、ログ欄に「こんにちは」と出る。<br>中身はこれだけ：<code>Logger.log(...)</code> は「（…）の中身をログ欄に表示して」という命令。ログ欄はプログラムの作業報告を表示する場所で、セルには何も書かれないよ。<br>プログラムは上から順番に1行ずつ実行される。これが一番大事なルールだよ。",
         example: {
           code: `function sample() {\n  Logger.log("1番目のお願い！");\n  Logger.log("2番目のお願い！");\n}`,
           desc: "下の「例題を実行してみる」を押してみよう。実行ログの欄に「1番目のお願い！」「2番目のお願い！」と、上から順番に2行出てくるよ。ログ欄がどこにあるか、目で追ってみてね！"
@@ -2049,7 +2049,7 @@
         stageId: "prologue",
         title: "セルの値を読んでみよう",
         type: "code",
-        explain: "スプレッドシートのマス目のことを<strong>「セル」</strong>と呼ぶよ。<br>セルの値を読むコードは長く見えるけど、<strong>部品ごとに意味が決まっている</strong>から、分解すれば怖くないよ。<br><br><strong>①シートを選ぶ</strong><br><code>SpreadsheetApp</code> ＝ スプレッドシートを操作する「受付」の名前<br><code>.getActiveSpreadsheet()</code> ＝ 「今開いているファイルをください」<br><code>.getSheetByName('売上')</code> ＝ 「その中の『売上』シートをください」<br>ドット（ . ）は「〜の」と読むと分かりやすいよ。左から右へ、だんだん絞り込んでいくイメージ。<br>取ってきたシートは <code>const sheet =</code> で、「sheet」という名札の箱に入れておくんだ。<br><br><strong>②セルを指定して読む</strong><br><code>sheet.getRange('A2')</code> ＝ 「sheetのA2のマスを指定して」<br><code>.getValue()</code> ＝ 「その中身を取ってきて」<br><br><strong>つなげると、こうなる</strong><br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>const val = sheet.getRange('A2').getValue();</code><br><code>Logger.log(val);</code><br>1行目でシートを取って「sheet」の箱へ、2行目でそのシートのA2の中身を取って「val」の箱へ、3行目で作業報告（ログ欄）に出す。さっきの部品がそのまま組み上がっているのが分かるね。<br>最後の <code>Logger.log</code> はp-02の復習だよ。",
+        explain: "まず完成形：<br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>const val = sheet.getRange('A2').getValue();</code><br><code>Logger.log(val);</code><br>やっていることは3つだけ。1行目で売上シートを取り、2行目でA2の中身を取り、3行目でログに出す。<br>ドット（.）は「〜の」と読むと分かりやすいよ。左から右へ絞り込んでいくイメージ。",
         example: {
           code: `function readDate() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const date = sheet.getRange('A2').getValue();\n  Logger.log(date);\n}`,
           desc: "上の説明と見比べながら、「例題を実行してみる」を押してみよう。A2セル（一番最初の売上日付）を読んで、ログに出力する例だよ。"
@@ -2074,7 +2074,7 @@
         stageId: "prologue",
         title: "セルの値を書き換えてみよう",
         type: "code",
-        explain: "書き込みも、読み取りと同じ「部品をつなげる」お願いだよ。<br>部品の意味はこう：<code>sheet.getRange('D6')</code>＝「D6のマスを指定して」／<code>.setValue(500)</code>＝「そこに 500 を書き込んで」。<br>つなげた全体はこう：<code>sheet.getRange('D6').setValue(500);</code><br>行ごとの役割：1行目 <code>const sheet = ...getSheetByName('売上');</code> は「売上シートを取って sheet の箱へ」／2行目が上の1行で「D6に 500 を書き込む」。実行すると、下のプレビュー表が本当にパッと書き換わるよ。見ててね！",
+        explain: "まず完成形：<br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>sheet.getRange('D6').setValue(500);</code><br>2行目が書き込みの本体で、「D6を指定して、500を書き込む」という意味。実行するとプレビュー表がパッと書き換わるよ。",
         example: {
           code: `function setSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C6').setValue(1);\n}`,
           desc: "C6セルの個数を 1 に書き換える例だよ。"
@@ -2151,7 +2151,7 @@
         stageId: "stage-0",
         title: "文字列と数値（連結と計算）",
         type: "code",
-        explain: "プログラムでは<strong>「文字」</strong>と<strong>「数字」</strong>を区別するよ！<br>・文字同士を <code>+</code> すると：文字がピタッとくっつく（<code>'まる' + 'もち'</code> → <code>'まるもち'</code>）<br>・数字同士を <code>+</code> すると：足し算になる（<code>100 + 200</code> → <code>300</code>）<br>文字は必ず <code>' '</code> か <code>\" \"</code> で囲もう！<br>つなげた全体はこう：<code>sheet.getRange('B2').setValue(currentName + \" ★人気\");</code> — 「B2の中身を取って、★人気をくっつけて、B2に書き戻す」までを1行でやっているよ。<br>行ごとの役割：<code>currentName</code> の箱に B2 の中身を入れて、<code>+ \" ★人気\"</code> で文字をつなげて、<code>setValue(...)</code> で B2 に書き戻す、という流れだよ。",
+        explain: "まず完成形：<code>sheet.getRange('B2').setValue(currentName + \" ★人気\");</code><br>B2の中身に「 ★人気」をくっつけて、B2に書き戻している。<br>中身のポイントは <code>+</code> の働きだけ：文字同士なら連結、数字同士なら足し算。文字は <code>' '</code> か <code>\" \"</code> で囲むのがルールだよ。",
         example: {
           code: `function calcSample() {\n  const text = "まるもち" + "★"; // "まるもち★"\n  const total = 190 * 2; // 380\n  Logger.log(text + " 合計: " + total + "円");\n}`,
           desc: "文字のくっつけと数値の掛け算の例だよ。"
@@ -2176,7 +2176,7 @@
         stageId: "stage-0",
         title: "if（条件で分ける）",
         type: "code",
-        explain: "<strong>「もし〇〇なら、これをする」</strong>という枝分かれを作るのが <code>if</code> 文だよ！<br>部品の意味はこう：<code>count === 0</code>＝「count の箱の中身が 0 と等しいかを比べる」（<code>===</code> は「等しいか」の比べ方で、1個の <code>=</code>＝代入とは別物）／<code>{ }</code>＝「条件が合っていたときだけ実行する範囲」／<code>sheet.getRange('B6').setValue('完売')</code>＝p-04でやった「B6のマスに『完売』と書き込む」お願い。<br>つなげた全体はこう：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst count = sheet.getRange('C6').getValue();\nif (count === 0) {\n  sheet.getRange('B6').setValue('完売');\n}</pre><br>行ごとの役割：1行目「売上シートを取って sheet の箱へ」／2行目「C6の個数を取って count の箱へ」／3行目「もし count が 0 なら」／4行目「B6に『完売』と書き込む」。C6の個数は 0 だから条件が合って、B6が『完売』になるよ。もし 0 じゃなかったら、{ } の中は実行されず何も変わらないんだ。",
+        explain: "まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst count = sheet.getRange('C6').getValue();\nif (count === 0) {\n  sheet.getRange('B6').setValue('完売');\n}</pre>中身は1つだけ：<code>count === 0</code> は「countが0と等しいか」の確認（<code>=</code> 1個は代入で別物）。C6は0だからB6に『完売』が書かれる。0じゃなければ何も起きないよ。",
         example: {
           code: `function checkStock() {\n  const count = 0;\n  if (count === 0) {\n    Logger.log("在庫がありません！");\n  }\n}`,
           desc: "countが0の時だけ警告ログを出す例だよ。"
@@ -2201,7 +2201,7 @@
         stageId: "stage-0",
         title: "for（繰り返し）",
         type: "code",
-        explain: "何十行もあるデータを1行ずつ手で書くのは大変！決まった回数をぐるぐる繰り返すのが <code>for</code> 文だよ。<br>部品の意味はこう：<code>let i = 2</code>＝「行番号のカウンター i を 2 からスタート」／<code>i <= 6</code>＝「i が 6 以下のあいだだけ繰り返す」／<code>i++</code>＝「1周終わるたびに i を 1 増やす」。<br>つなげた全体はこう：<code>for (let i = 2; i <= 6; i++) { ... }</code> は「i を 2→3→4→5→6 と1つずつ増やしながら、{ } の中の処理を5回繰り返す」というお願いだよ。<br>行ごとの役割：<code>sheet.getRange(i, 4)</code> は「i 行目・4列目（D列）のマス」という指定の仕方で、<code>'D2'</code> と書く代わりに行番号を i で動かせる形だよ。だから i が 2 のときは D2、3 のときは D3、と順番に金額を取って <code>sum</code> の箱に足していくんだ。",
+        explain: "まず完成形：<pre>let sum = 0;\nfor (let i = 2; i <= 6; i++) {\n  const price = sheet.getRange(i, 4).getValue();\n  sum = sum + price;\n}</pre>中身は2つだけ：<code>i</code> は行番号で、2から6まで1つずつ増えていく。<code>getRange(i, 4)</code> は「i行目・4列目（D列）」という指定方法。金額を1行ずつ取って sum に足していくよ。",
         example: {
           code: `function loopLog() {\n  for (let i = 1; i <= 3; i++) {\n    Logger.log(i + "回目のまるもち！");\n  }\n}`,
           desc: "1から3まで順番にカウントアップして繰り返す例だよ。"
@@ -2226,7 +2226,7 @@
         stageId: "stage-0",
         title: "配列（値の並びと添え字）",
         type: "code",
-        explain: "複数のデータを1つにまとめて箱詰めしたのが<strong>「配列（はいれつ）」</strong>だよ。<br><code>['2026-11-15', 'まるもち', 4, 760]</code> のように <code>[ ]</code> で囲むよ。<br>シートの最後に新しい行を追加する <code>sheet.appendRow(配列)</code> との相性は抜群なんだ！<br>部品の意味：<code>fruits[0]</code> の <code>[0]</code> は「0番目＝1番目の要素」という番号。コンピュータは 0 から数えるから、1番目が [0]、2番目が [1] だよ。<br>つなげた全体はこう：<code>const newRow = [...];</code> で1行分のデータを箱に詰めて、<code>sheet.appendRow(newRow)</code> で「表の一番下にその1行を追加して」とお願いする形だよ。",
+        explain: "まず完成形：<code>const newRow = [\"2026-11-15\", \"すやすやまるもち\", 4, 760];</code><br><code>sheet.appendRow(newRow);</code><br>中身はこれだけ：<code>[ ]</code> で囲んだデータの並びが「配列」。appendRow は「表の一番下にこの1行を追加して」という命令だよ。<br>なお、配列の中身を取り出すときの番号は0から数える（1番目が [0]）。",
         example: {
           code: `function arraySample() {\n  const fruits = ["りんご", "みかん", "もも"];\n  Logger.log("1番目は: " + fruits[0]); // 0から数えるよ\n}`,
           desc: "配列の要素は 0 から順番に番号（インデックス）が振られるよ。"
@@ -2256,7 +2256,7 @@
         stageId: "stage-0",
         title: "関数を作る（function、引数と戻り値）",
         type: "code",
-        explain: "決まった計算や処理をひとまとめにして、名前をつけた道具が<strong>「関数（かんすう）」</strong>だよ！<br>・<strong>引数（ひきすう）</strong>：関数に渡す材料<br>・<strong>戻り値（return）</strong>：関数が計算して返してくれる結果<br>関数を作ると、コードがスッキリして同じ計算を何度でも使い回せるよ！<br>つなげた全体はこう：<code>const total = calcTotal(3, 200);</code> は「3と200を材料に渡して、返ってきた 600 を total の箱へ」／<code>sheet.getRange('D6').setValue(total);</code> で「total を D6 に書き込む」。<br>行ごとの役割：関数 <code>calcTotal</code> の中身は「材料を掛け算して返す」だけ。使う側の myLesson では「計算して→箱に入れて→書き込む」の3ステップだよ。",
+        explain: "まず完成形：<pre>function calcTotal(count, unitPrice) {\n  return count * unitPrice;\n}\nconst total = calcTotal(3, 200);\nsheet.getRange('D6').setValue(total);</pre>中身はこれだけ：関数は「材料を渡すと、結果を返してくれる道具」。渡す材料が引数、返ってくる結果が戻り値（return）。ここでは 3×200＝600 が total に入り、D6に書かれるよ。",
         example: {
           code: `// 個数と単価から金額を計算する関数\nfunction calcAmount(count, unitPrice) {\n  return count * unitPrice;\n}`,
           desc: "count と unitPrice を掛け算して戻り値として返す関数の例だよ。"
@@ -2283,7 +2283,7 @@
         stageId: "stage-1",
         title: "セルの値を取得する",
         type: "code",
-        explain: "セルの値を読み取る基本をおさらいしよう！p-03でやったのと同じ流れだよ。<br>部品の意味はこう：<code>sheet</code>＝「売上シートを取ってきた箱」（1行目で作る）／<code>.getRange('D2')</code>＝「D2のマスを指定して」／<code>.getValue()</code>＝「その中身を取ってきて」／<code>Logger.log(...)</code>＝「作業報告（ログ欄）に出して」。<br>つなげた全体はこう：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst price = sheet.getRange('D2').getValue();\nLogger.log(price);</pre><br>行ごとの役割：1行目「売上シートを取って sheet の箱へ」／2行目「D2の金額を取って price の箱へ」／3行目「price の中身（190）をログ欄に報告する」。",
+        explain: "まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst price = sheet.getRange('D2').getValue();\nLogger.log(price);</pre>p-03と同じ流れ。D2の金額（190）がログに出るよ。",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const stamp = sheet.getRange('B2').getValue();\n  Logger.log("スタンプ名: " + stamp);\n}`,
           desc: "B2セルのスタンプ名を取得してログに表示する例だよ。"
@@ -2308,7 +2308,7 @@
         stageId: "stage-1",
         title: "セルに書き込む",
         type: "code",
-        explain: "今度はセルに値を書き込む基本だよ！p-04でやったのと同じ流れだよ。<br>部品の意味はこう：<code>sheet</code>＝「売上シートを取ってきた箱」／<code>.getRange('C2')</code>＝「C2のマスを指定して」／<code>.setValue(5)</code>＝「そこに 5 を書き込んで」。<br>つなげた全体はこう：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nsheet.getRange('C2').setValue(5);</pre><br>行ごとの役割：1行目「売上シートを取って sheet の箱へ」／2行目「C2の個数を 5 に書き換える」。実行すると下のシートプレビューがリアルタイムに書き換わるよ！",
+        explain: "まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nsheet.getRange('C2').setValue(5);</pre>p-04と同じ流れ。C2の個数が5に書き換わるよ。",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C3').setValue(10);\n  Logger.log("C3を10に書き換えたよ！");\n}`,
           desc: "C3セルの個数を 10 に書き換える例だよ。"
