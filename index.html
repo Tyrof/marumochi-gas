@@ -2035,7 +2035,7 @@
         stageId: "prologue",
         title: "GASってなに？",
         type: "quiz",
-        explain: "こんにちは！まるもちだよ🍡<br>GAS（Google Apps Script）は、Googleが作った<strong>「スプレッドシートの自動化助手ロボット」</strong>なんだ。<br>人間が毎日カチカチ手作業でやっている集計やコピペを、プログラムのお願い文を書いておくだけで一瞬で代わりにやってくれるんだよ！",
+        explain: "📘 このレッスンで学ぶこと：GASが何をする道具か、全体像をつかむ<br><br>こんにちは！まるもちだよ🍡<br>GAS（Google Apps Script）は、Googleが作った<strong>「スプレッドシートの自動化助手ロボット」</strong>なんだ。<br>人間が毎日カチカチ手作業でやっている集計やコピペを、プログラムのお願い文を書いておくだけで一瞬で代わりにやってくれるんだよ！",
         question: "まるもちからの理解度クイズ！<br><strong>「GASを使うと、どんなことができるようになるかな？」</strong> 正しいと思うものを選んでね。",
         quizOptions: [
           { text: "スプレッドシートの入力・計算・コピペなどの手作業を自動でやってくれる", correct: true },
@@ -2052,7 +2052,7 @@
         stageId: "prologue",
         title: "プログラムは「お願い文」の集まり",
         type: "code",
-        explain: "まず完成形から見てみよう：<code>Logger.log('こんにちは');</code><br>実行すると、ログ欄に「こんにちは」と出る。<br>中身はこれだけ：<code>Logger.log(...)</code> は「（…）の中身をログ欄に表示して」という命令。ログ欄はプログラムの作業報告を表示する場所で、セルには何も書かれないよ。<br>プログラムは上から順番に1行ずつ実行される。これが一番大事なルールだよ。",
+        explain: "📘 このレッスンで学ぶこと：Logger.logで、ログ欄に文字を表示する命令の書き方<br><br>まず完成形から見てみよう：<code>Logger.log('こんにちは');</code><br>実行すると、ログ欄に「こんにちは」と出る。<br>中身はこれだけ：<code>Logger.log(...)</code> は「（…）の中身をログ欄に表示して」という命令。ログ欄はプログラムの作業報告を表示する場所で、セルには何も書かれないよ。<br>プログラムは上から順番に1行ずつ実行される。これが一番大事なルールだよ。",
         example: {
           code: `function sample() {\n  Logger.log("1番目のお願い！");\n  Logger.log("2番目のお願い！");\n}`,
           desc: "下の「例題を実行してみる」を押してみよう。実行ログの欄に「1番目のお願い！」「2番目のお願い！」と、上から順番に2行出てくるよ。ログ欄がどこにあるか、目で追ってみてね！"
@@ -2080,7 +2080,7 @@
         stageId: "prologue",
         title: "セルの値を読んでみよう",
         type: "code",
-        explain: "まず完成形：<br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>const val = sheet.getRange('A2').getValue();</code><br><code>Logger.log(val);</code><br>やっていることは3つだけ。1行目で売上シートを取り、2行目でA2の中身を取り、3行目でログに出す。<br>ドット（.）は「〜の」と読むと分かりやすいよ。左から右へ絞り込んでいくイメージ。",
+        explain: "📘 このレッスンで学ぶこと：シートを選んで、セルの値を読み取るコードの書き方<br><br>まず完成形：<br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>const val = sheet.getRange('A2').getValue();</code><br><code>Logger.log(val);</code><br>やっていることは3つだけ。1行目で売上シートを取り、2行目でA2の中身を取り、3行目でログに出す。<br>ドット（.）は「〜の」と読むと分かりやすいよ。左から右へ絞り込んでいくイメージ。",
         example: {
           code: `function readDate() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const date = sheet.getRange('A2').getValue();\n  Logger.log(date);\n}`,
           desc: "上の説明と見比べながら、「例題を実行してみる」を押してみよう。A2セル（一番最初の売上日付）を読んで、ログに出力する例だよ。"
@@ -2105,7 +2105,7 @@
         stageId: "prologue",
         title: "セルの値を書き換えてみよう",
         type: "code",
-        explain: "まず完成形：<br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>sheet.getRange('D6').setValue(500);</code><br>2行目が書き込みの本体で、「D6を指定して、500を書き込む」という意味。実行するとプレビュー表がパッと書き換わるよ。",
+        explain: "📘 このレッスンで学ぶこと：セルに値を書き込むコードの書き方<br><br>まず完成形：<br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>sheet.getRange('D6').setValue(500);</code><br>2行目が書き込みの本体で、「D6を指定して、500を書き込む」という意味。実行するとプレビュー表がパッと書き換わるよ。",
         example: {
           code: `function setSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C6').setValue(1);\n}`,
           desc: "C6セルの個数を 1 に書き換える例だよ。"
@@ -2130,7 +2130,7 @@
         stageId: "prologue",
         title: "エラーは怖くない",
         type: "code",
-        explain: "プログラミングをしていると、赤い文字で「エラー」が出ることがあるよ。<br>でも絶対に怖がらなくて大丈夫！エラーは怒っているんじゃなくて、<strong>『ここが読めなかったから教えて！』</strong>というコンピュータからの優しい質問なんだ🍡",
+        explain: "📘 このレッスンで学ぶこと：エラーが出たときの読み方と直し方<br><br>プログラミングをしていると、赤い文字で「エラー」が出ることがあるよ。<br>でも絶対に怖がらなくて大丈夫！エラーは怒っているんじゃなくて、<strong>『ここが読めなかったから教えて！』</strong>というコンピュータからの優しい質問なんだ🍡",
         example: {
           code: `function errorSample() {\n  // Spead... とスペルミスしている例\n  // SpeadSheetApp.getActiveSheet();\n}`,
           desc: "1文字でもスペルが違うとコンピュータは分からなくなっちゃうんだ。"
@@ -2157,7 +2157,7 @@
         stageId: "stage-0",
         title: "変数（let / const）",
         type: "code",
-        explain: "値を入れておく<strong>「名札付きの箱」</strong>が変数だよ！<br>・<code>const</code>：あとから中身を変えない大切な値（定数）<br>・<code>let</code>：途中で中身が変わる値（変数）<br>箱に入れておけば、同じ値を何度も使えて便利なんだ！",
+        explain: "📘 このレッスンで学ぶこと：変数（値を入れる箱）の作り方と使い回し方<br><br>値を入れておく<strong>「名札付きの箱」</strong>が変数だよ！<br>・<code>const</code>：あとから中身を変えない大切な値（定数）<br>・<code>let</code>：途中で中身が変わる値（変数）<br>箱に入れておけば、同じ値を何度も使えて便利なんだ！",
         example: {
           code: `function boxSample() {\n  const stampName = "癒しのまるもち";\n  let count = 2;\n  count = count + 1; // 3になる\n  Logger.log(stampName + ": " + count + "個");\n}`,
           desc: "変数を使うと、計算途中の値も分かりやすくキープできます。"
@@ -2182,7 +2182,7 @@
         stageId: "stage-0",
         title: "文字列と数値（連結と計算）",
         type: "code",
-        explain: "まず完成形：<code>sheet.getRange('B2').setValue(currentName + \" ★人気\");</code><br>B2の中身に「 ★人気」をくっつけて、B2に書き戻している。<br>中身のポイントは <code>+</code> の働きだけ：文字同士なら連結、数字同士なら足し算。文字は <code>' '</code> か <code>\" \"</code> で囲むのがルールだよ。",
+        explain: "📘 このレッスンで学ぶこと：文字と数字の違いと、+ の働き<br><br>まず完成形：<code>sheet.getRange('B2').setValue(currentName + \" ★人気\");</code><br>B2の中身に「 ★人気」をくっつけて、B2に書き戻している。<br>中身のポイントは <code>+</code> の働きだけ：文字同士なら連結、数字同士なら足し算。文字は <code>' '</code> か <code>\" \"</code> で囲むのがルールだよ。",
         example: {
           code: `function calcSample() {\n  const text = "まるもち" + "★"; // "まるもち★"\n  const total = 190 * 2; // 380\n  Logger.log(text + " 合計: " + total + "円");\n}`,
           desc: "文字のくっつけと数値の掛け算の例だよ。"
@@ -2207,7 +2207,7 @@
         stageId: "stage-0",
         title: "if（条件で分ける）",
         type: "code",
-        explain: "まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst count = sheet.getRange('C6').getValue();\nif (count === 0) {\n  sheet.getRange('B6').setValue('完売');\n}</pre>中身は1つだけ：<code>count === 0</code> は「countが0と等しいか」の確認（<code>=</code> 1個は代入で別物）。C6は0だからB6に『完売』が書かれる。0じゃなければ何も起きないよ。",
+        explain: "📘 このレッスンで学ぶこと：ifで「もし〜なら」の分岐を作る方法<br><br>まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst count = sheet.getRange('C6').getValue();\nif (count === 0) {\n  sheet.getRange('B6').setValue('完売');\n}</pre>中身は1つだけ：<code>count === 0</code> は「countが0と等しいか」の確認（<code>=</code> 1個は代入で別物）。C6は0だからB6に『完売』が書かれる。0じゃなければ何も起きないよ。",
         example: {
           code: `function checkStock() {\n  const count = 0;\n  if (count === 0) {\n    Logger.log("在庫がありません！");\n  }\n}`,
           desc: "countが0の時だけ警告ログを出す例だよ。"
@@ -2232,7 +2232,7 @@
         stageId: "stage-0",
         title: "for（繰り返し）",
         type: "code",
-        explain: "まず完成形：<pre>let sum = 0;\nfor (let i = 2; i <= 6; i++) {\n  const price = sheet.getRange(i, 4).getValue();\n  sum = sum + price;\n}</pre>中身は2つだけ：<code>i</code> は行番号で、2から6まで1つずつ増えていく。<code>getRange(i, 4)</code> は「i行目・4列目（D列）」という指定方法。金額を1行ずつ取って sum に足していくよ。",
+        explain: "📘 このレッスンで学ぶこと：forで同じ処理を繰り返す方法<br><br>まず完成形：<pre>let sum = 0;\nfor (let i = 2; i <= 6; i++) {\n  const price = sheet.getRange(i, 4).getValue();\n  sum = sum + price;\n}</pre>中身は2つだけ：<code>i</code> は行番号で、2から6まで1つずつ増えていく。<code>getRange(i, 4)</code> は「i行目・4列目（D列）」という指定方法。金額を1行ずつ取って sum に足していくよ。",
         example: {
           code: `function loopLog() {\n  for (let i = 1; i <= 3; i++) {\n    Logger.log(i + "回目のまるもち！");\n  }\n}`,
           desc: "1から3まで順番にカウントアップして繰り返す例だよ。"
@@ -2257,7 +2257,7 @@
         stageId: "stage-0",
         title: "配列（値の並びと添え字）",
         type: "code",
-        explain: "まず完成形：<code>const newRow = [\"2026-11-15\", \"すやすやまるもち\", 4, 760];</code><br><code>sheet.appendRow(newRow);</code><br>中身はこれだけ：<code>[ ]</code> で囲んだデータの並びが「配列」。appendRow は「表の一番下にこの1行を追加して」という命令だよ。<br>なお、配列の中身を取り出すときの番号は0から数える（1番目が [0]）。",
+        explain: "📘 このレッスンで学ぶこと：配列（データの並び）の作り方と使い方<br><br>まず完成形：<code>const newRow = [\"2026-11-15\", \"すやすやまるもち\", 4, 760];</code><br><code>sheet.appendRow(newRow);</code><br>中身はこれだけ：<code>[ ]</code> で囲んだデータの並びが「配列」。appendRow は「表の一番下にこの1行を追加して」という命令だよ。<br>なお、配列の中身を取り出すときの番号は0から数える（1番目が [0]）。",
         example: {
           code: `function arraySample() {\n  const fruits = ["りんご", "みかん", "もも"];\n  Logger.log("1番目は: " + fruits[0]); // 0から数えるよ\n}`,
           desc: "配列の要素は 0 から順番に番号（インデックス）が振られるよ。"
@@ -2287,7 +2287,7 @@
         stageId: "stage-0",
         title: "関数を作る（function、引数と戻り値）",
         type: "code",
-        explain: "まず完成形：<pre>function calcTotal(count, unitPrice) {\n  return count * unitPrice;\n}\nconst total = calcTotal(3, 200);\nsheet.getRange('D6').setValue(total);</pre>中身はこれだけ：関数は「材料を渡すと、結果を返してくれる道具」。渡す材料が引数、返ってくる結果が戻り値（return）。ここでは 3×200＝600 が total に入り、D6に書かれるよ。",
+        explain: "📘 このレッスンで学ぶこと：関数（使い回せる道具）の作り方<br><br>まず完成形：<pre>function calcTotal(count, unitPrice) {\n  return count * unitPrice;\n}\nconst total = calcTotal(3, 200);\nsheet.getRange('D6').setValue(total);</pre>中身はこれだけ：関数は「材料を渡すと、結果を返してくれる道具」。渡す材料が引数、返ってくる結果が戻り値（return）。ここでは 3×200＝600 が total に入り、D6に書かれるよ。",
         example: {
           code: `// 個数と単価から金額を計算する関数\nfunction calcAmount(count, unitPrice) {\n  return count * unitPrice;\n}`,
           desc: "count と unitPrice を掛け算して戻り値として返す関数の例だよ。"
@@ -2314,7 +2314,7 @@
         stageId: "stage-1",
         title: "セルの値を取得する",
         type: "code",
-        explain: "まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst price = sheet.getRange('D2').getValue();\nLogger.log(price);</pre>p-03と同じ流れ。D2の金額（190）がログに出るよ。",
+        explain: "📘 このレッスンで学ぶこと：セルの値を1つ読み取る基本<br><br>まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst price = sheet.getRange('D2').getValue();\nLogger.log(price);</pre>p-03と同じ流れ。D2の金額（190）がログに出るよ。",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const stamp = sheet.getRange('B2').getValue();\n  Logger.log("スタンプ名: " + stamp);\n}`,
           desc: "B2セルのスタンプ名を取得してログに表示する例だよ。"
@@ -2339,7 +2339,7 @@
         stageId: "stage-1",
         title: "セルに書き込む",
         type: "code",
-        explain: "まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nsheet.getRange('C2').setValue(5);</pre>p-04と同じ流れ。C2の個数が5に書き換わるよ。",
+        explain: "📘 このレッスンで学ぶこと：セルに値を書き込む基本<br><br>まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nsheet.getRange('C2').setValue(5);</pre>p-04と同じ流れ。C2の個数が5に書き換わるよ。",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C3').setValue(10);\n  Logger.log("C3を10に書き換えたよ！");\n}`,
           desc: "C3セルの個数を 10 に書き換える例だよ。"
@@ -2364,7 +2364,7 @@
         stageId: "stage-1",
         title: "範囲をまとめて取得する",
         type: "code",
-        explain: "1マスずつ <code>getValue()</code> すると、何度もシートにアクセスして実行が遅くなっちゃうんだ。<br>そこで大活躍するのが <strong><code>getValues()</code></strong>（最後に s が付くよ）！<br><code>sheet.getRange('A2:D6').getValues()</code> と書くと、範囲全体のデータが<strong>「2次元配列」</strong>として一瞬で手に入るんだ。<br>・1行目: <code>values[0]</code><br>・2行目: <code>values[1]</code><br>行も列も <code>0</code> から数えるよ！",
+        explain: "📘 このレッスンで学ぶこと：範囲をまとめて読み取る getValues の使い方<br><br>1マスずつ <code>getValue()</code> すると、何度もシートにアクセスして実行が遅くなっちゃうんだ。<br>そこで大活躍するのが <strong><code>getValues()</code></strong>（最後に s が付くよ）！<br><code>sheet.getRange('A2:D6').getValues()</code> と書くと、範囲全体のデータが<strong>「2次元配列」</strong>として一瞬で手に入るんだ。<br>・1行目: <code>values[0]</code><br>・2行目: <code>values[1]</code><br>行も列も <code>0</code> から数えるよ！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const rows = sheet.getRange('A2:D6').getValues();\n  // 最初の行(インデックス0)のスタンプ名(B列=インデックス1)\n  Logger.log("1行目のスタンプ: " + rows[0][1]);\n}`,
           desc: "A2:D6の範囲を一括取得して、1行目・2列目を取り出す例だよ。"
@@ -2389,7 +2389,7 @@
         stageId: "stage-1",
         title: "範囲にまとめて書く",
         type: "code",
-        explain: "読み込みと同じく、書き込みも <strong><code>setValues(2次元配列)</code></strong> を使えば一括でドカンと書き込めるよ！<br>注意点はただ1つ、<strong>「範囲の行数・列数」と「渡す2次元配列の形」をピッタリ合わせること</strong>。<br>例えば縦2マス（F1:F2）に書くときは、1行目 <code>['メモ']</code> と2行目 <code>['確認済み']</code> をまとめた <code>[['メモ'], ['確認済み']]</code> を渡すよ！",
+        explain: "📘 このレッスンで学ぶこと：範囲にまとめて書き込む setValues の使い方<br><br>読み込みと同じく、書き込みも <strong><code>setValues(2次元配列)</code></strong> を使えば一括でドカンと書き込めるよ！<br>注意点はただ1つ、<strong>「範囲の行数・列数」と「渡す2次元配列の形」をピッタリ合わせること</strong>。<br>例えば縦2マス（F1:F2）に書くときは、1行目 <code>['メモ']</code> と2行目 <code>['確認済み']</code> をまとめた <code>[['メモ'], ['確認済み']]</code> を渡すよ！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // E1:E2 に見出しと値をまとめて書く例\n  sheet.getRange('E1:E2').setValues([['区分'], ['通常']]);\n}`,
           desc: "縦2マスの範囲（E1:E2）にまとめて2次元配列を書き込む例だよ。"
@@ -2414,7 +2414,7 @@
         stageId: "stage-1",
         title: "最終行を知る",
         type: "code",
-        explain: "シートの行数はデータが増えるたびにどんどん変わるよね。<br>そんなとき<strong>「今、データは何行目まである？」</strong>を自動で調べてくれるのが <strong><code>sheet.getLastRow()</code></strong> だよ！<br>現在データは6行目まで入っているので <code>6</code> が返ってくるよ。<br>これと <code>sheet.getRange(lastRow, 列番号)</code> を組み合わせれば、いつでも最新の行を取り出せるんだ！",
+        explain: "📘 このレッスンで学ぶこと：データの最終行を調べる getLastRow の使い方<br><br>シートの行数はデータが増えるたびにどんどん変わるよね。<br>そんなとき<strong>「今、データは何行目まである？」</strong>を自動で調べてくれるのが <strong><code>sheet.getLastRow()</code></strong> だよ！<br>現在データは6行目まで入っているので <code>6</code> が返ってくるよ。<br>これと <code>sheet.getRange(lastRow, 列番号)</code> を組み合わせれば、いつでも最新の行を取り出せるんだ！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const last = sheet.getLastRow();\n  Logger.log("データがある最後の行番号: " + last);\n}`,
           desc: "getLastRow() で最後の行番号を取得してログに出す例だよ。"
@@ -2439,7 +2439,7 @@
         stageId: "stage-1",
         title: "行を追加する",
         type: "code",
-        explain: "表の一番最後に新しいデータをサッと書き足したいときは <strong><code>sheet.appendRow(配列)</code></strong> が便利！<br>わざわざ最終行の番号を調べなくても、自動的に一番下の行を見つけて新しい行を追加してくれるんだ。<br>渡すデータは <code>['2026-11-13', '癒しのまるもち', 1, 190]</code> のように、1行分の配列でOKだよ！",
+        explain: "📘 このレッスンで学ぶこと：表の末尾に行を追加する appendRow の使い方<br><br>表の一番最後に新しいデータをサッと書き足したいときは <strong><code>sheet.appendRow(配列)</code></strong> が便利！<br>わざわざ最終行の番号を調べなくても、自動的に一番下の行を見つけて新しい行を追加してくれるんだ。<br>渡すデータは <code>['2026-11-13', '癒しのまるもち', 1, 190]</code> のように、1行分の配列でOKだよ！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.appendRow(["2026-11-12", "新作スタンプ", 1, 200]);\n  Logger.log("新しい行を追加したよ！");\n}`,
           desc: "表の末尾に新しいスタンプ売上行を追加する例だよ。"
@@ -2471,7 +2471,7 @@
         title: "ループで合計する",
         type: "code",
         defaultSheet: "売上",
-        explain: "データを1行ずつ順番に見て計算していくのがプログラミングの醍醐味だよ！<br>合計を溜めておく変数 <code>let total = 0;</code> を作って、forループの中で <code>total += values[i][0];</code> と足し算していくんだ。<br>データが何百行あっても、この基本パターンだけで一瞬で合計を出せるよ！",
+        explain: "📘 このレッスンで学ぶこと：ループで列の合計を出す方法<br><br>データを1行ずつ順番に見て計算していくのがプログラミングの醍醐味だよ！<br>合計を溜めておく変数 <code>let total = 0;</code> を作って、forループの中で <code>total += values[i][0];</code> と足し算していくんだ。<br>データが何百行あっても、この基本パターンだけで一瞬で合計を出せるよ！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const values = sheet.getRange('C2:C6').getValues(); // 個数列\n  let countSum = 0;\n  for (let i = 0; i < values.length; i++) {\n    countSum += values[i][0];\n  }\n  Logger.log("個数の合計: " + countSum);\n}`,
           desc: "C列（個数）をループで合計してログに表示する例だよ。"
@@ -2497,7 +2497,7 @@
         title: "条件で集計する",
         type: "code",
         defaultSheet: "顧客",
-        explain: "すべての行を合計するだけでなく、<strong>『もし〇〇なら数える』</strong>という条件付き集計をしてみよう！<br>件数を数える変数 <code>let count = 0;</code> を用意して、ループの中で <code>if (region === '関東') { count++; }</code> と書くことで、関東の人だけをカウントできるよ！",
+        explain: "📘 このレッスンで学ぶこと：条件に合うものだけを集計する方法<br><br>すべての行を合計するだけでなく、<strong>『もし〇〇なら数える』</strong>という条件付き集計をしてみよう！<br>件数を数える変数 <code>let count = 0;</code> を用意して、ループの中で <code>if (region === '関東') { count++; }</code> と書くことで、関東の人だけをカウントできるよ！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const values = sheet.getRange('B2:B7').getValues();\n  let kansaiCount = 0;\n  for (let i = 0; i < values.length; i++) {\n    if (values[i][0] === '関西') {\n      kansaiCount++;\n    }\n  }\n  Logger.log("関西の顧客数: " + kansaiCount);\n}`,
           desc: "地域が「関西」の顧客を数える例だよ（2人）。"
@@ -2523,7 +2523,7 @@
         title: "重複チェック",
         type: "code",
         defaultSheet: "顧客",
-        explain: "名簿に同じ人が2回登録されていないか調べる『重複チェック』だよ！<br>名前ごとの登場回数を数えるには、オブジェクト（連想配列）<code>const counts = {};</code> を使うと便利！<br><code>counts[name] = (counts[name] || 0) + 1;</code> と集計したあと、回数が2以上のものを探すんだ。",
+        explain: "📘 このレッスンで学ぶこと：重複しているデータをチェックする方法<br><br>名簿に同じ人が2回登録されていないか調べる『重複チェック』だよ！<br>名前ごとの登場回数を数えるには、オブジェクト（連想配列）<code>const counts = {};</code> を使うと便利！<br><code>counts[name] = (counts[name] || 0) + 1;</code> と集計したあと、回数が2以上のものを探すんだ。",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('顧客');\n  const names = sheet.getRange('A2:A7').getValues();\n  let sakuraCount = 0;\n  for (let i = 0; i < names.length; i++) {\n    if (names[i][0] === 'さくら') sakuraCount++;\n  }\n  Logger.log("さくらの出現回数: " + sakuraCount);\n}`,
           desc: "特定の名前に着目して出現回数を数える例だよ。"
@@ -2549,7 +2549,7 @@
         title: "並び替える",
         type: "code",
         defaultSheet: "売上",
-        explain: "売上ランキングを作るときなどに必須なのが<strong>「並び替え（ソート）」</strong>！<br>配列の <code>sort()</code> メソッドを使うと、並び順を自在に入れ替えられるよ。<br>2次元配列を行ごとに並び替えるには：<br><code>values.sort((a, b) => b[3] - a[3]);</code><br>（D列はインデックス3なので、<code>b[3] - a[3]</code> で大きい順＝降順になるよ）<br>並び替えた配列を <code>setValues()</code> でシートに書き戻せば完了！",
+        explain: "📘 このレッスンで学ぶこと：データを並び替える方法<br><br>売上ランキングを作るときなどに必須なのが<strong>「並び替え（ソート）」</strong>！<br>配列の <code>sort()</code> メソッドを使うと、並び順を自在に入れ替えられるよ。<br>2次元配列を行ごとに並び替えるには：<br><code>values.sort((a, b) => b[3] - a[3]);</code><br>（D列はインデックス3なので、<code>b[3] - a[3]</code> で大きい順＝降順になるよ）<br>並び替えた配列を <code>setValues()</code> でシートに書き戻せば完了！",
         example: {
           code: `function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const values = sheet.getRange('A2:D6').getValues();\n  values.sort((a, b) => b[2] - a[2]); // 個数の多い順\n  sheet.getRange('A2:D6').setValues(values);\n  Logger.log("個数の多い順に並び替えたよ！");\n}`,
           desc: "個数（C列）の大きい順に並び替えてシートを更新する例だよ。"
@@ -2577,7 +2577,7 @@
         title: "表記ゆれの整形",
         type: "code",
         defaultSheet: "顧客",
-        explain: "ユーザーが入力したデータには、前後に余分な空白（スペース）が入っていることがよくあるよね。<br>これをキレイに取り除くのが <strong><code>trim()</code></strong> メソッドだよ！<br>・<code>'　さくら　'.trim()</code> → <code>'さくら'</code><br>全角スペースも半角スペースも両方一気に削ってくれるから、データ比較や検索の前に必須の処理なんだ！",
+        explain: "📘 このレッスンで学ぶこと：空白などの表記ゆれを整える方法<br><br>ユーザーが入力したデータには、前後に余分な空白（スペース）が入っていることがよくあるよね。<br>これをキレイに取り除くのが <strong><code>trim()</code></strong> メソッドだよ！<br>・<code>'　さくら　'.trim()</code> → <code>'さくら'</code><br>全角スペースも半角スペースも両方一気に削ってくれるから、データ比較や検索の前に必須の処理なんだ！",
         example: {
           code: `function example() {\n  const text = "  まるもち  ";\n  const cleanText = text.trim();\n  Logger.log("整形前: [" + text + "]");\n  Logger.log("整形後: [" + cleanText + "]");\n}`,
           desc: "trim() で前後の空白を取り除く例だよ。"
@@ -2604,7 +2604,7 @@
         title: "集計結果を別シートに書く",
         type: "code",
         defaultSheet: "レポート",
-        explain: "実務では、元データのあるシートから集計して<strong>『レポート用の別シートに結果をまとめる』</strong>のが大定番！<br><code>SpreadsheetApp.getActiveSpreadsheet().getSheetByName('レポート')</code> でレポート用シートを取得して、計算結果を書き込もう。<br>今回は A2に「売上合計」、B2に 1390、A3に「関東の顧客数」、B3に 3 を書き込むよ！",
+        explain: "📘 このレッスンで学ぶこと：集計結果を別のシートに書き出す方法<br><br>実務では、元データのあるシートから集計して<strong>『レポート用の別シートに結果をまとめる』</strong>のが大定番！<br><code>SpreadsheetApp.getActiveSpreadsheet().getSheetByName('レポート')</code> でレポート用シートを取得して、計算結果を書き込もう。<br>今回は A2に「売上合計」、B2に 1390、A3に「関東の顧客数」、B3に 3 を書き込むよ！",
         example: {
           code: `function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const reportSheet = ss.getSheetByName('レポート');\n  reportSheet.getRange('A2').setValue('テスト項目');\n  reportSheet.getRange('B2').setValue(100);\n  Logger.log("レポートシートに書き込みました！");\n}`,
           desc: "別シート（レポート）を取得して書き込む例だよ。"
@@ -2638,7 +2638,7 @@
         title: "日付を見やすく整える",
         type: "code",
         defaultSheet: "売上",
-        explain: "実務で日付を扱うとき、そのままログやメールに出すと <code>Mon Nov 16 2026 00:00:00...</code> のように英語で長くなって見づらくなります。そこで大活躍するのが <code>Utilities.formatDate</code> です！<br><br><strong>① 部品の意味：</strong><br>・<code>Utilities.formatDate(date, timeZone, format)</code>: 日付を指定した形式の文字列に変換するGAS専用の便利メソッドです。<br>・<code>date</code>: 変換したい日付オブジェクト（例: <code>new Date(2026, 10, 16)</code>）。<br>・<code>timeZone</code>: タイムゾーン（日本標準時は <code>'Asia/Tokyo'</code>）。<br>・<code>format</code>: 日付の並べ方（例: <code>'yyyy年M月d日'</code>。yyyyは4桁年、Mは月、dは日）。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function formatDateSample() {\n  const date = new Date(2026, 10, 16);\n  const text = Utilities.formatDate(date, 'Asia/Tokyo', 'yyyy年M月d日');\n  Logger.log(text);\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: 2026年11月16日の日付データを用意します（JSの月は0始まりなので11月は10）。<br>・2行目: 日本時間で「2026年11月16日」というきれいな日本語の文字列に変換します。<br>・3行目: 変換した日付文字列をログに出力します。",
+        explain: "📘 このレッスンで学ぶこと：日付を「2026年11月16日」の形に整える方法<br><br>まず完成形：<pre>const date = new Date(2026, 10, 16);\nconst text = Utilities.formatDate(date, 'Asia/Tokyo', 'yyyy年M月d日');\nLogger.log(text);</pre>中身は1つだけ：<code>Utilities.formatDate</code> は日付を好きな形の文字に変える道具。'yyyy年M月d日' と指定すると「2026年11月16日」になるよ（月は0から数えるので、11月は10と書く）。",
         example: {
           code: "function example() {\n  const today = new Date(2026, 10, 16);\n  const formatted = Utilities.formatDate(today, 'Asia/Tokyo', 'yyyy年M月d日');\n  Logger.log('変換結果: ' + formatted);\n}",
           desc: "<code>Utilities.formatDate</code> を使って日付を「2026年11月16日」形式に整えてログに出力する例だよ。"
@@ -2663,7 +2663,7 @@
         title: "条件で色を付ける",
         type: "code",
         defaultSheet: "売上",
-        explain: "特定の条件を満たす行をパッと目立たせるのは、実務自動化の大定番です！今回は金額が300以上の行を黄色く塗りつぶしてみましょう。<br><br><strong>① 部品の意味：</strong><br>・<code>sheet.getRange(row, 1, 1, 4)</code>: row行目の1列目（A列）から、1行・4列分（A〜D列）の範囲を取得します。<br>・<code>.setBackground('#fff2cc')</code>: 範囲内のセルの背景色を指定したカラーコード（#fff2ccは薄い黄色）で塗ります。<br>・<code>if (amount >= 300)</code>: 金額が300以上かを判定する条件分岐です。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function highlightHighSales() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  for (let r = 2; r <= 6; r++) {\n    const amount = sheet.getRange(r, 4).getValue();\n    if (amount >= 300) {\n      sheet.getRange(r, 1, 1, 4).setBackground('#fff2cc');\n    }\n  }\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: 操作する売上シートを取得します。<br>・2行目: データ行である2行目から6行目までを1行ずつループします。<br>・3行目: r行目の4列目（D列：金額）の数値を取り出します。<br>・4行目: 金額が300以上かどうかをチェックします。<br>・5行目: 条件に当てはまる場合、その行のA〜D列（4セル分）の背景色を #fff2cc に変更します。",
+        explain: "📘 このレッスンで学ぶこと：条件に合う行に色を付ける方法<br><br>まず完成形：<pre>for (let r = 2; r <= 6; r++) {\n  const amount = sheet.getRange(r, 4).getValue();\n  if (amount >= 300) {\n    sheet.getRange(r, 1, 1, 4).setBackground('#fff2cc');\n  }\n}</pre>中身は1つだけ：<code>setBackground</code> が「背景色を塗る」命令。金額が300以上の行だけ、A〜D列を薄い黄色にするよ。",
         example: {
           code: "function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  // 3行目（金額380）のA〜D列を薄い黄色にする例\n  sheet.getRange(3, 1, 1, 4).setBackground('#fff2cc');\n  Logger.log('3行目の背景色を #fff2cc に変更しました！');\n}",
           desc: "3行目のA〜D列に背景色 <code>#fff2cc</code> を塗る例だよ。プレビュー表で黄色く変わるのを確認してみよう！"
@@ -2695,7 +2695,7 @@
         title: "シートをコピーして月次シートを作る",
         type: "code",
         defaultSheet: "売上",
-        explain: "毎月の締め処理や月次レポートで、「ひな形シートをコピーして新しい月のシートを作る」という作業はよく発生します。GASの <code>copyTo</code> と <code>setName</code> を使えば一瞬で完了します！<br><br><strong>① 部品の意味：</strong><br>・<code>sheet.copyTo(ss)</code>: 元のシートを別のスプレッドシート（または同じスプレッドシート <code>ss</code>）の中にまるごと複製し、複製された新しいシートを返します。<br>・<code>newSheet.setName('2026年11月')</code>: 新しくできたシートの名前を「2026年11月」に変更（リネーム）します。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function duplicateSheetSample() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const newSheet = salesSheet.copyTo(ss);\n  newSheet.setName('2026年11月');\n  Logger.log('売上シートを複製して「2026年11月」を作成しました！');\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: スプレッドシート全体を取得します。<br>・2行目: コピー元となる「売上」シートを取得します。<br>・3行目: 売上シートをスプレッドシート内に複製します。<br>・4行目: 複製されたシートの名前を「2026年11月」に変更します。<br>・5行目: 完了メッセージをログに出力します。",
+        explain: "📘 このレッスンで学ぶこと：シートをコピーして新しいシートを作る方法<br><br>まず完成形：<pre>const ss = SpreadsheetApp.getActiveSpreadsheet();\nconst salesSheet = ss.getSheetByName('売上');\nconst newSheet = salesSheet.copyTo(ss);\nnewSheet.setName('2026年11月');</pre>中身は2つだけ：<code>copyTo</code> でシートを複製し、<code>setName</code> で名前を変える。月次シート作りの定番だよ。",
         example: {
           code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const newSheet = salesSheet.copyTo(ss);\n  newSheet.setName('売上バックアップ');\n  Logger.log('「売上バックアップ」シートを作成しました！');\n}",
           desc: "売上シートをコピーして「売上バックアップ」という名前のシートを作成する例だよ。"
@@ -2725,7 +2725,7 @@
         title: "メール送信の型",
         type: "code",
         defaultSheet: "レポート",
-        explain: "集計した結果を関係者にメールで自動送信するのは、GASが最も輝く実務シーンの1つです！<code>MailApp.sendEmail</code> を使えば、たった1行でメール送信が可能です。<br><br><strong>① 部品の意味：</strong><br>・<code>MailApp.sendEmail(recipient, subject, body)</code>: 指定したメールアドレスにメールを送信するGASの標準サービスです。<br>・<code>recipient</code>: 送信先のメールアドレス（例: <code>'test@example.com'</code>）。<br>・<code>subject</code>: メールの件名（例: <code>'売上レポート'</code>）。<br>・<code>body</code>: メールの本文文字列（例: <code>'売上合計は 1390 円です。'</code>）。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function sendReportEmail() {\n  const to = 'test@example.com';\n  const subject = '売上レポート';\n  const total = 1390;\n  const body = \x60売上合計は \${total} 円です。\x60;\n  MailApp.sendEmail(to, subject, body);\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: 送信先の宛先アドレスを変数 <code>to</code> に用意します。<br>・2行目: メールの件名を変数 <code>subject</code> に用意します。<br>・3行目: 売上合計の数値 <code>1390</code> を用意します。<br>・4行目: テンプレート文字列（バッククォート）を使って、合計値を含んだ本文を作成します。<br>・5行目: <code>MailApp.sendEmail</code> でメールを（本ドリルでは疑似送信ログに）送信します。",
+        explain: "📘 このレッスンで学ぶこと：メールを送るコードの型<br><br>まず完成形：<pre>const to = 'test@example.com';\nconst subject = '売上レポート';\nconst total = 1390;\nconst body = `売上合計は ${total} 円です。`;\nMailApp.sendEmail(to, subject, body);</pre>中身は1つだけ：<code>MailApp.sendEmail(宛先, 件名, 本文)</code> の1行でメールが送れる（このドリルでは疑似送信）。本文に集計結果を埋め込むのが実務の型だよ。",
         example: {
           code: "function example() {\n  const recipient = 'test@example.com';\n  const title = 'テスト通知';\n  const content = 'まるもちからの自動通知テストだよ！';\n  MailApp.sendEmail(recipient, title, content);\n}",
           desc: "<code>MailApp.sendEmail</code> を使ってメールを疑似送信する例だよ。実行ログに「📧 送信ログ」が表示されるのを確認しよう！"
@@ -2756,7 +2756,7 @@
         title: "トリガーの考え方",
         type: "code",
         defaultSheet: "売上",
-        explain: "GASの真骨頂は『パソコンを閉じて寝ていても勝手に動く』自動化です！これを可能にするのが <strong>トリガー（Trigger）</strong> です。コードからトリガーを登録する方法をマスターしましょう。<br><br><strong>① 部品の意味：</strong><br>・<code>ScriptApp.newTrigger('myFunction')</code>: 自動実行したい関数（<code>myFunction</code>）を指定してトリガーの作成を開始します。<br>・<code>.timeBased()</code>: 「時間主導型（タイマー式）」のトリガーを指定します。<br>・<code>.everyDays(1)</code>: 頻度を「毎日（1日ごと）」に設定します。<br>・<code>.atHour(9)</code>: 実行時刻を「朝9時（午前9時〜10時の間）」に指定します。<br>・<code>.create()</code>: 設定内容を確定し、トリガーを正式に登録します。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function setupDailyTrigger() {\n  ScriptApp.newTrigger('myFunction')\n    .timeBased()\n    .everyDays(1)\n    .atHour(9)\n    .create();\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: <code>myFunction</code> 関数を定期実行するトリガー作成を開始します。<br>・2行目: 変更検知ではなく、時計（時間）に合わせて動くタイマー方式を選びます。<br>・3行目: 「毎日（1日ごと）」の間隔で動かす設定をつなげます。<br>・4行目: 「午前9時」のタイミングで動かす設定をつなげます。<br>・5行目: <code>.create()</code> でトリガー登録を確定します。",
+        explain: "📘 このレッスンで学ぶこと：決まった時刻に自動で動かす「トリガー」の考え方<br><br>まず完成形：<pre>ScriptApp.newTrigger('myFunction')\n  .timeBased()\n  .everyDays(1)\n  .atHour(9)\n  .create();</pre>中身はこれだけ：トリガーは「決まった時刻に、関数を自動で実行する予約」。<code>everyDays(1)</code> と <code>atHour(9)</code> で「毎日9時」に myFunction が勝手に動くようになるよ。",
         example: {
           code: "function example() {\n  ScriptApp.newTrigger('sendReport')\n    .timeBased()\n    .everyDays(1)\n    .atHour(8)\n    .create();\n}",
           desc: "毎朝8時に <code>sendReport</code> 関数を実行するトリガーを登録する例だよ。実行ログに「⏰ トリガー設定ログ」が出るよ！"
@@ -2785,7 +2785,7 @@
         title: "フォーム回答の集計",
         type: "code",
         defaultSheet: "回答",
-        explain: "Googleフォームでアンケートを取ると、回答が自動でスプレッドシートにたまっていきます。この回答シートから特定のデータを数えて、別シート（レポート）にまとめる実践スキルを習得しましょう！<br><br><strong>① 部品の意味：</strong><br>・<code>ss.getSheetByName('回答')</code> / <code>ss.getSheetByName('レポート')</code>: 読み取り元の「回答」シートと、書き込み先の「レポート」シートを取得します。<br>・<code>surveySheet.getRange(r, 2).getValue()</code>: 回答シートのr行目・2列目（B列：満足度）の値を取得します。<br>・<code>reportSheet.getRange('A2').setValue(...)</code>: レポートシートの指定セルに結果を書き込みます。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function aggregateSurvey() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const surveySheet = ss.getSheetByName('回答');\n  const reportSheet = ss.getSheetByName('レポート');\n  \n  let count5 = 0;\n  for (let r = 2; r <= 6; r++) {\n    const score = surveySheet.getRange(r, 2).getValue();\n    if (score === 5) {\n      count5++;\n    }\n  }\n  \n  reportSheet.getRange('A2').setValue('満足度5の人数');\n  reportSheet.getRange('B2').setValue(count5);\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1〜3行目: スプレッドシートを取得し、「回答」シートと「レポート」シートを用意します。<br>・4行目: 満足度が5の人数を数えるカウンター変数 <code>count5</code> を 0 で初期化します。<br>・5〜9行目: 2行目から6行目までの各行をループし、満足度が5ならカウンターを1増やします。<br>・10〜11行目: レポートシートのA2に項目名「満足度5の人数」、B2にカウント結果（3）を書き込みます。",
+        explain: "📘 このレッスンで学ぶこと：フォーム回答を数えて別シートにまとめる方法<br><br>まず完成形：<pre>let count5 = 0;\nfor (let r = 2; r <= 6; r++) {\n  const score = surveySheet.getRange(r, 2).getValue();\n  if (score === 5) { count5++; }\n}\nreportSheet.getRange('A2').setValue('満足度5の人数');\nreportSheet.getRange('B2').setValue(count5);</pre>中身はこれだけ：回答シートを1行ずつ見て満足度5を数え、結果をレポートシートに書く。「数える→別シートにまとめる」が集計の基本形だよ。",
         example: {
           code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const surveySheet = ss.getSheetByName('回答');\n  const reportSheet = ss.getSheetByName('レポート');\n  // 最初の回答者の満足度をレポートに転記する例\n  const firstScore = surveySheet.getRange(2, 2).getValue();\n  reportSheet.getRange('A2').setValue('先頭回答者の満足度');\n  reportSheet.getRange('B2').setValue(firstScore);\n  Logger.log('レポートシートに最初の回答を転記しました！');\n}",
           desc: "「回答」シートからデータを読み取り、「レポート」シートに書き込む例だよ。"
@@ -2815,39 +2815,7 @@
         title: "月次レポートを自動で作る",
         type: "code",
         defaultSheet: "レポート",
-        explain: "実務の月次処理では、売上データ全体から<strong>「売上合計」「販売個数の合計」「平均単価（売上合計÷データ件数）」</strong>を自動計算してレポートシートにまとめる作業が毎月発生します。<br><br>" +
-          "<strong>1. 部品の意味</strong><br>" +
-          "・<code>const salesSheet = ss.getSheetByName('売上');</code> ＝ 売上シートを取得<br>" +
-          "・<code>const reportSheet = ss.getSheetByName('レポート');</code> ＝ 結果を書くレポートシートを取得<br>" +
-          "・<code>salesSheet.getRange(2, 1, 5, 4).getValues();</code> ＝ 2行目から全データ行（5件分）をまとめて取得<br>" +
-          "・<code>totalSales += row[3];</code> ＝ 4列目（D列・金額）を合計に加算<br>" +
-          "・<code>totalCount += row[2];</code> ＝ 3列目（C列・個数）を合計に加算<br>" +
-          "・<code>reportSheet.getRange('A2').setValue('売上合計');</code> ＝ A2セルに項目名を設定<br>" +
-          "・<code>reportSheet.getRange('B2').setValue(totalSales);</code> ＝ B2セルに計算した数値を設定<br><br>" +
-          "<strong>2. つなげた全体のコード</strong><br>" +
-          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
-          "const salesSheet = ss.getSheetByName('売上');\n" +
-          "const reportSheet = ss.getSheetByName('レポート');\n\n" +
-          "const values = salesSheet.getRange(2, 1, 5, 4).getValues();\n" +
-          "let totalSales = 0;\n" +
-          "let totalCount = 0;\n\n" +
-          "for (let i = 0; i < values.length; i++) {\n" +
-          "  totalCount += values[i][2]; // C列（個数）\n" +
-          "  totalSales += values[i][3]; // D列（金額）\n" +
-          "}\n\n" +
-          "const avg = totalSales / values.length;\n\n" +
-          "reportSheet.getRange('A2').setValue('売上合計');\n" +
-          "reportSheet.getRange('B2').setValue(totalSales);\n" +
-          "reportSheet.getRange('A3').setValue('販売個数');\n" +
-          "reportSheet.getRange('B3').setValue(totalCount);\n" +
-          "reportSheet.getRange('A4').setValue('平均単価');\n" +
-          "reportSheet.getRange('B4').setValue(avg);</pre><br>" +
-          "<strong>3. 行ごとの役割</strong><br>" +
-          "・1〜3行目：スプレッドシートから「売上」と「レポート」の2つのシートを取得して準備します。<br>" +
-          "・5〜7行目：売上シートのデータ範囲（A2:D6）を取得し、合計用の変数を0で初期化します。<br>" +
-          "・9〜12行目：ループで各行の個数（C列）と金額（D列）を足し上げます。<br>" +
-          "・14行目：売上合計を行数（5行）で割って平均単価（1390 ÷ 5 ＝ 278）を算出します。<br>" +
-          "・16〜21行目：レポートシートのA2〜B4にそれぞれの項目名と計算数値を書き込みます。",
+        explain: "📘 このレッスンで学ぶこと：売上から月次レポートを自動で作る流れ<br><br>まず完成形：<pre>const values = salesSheet.getRange(2, 1, 5, 4).getValues();\nlet totalSales = 0;\nlet totalCount = 0;\nfor (let i = 0; i < values.length; i++) {\n  totalCount += values[i][2];\n  totalSales += values[i][3];\n}\nconst avg = totalSales / values.length;\nreportSheet.getRange('B2').setValue(totalSales);\nreportSheet.getRange('B3').setValue(totalCount);\nreportSheet.getRange('B4').setValue(avg);</pre>中身はこれだけ：売上をまとめて読み、個数と金額を足し上げ、平均を出してレポートに書く。A2〜A4には項目名（売上合計・販売個数・平均単価）も書くよ。今までの集計の組み合わせだよ。",
         example: {
           desc: "売上シートから売上合計（1390）を計算し、レポートシートのA2に「売上合計」、B2に合計値を書き込む例です。",
           code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const reportSheet = ss.getSheetByName('レポート');\n  const values = salesSheet.getRange(2, 1, 5, 4).getValues();\n  let sum = 0;\n  for (let i = 0; i < values.length; i++) {\n    sum += values[i][3];\n  }\n  reportSheet.getRange('A2').setValue('売上合計');\n  reportSheet.getRange('B2').setValue(sum);\n  Logger.log('売上合計: ' + sum);\n}"
@@ -2883,37 +2851,7 @@
         title: "請求書を自動で作る",
         type: "code",
         defaultSheet: "注文",
-        explain: "複数のシートを組み合わせて、指定の顧客専用の<strong>「請求書」シートを新規作成して自動出力</strong>してみましょう！<br><br>" +
-          "<strong>1. 部品の意味</strong><br>" +
-          "・<code>ss.insertSheet('請求書');</code> ＝ 「請求書」という名前の新しいシートを作成する<br>" +
-          "・<code>orderSheet.getRange('A2:D9').getValues();</code> ＝ 注文データ一覧を取得する<br>" +
-          "・<code>prodSheet.getRange('A2:D5').getValues();</code> ＝ 商品マスタ一覧を取得する<br>" +
-          "・みきさんの注文は注文ID 5（顧客名「みき」、商品ID 2、個数 3）<br>" +
-          "・商品ID 2 の商品は「動く！癒しのまるもち」、単価 250<br>" +
-          "・合計金額は 3 × 250 ＝ 750<br>" +
-          "・<code>invoiceSheet.getRange('A1').setValue('請求書');</code> ＝ 作成したシートに値を書き込む<br><br>" +
-          "<strong>2. つなげた全体のコード</strong><br>" +
-          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
-          "const invoiceSheet = ss.insertSheet('請求書');\n\n" +
-          "invoiceSheet.getRange('A1').setValue('請求書');\n" +
-          "invoiceSheet.getRange('A2').setValue('宛先');\n" +
-          "invoiceSheet.getRange('B2').setValue('みき様');\n" +
-          "invoiceSheet.getRange('A3').setValue('商品名');\n" +
-          "invoiceSheet.getRange('B3').setValue('動く！癒しのまるもち');\n" +
-          "invoiceSheet.getRange('A4').setValue('個数');\n" +
-          "invoiceSheet.getRange('B4').setValue(3);\n" +
-          "invoiceSheet.getRange('A5').setValue('単価');\n" +
-          "invoiceSheet.getRange('B5').setValue(250);\n" +
-          "invoiceSheet.getRange('A6').setValue('合計');\n" +
-          "invoiceSheet.getRange('B6').setValue(750);</pre><br>" +
-          "<strong>3. 行ごとの役割</strong><br>" +
-          "・1〜2行目：<code>ss.insertSheet('請求書')</code> で新しい白紙のシートを作成します。<br>" +
-          "・4行目：A1セルに大見出し「請求書」を書き込みます。<br>" +
-          "・5〜6行目：A2に項目名「宛先」、B2に「みき様」を設定します。<br>" +
-          "・7〜8行目：A3に「商品名」、B3に商品マスタから特定した「動く！癒しのまるもち」を設定します。<br>" +
-          "・9〜10行目：A4に「個数」、B4に注文個数 3 を設定します。<br>" +
-          "・11〜12行目：A5に「単価」、B5に単価 250 を設定します。<br>" +
-          "・13〜14行目：A6に「合計」、B6に計算した合計金額 750 を設定します。",
+        explain: "📘 このレッスンで学ぶこと：注文と商品を組み合わせて請求書を作る流れ<br><br>まず完成形：<pre>const billSheet = ss.insertSheet('請求書');\nbillSheet.getRange('B2').setValue('みき様');\nbillSheet.getRange('B3').setValue('動く！癒しのまるもち');\nbillSheet.getRange('B6').setValue(750);</pre>中身はこれだけ：<code>insertSheet</code> で新しいシートを作り、注文と商品のシートから引いた値を書き込む。金額は「商品の価格×個数」で計算するよ（250×3＝750）。他のセルも同じ要領で書いていく。",
         example: {
           desc: "ss.insertSheet('テスト') で新しいシートを作り、A1セルに文字を書き込む例です。",
           code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const testSheet = ss.insertSheet('テスト');\n  testSheet.getRange('A1').setValue('新規作成シート');\n  Logger.log('シート「テスト」を作成しました');\n}"
@@ -2955,32 +2893,7 @@
         title: "問い合わせを整形する",
         type: "code",
         defaultSheet: "問い合わせ",
-        explain: "Webフォームなどから届く自由入力データには、名前やメールの前後に不要な<strong>半角スペースや全角スペース（余白）</strong>が混ざることがよくあります。<br>GASで前後の空白を自動除去（trim）して、クリーンな「整形結果」シートへ書き出してみましょう！<br><br>" +
-          "<strong>1. 部品の意味</strong><br>" +
-          "・<code>String(val).trim()</code> ＝ 前後の半角・全角空白を取り除いた文字列を返す<br>" +
-          "・<code>ss.insertSheet('整形結果');</code> ＝ 整形後のデータを保存する新しいシートを作る<br>" +
-          "・<code>inquirySheet.getRange('A1:C4').getValues();</code> ＝ 見出し行を含む全データを2次元配列で取得<br>" +
-          "・ループで各セルの値に <code>trim()</code> を適用して新しい2次元配列を作成<br>" +
-          "・<code>cleanSheet.getRange(1, 1, 4, 3).setValues(cleanValues);</code> ＝ 整形結果を一括書き込み<br><br>" +
-          "<strong>2. つなげた全体のコード</strong><br>" +
-          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
-          "const inquirySheet = ss.getSheetByName('問い合わせ');\n" +
-          "const cleanSheet = ss.insertSheet('整形結果');\n\n" +
-          "const rawValues = inquirySheet.getRange('A1:C4').getValues();\n" +
-          "const cleanValues = [];\n\n" +
-          "for (let r = 0; r < rawValues.length; r++) {\n" +
-          "  const row = [];\n" +
-          "  for (let c = 0; c < rawValues[r].length; c++) {\n" +
-          "    row.push(String(rawValues[r][c]).trim());\n" +
-          "  }\n" +
-          "  cleanValues.push(row);\n" +
-          "}\n\n" +
-          "cleanSheet.getRange(1, 1, cleanValues.length, 3).setValues(cleanValues);</pre><br>" +
-          "<strong>3. 行ごとの役割</strong><br>" +
-          "・1〜3行目：「問い合わせ」シートを取得し、書き出し用の新しい「整形結果」シートを作成します。<br>" +
-          "・5〜6行目：元の全セル（A1:C4）を2次元配列で取得し、整形後を格納する空配列を用意します。<br>" +
-          "・8〜14行目：行・列の二重ループで各セルの値を <code>trim()</code> で空白除去し、新しい行配列を作って追加します。<br>" +
-          "・16行目：<code>setValues()</code> を使って「整形結果」シートへ一括書き込みします。",
+        explain: "📘 このレッスンで学ぶこと：汚れたデータを整えて別シートに出す流れ<br><br>まず完成形：<pre>const cleanSheet = ss.insertSheet('整形結果');\nfor (let r = 1; r <= 4; r++) {\n  const name = String(inquirySheet.getRange(r, 1).getValue()).trim();\n  cleanSheet.getRange(r, 1).setValue(name);\n}</pre>中身は1つだけ：<code>trim()</code> は文字の前後の空白を取り除く命令。メールや本文も同じやり方で整えて書き出すよ。",
         example: {
           desc: "前後に半角・全角空白が含まれる文字列を String(val).trim() で整形する例です。",
           code: "function example() {\n  const raw = '　さくら　';\n  const cleaned = String(raw).trim();\n  Logger.log('整形前: [' + raw + ']');\n  Logger.log('整形後: [' + cleaned + ']');\n}"
@@ -3020,47 +2933,7 @@
         badge: "BOSS",
         type: "code",
         defaultSheet: "レポート",
-        explain: "いよいよ最後の卒業試験です！<br>これまでに学んだ<strong>「複数シートの参照」「商品マスタの価格照合」「売上計算」「レポートシートへの出力」「MailAppによるメール通知」</strong>を1つの関数に統合して、完全自動化システムを完成させましょう！<br><br>" +
-          "<strong>1. 部品の意味</strong><br>" +
-          "・<code>productSheet.getRange('A2:D5').getValues();</code> ＝ 商品IDと価格のマスタを取得<br>" +
-          "・<code>orderSheet.getRange('A2:D9').getValues();</code> ＝ 全8件の注文データを取得<br>" +
-          "・商品IDごとの単価（ID 1: 190円、ID 2: 250円、ID 3: 250円、ID 4: 480円）を使って、各注文の金額を計算して加算<br>" +
-          "・全注文の総売上は 2760、注文件数は 8<br>" +
-          "・<code>reportSheet.getRange('A2').setValue('総売上');</code> / <code>getRange('B2').setValue(2760);</code><br>" +
-          "・<code>reportSheet.getRange('A3').setValue('注文件数');</code> / <code>getRange('B3').setValue(8);</code><br>" +
-          "・<code>MailApp.sendEmail('boss@example.com', '月次レポート', '総売上: 2760円、注文件数: 8件です。');</code> ＝ 報告メールを送信<br><br>" +
-          "<strong>2. つなげた全体のコード</strong><br>" +
-          "<pre class=\"model-code-box\">const ss = SpreadsheetApp.getActiveSpreadsheet();\n" +
-          "const orderSheet = ss.getSheetByName('注文');\n" +
-          "const productSheet = ss.getSheetByName('商品');\n" +
-          "const reportSheet = ss.getSheetByName('レポート');\n\n" +
-          "// 商品マスタの価格マップを作成\n" +
-          "const prodValues = productSheet.getRange('A2:D5').getValues();\n" +
-          "const priceMap = {};\n" +
-          "for (let i = 0; i < prodValues.length; i++) {\n" +
-          "  priceMap[prodValues[i][0]] = prodValues[i][3];\n" +
-          "}\n\n" +
-          "// 全注文の金額を集計\n" +
-          "const orderValues = orderSheet.getRange('A2:D9').getValues();\n" +
-          "let totalSales = 0;\n" +
-          "for (let i = 0; i < orderValues.length; i++) {\n" +
-          "  const prodId = orderValues[i][2];\n" +
-          "  const qty = orderValues[i][3];\n" +
-          "  totalSales += (priceMap[prodId] || 0) * qty;\n" +
-          "}\n\n" +
-          "// レポートシートに書き出し\n" +
-          "reportSheet.getRange('A2').setValue('総売上');\n" +
-          "reportSheet.getRange('B2').setValue(totalSales);\n" +
-          "reportSheet.getRange('A3').setValue('注文件数');\n" +
-          "reportSheet.getRange('B3').setValue(orderValues.length);\n\n" +
-          "// メールで完了報告を送信\n" +
-          "MailApp.sendEmail('manager@example.com', '月次レポート', '今月の総売上は ' + totalSales + ' 円、注文件数は ' + orderValues.length + ' 件です。');</pre><br>" +
-          "<strong>3. 行ごとの役割</strong><br>" +
-          "・1〜4行目：「注文」「商品」「レポート」の3つのシートを取得します。<br>" +
-          "・6〜11行目：商品シートから各商品の単価をオブジェクト（辞書）にマッピングします。<br>" +
-          "・13〜19行目：注文データをループし、商品IDの単価×個数を計算して総売上（2760）を算出します。<br>" +
-          "・21〜25行目：レポートシートのA2に「総売上」、B2に 2760、A3に「注文件数」、B3に 8 を書き込みます。<br>" +
-          "・27〜28行目：MailAppで件名「月次レポート」の報告メールを送信します。",
+        explain: "📘 このレッスンで学ぶこと：集計→書き出し→メール送信までを1つにまとめる方法<br><br>まず完成形（流れ）：<pre>1. 注文と商品を照合して、売上の総額を出す\n2. レポートシートに総売上と注文件数を書く\n3. MailAppで「月次レポート」を送る</pre>中身は今までの総組み合わせ。新しい部品はないので、g-01〜g-03の流れを1つの関数につなげるだけだよ。",
         example: {
           desc: "レポートシートに合計値を書き込み、メールで通知する一連の流れを実行する例です。",
           code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const reportSheet = ss.getSheetByName('レポート');\n  reportSheet.getRange('A2').setValue('総売上');\n  reportSheet.getRange('B2').setValue(2760);\n  reportSheet.getRange('A3').setValue('注文件数');\n  reportSheet.getRange('B3').setValue(8);\n  MailApp.sendEmail('test@example.com', '月次レポート', '集計完了しました。');\n  Logger.log('レポート記入とメール送信が完了しました');\n}"
