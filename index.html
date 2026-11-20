@@ -2055,7 +2055,7 @@
         explain: "📘 このレッスンで学ぶこと：Logger.logで、ログ欄に文字を表示する命令の書き方<br><br>まず完成形から見てみよう：<code>Logger.log('こんにちは');</code><br>実行すると、ログ欄に「こんにちは」と出る。<br>中身はこれだけ：<code>Logger.log(...)</code> は「（…）の中身をログ欄に表示して」という命令。ログ欄はプログラムの作業報告を表示する場所で、セルには何も書かれないよ。<br>プログラムは上から順番に1行ずつ実行される。これが一番大事なルールだよ。",
         example: {
           code: `function sample() {\n  Logger.log("1番目のお願い！");\n  Logger.log("2番目のお願い！");\n}`,
-          desc: "これがこのレッスンの完成形だよ。Logger.log を2行書くと、ログに上から順番に出る。このあとの問題も、この形で解くよ。"
+          desc: "Logger.log を2行書くと、ログに上から順番に出るよ。"
         },
         question: "<code>Logger.log</code> を使って、1行目に <code>まるもち</code>、2行目に <code>だいすき</code> とログに出力してみよう！",
         starterCode: `function myLesson() {\n  // ここにコードを書いてみよう\n  Logger.log("まるもち");\n  \n}`,
@@ -2108,7 +2108,7 @@
         explain: "📘 このレッスンで学ぶこと：セルに値を書き込むコードの書き方<br><br>まず完成形：<br><code>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');</code><br><code>sheet.getRange('D6').setValue(500);</code><br>2行目が書き込みの本体で、「D6を指定して、500を書き込む」という意味。実行するとプレビュー表がパッと書き換わるよ。",
         example: {
           code: `function setSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  sheet.getRange('C6').setValue(1);\n}`,
-          desc: "これがこのレッスンの完成形だよ。C6 に 1 を書き込んでいる。このあとの問題では、書くセルと数字が変わるだけだよ。"
+          desc: "C6 に 1 を書き込んでいる例だよ。"
         },
         question: "売上シートの <strong>D6セル</strong>（現在は 0）に、金額 <code>500</code> を書き込んでみよう！",
         starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // D6セルに 500 を書き込んでみよう！\n  \n}`,
@@ -2160,7 +2160,7 @@
         explain: "📘 このレッスンで学ぶこと：変数（値を入れる箱）の作り方と使い回し方<br><br>まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst newCount = 3;\nsheet.getRange('C2').setValue(newCount);</pre>中身はこれだけ：変数は「値に名前を付けた箱」。newCount という箱に 3 を入れて、その箱を setValue に渡している。数字をそのまま書くより、意味が分かりやすくなるよ。",
         example: {
           code: `function boxSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newCount = 3;\n  sheet.getRange('C2').setValue(newCount);\n}`,
-          desc: "これがこのレッスンの完成形だよ。変数に入れた数をセルに書き込んでいる。このあとの問題では、書くセルと数が変わるだけだよ。"
+          desc: "変数に入れた数をセルに書き込んでいる例だよ。"
         },
         question: "変数 <code>newCount = 5</code> を作り、<strong>C6セル</strong>（あけおめ！まるもち2027の個数、現在は0）に <code>setValue(newCount)</code> で書き込んでみよう！",
         starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // ここで変数 newCount に 5 を入れてみよう\n  const newCount = 5;\n  \n  // C6セルに newCount を書き込もう\n  \n}`,
@@ -2185,7 +2185,7 @@
         explain: "📘 このレッスンで学ぶこと：文字と数字の違いと、+ の働き<br><br>まず完成形：<code>sheet.getRange('B2').setValue(currentName + \" ★人気\");</code><br>B2の中身に「 ★人気」をくっつけて、B2に書き戻している。<br>中身のポイントは <code>+</code> の働きだけ：文字同士なら連結、数字同士なら足し算。文字は <code>' '</code> か <code>\" \"</code> で囲むのがルールだよ。",
         example: {
           code: `function updateSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const currentName = sheet.getRange('B3').getValue();\n  sheet.getRange('B3').setValue(currentName + " ★人気");\n}`,
-          desc: "これがこのレッスンの完成形だよ。「読む → くっつける → 書き戻す」を B3 でやっている。このあとの問題では、対象のセルが変わるだけだよ。"
+          desc: "「読む → くっつける → 書き戻す」を B3 でやっている例だよ。"
         },
         question: "B2セルのスタンプ名（癒しのまるもち）を読み出し、後ろに文字列 <code> ★人気</code> を <code>+</code> でくっつけて、<strong>B2セル</strong>に書き戻してみよう！（「癒しのまるもち ★人気」になれば合格！）",
         starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const currentName = sheet.getRange('B2').getValue();\n  // currentName と " ★人気" を + でつなげよう！\n  \n}`,
@@ -2210,7 +2210,7 @@
         explain: "📘 このレッスンで学ぶこと：ifで「もし〜なら」の分岐を作る方法<br><br>まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst count = sheet.getRange('C6').getValue();\nif (count === 0) {\n  sheet.getRange('B6').setValue('完売');\n}</pre>中身は1つだけ：<code>count === 0</code> は「countが0と等しいか」の確認（<code>=</code> 1個は代入で別物）。C6は0だからB6に『完売』が書かれる。0じゃなければ何も起きないよ。",
         example: {
           code: `function checkSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const count = sheet.getRange('C6').getValue();\n  if (count === 0) {\n    Logger.log("完売です");\n  }\n}`,
-          desc: "これがこのレッスンの完成形に近い形だよ。C6 を読んで、0 なら「完売です」とログに出す。このあとの問題では、ログの代わりに B6 に『完売』と書き込むよ。"
+          desc: "C6 を読んで、0 なら「完売です」とログに出す例だよ。"
         },
         question: "C6セルの個数を読み出し、<strong>もし個数が 0 なら</strong>、B6セルの文字を <code>完売</code> に書き換えてみよう！",
         starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const count = sheet.getRange('C6').getValue();\n  // もし count が 0 なら、B6セルに '完売' を書き込もう\n  if (count === 0) {\n    \n  }\n}`,
@@ -2235,7 +2235,7 @@
         explain: "📘 このレッスンで学ぶこと：forで同じ処理を繰り返す方法<br><br>まず完成形：<pre>let sum = 0;\nfor (let i = 2; i <= 6; i++) {\n  const price = sheet.getRange(i, 4).getValue();\n  sum = sum + price;\n}</pre>中身は2つだけ：<code>i</code> は行番号で、2から6まで1つずつ増えていく。<code>getRange(i, 4)</code> は「i行目・4列目（D列）」という指定方法。金額を1行ずつ取って sum に足していくよ。",
         example: {
           code: `function sumSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  let sum = 0;\n  for (let i = 2; i <= 3; i++) {\n    const price = sheet.getRange(i, 4).getValue();\n    sum = sum + price;\n  }\n  Logger.log(sum);\n}`,
-          desc: "これがこのレッスンの完成形だよ。2〜3行目だけの短い版で、合計 570 がログに出る。このあとの問題では、行の範囲が広くなって、結果をセルに書くよ。"
+          desc: "2〜3行目だけの短い版で、合計 570 がログに出る例だよ。"
         },
         question: "for文を使って、売上シートの2行目から6行目までの金額（D列: D2〜D6）をすべて足し算し、その<strong>合計金額を D7セル</strong>に書き込んでみよう！（190+380+250+570+0 = 1390）",
         starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  let sum = 0;\n  for (let i = 2; i <= 6; i++) {\n    const price = sheet.getRange(i, 4).getValue(); // i行目・4列目(D列)\n    sum = sum + price;\n  }\n  // 合計 sum を D7セルに書き込もう！\n  \n}`,
@@ -2260,7 +2260,7 @@
         explain: "📘 このレッスンで学ぶこと：配列（データの並び）の作り方と使い方<br><br>まず完成形：<code>const newRow = [\"2026-11-15\", \"すやすやまるもち\", 4, 760];</code><br><code>sheet.appendRow(newRow);</code><br>中身はこれだけ：<code>[ ]</code> で囲んだデータの並びが「配列」。appendRow は「表の一番下にこの1行を追加して」という命令だよ。<br>なお、配列の中身を取り出すときの番号は0から数える（1番目が [0]）。",
         example: {
           code: `function addSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const sampleRow = ["2026-11-14", "おためしまるもち", 1, 100];\n  sheet.appendRow(sampleRow);\n}`,
-          desc: "これがこのレッスンの完成形だよ。配列を作って、appendRow で表の一番下に追加している。このあとの問題も、この形で解くよ。"
+          desc: "配列を作って、appendRow で表の一番下に追加している例だよ。"
         },
         question: "新しいスタンプのデータ <code>const newRow = [\"2026-11-15\", \"すやすやまるもち\", 4, 760];</code> を用意したよ。<code>sheet.appendRow(newRow)</code> を使って、表の一番下に新しい行を追加してみよう！",
         starterCode: `function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newRow = ["2026-11-15", "すやすやまるもち", 4, 760];\n  // sheet.appendRow を使って表に追加してみよう！\n  \n}`,
@@ -2290,7 +2290,7 @@
         explain: "📘 このレッスンで学ぶこと：関数（使い回せる道具）の作り方<br><br>まず完成形：<pre>function calcTotal(count, unitPrice) {\n  return count * unitPrice;\n}\nconst total = calcTotal(3, 200);\nsheet.getRange('D6').setValue(total);</pre>中身はこれだけ：関数は「材料を渡すと、結果を返してくれる道具」。渡す材料が引数、返ってくる結果が戻り値（return）。ここでは 3×200＝600 が total に入り、D6に書かれるよ。",
         example: {
           code: `function sample() {\n  function calcAmount(count, unitPrice) {\n    return count * unitPrice;\n  }\n  const result = calcAmount(2, 150);\n  Logger.log(result);\n}`,
-          desc: "これがこのレッスンの完成形だよ。関数を作って、呼んで、結果（300）をログに出している。このあとの問題では、結果をログではなくセルに書くよ。"
+          desc: "関数を作って、呼んで、結果（300）をログに出している例だよ。"
         },
         question: "個数と単価を掛け算して返す関数 <code>calcTotal(count, unitPrice)</code> を完成させ、それを使って個数 3、単価 200 の金額（600）を計算し、<strong>D6セル</strong>に書き込んでみよう！",
         starterCode: `function calcTotal(count, unitPrice) {\n  // count と unitPrice を掛け算して return しよう\n  return count * unitPrice;\n}\n\nfunction myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  // calcTotal を使って 3個 × 200円 を計算！\n  const total = calcTotal(3, 200);\n  // total (600) を D6セルに書き込もう\n  \n}`,
