@@ -3516,7 +3516,9 @@
         const scriptApp = new MockScriptApp(logger);
 
         try {
-          const fn = new Function("SpreadsheetApp", "Logger", "console", "Utilities", "MailApp", "ScriptApp", `${this.currentLesson.example.code}\n;if(typeof example==='function')example();if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
+          const exNames = [...new Set([...this.currentLesson.example.code.matchAll(/function\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*\(/g)].map(m => m[1]))];
+          const exCalls = exNames.map(n => "if(typeof " + n + "==='function')" + n + "();").join("");
+          const fn = new Function("SpreadsheetApp", "Logger", "console", "Utilities", "MailApp", "ScriptApp", this.currentLesson.example.code + "\n;" + exCalls);
           fn(spreadsheetApp, logger, logger, utilities, mailApp, scriptApp);
 
           // 変化したセルを「C6（3 → 1）」や色変更の形でまとめる（複数シート対応）
