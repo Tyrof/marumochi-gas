@@ -2157,7 +2157,7 @@
         stageId: "stage-0",
         title: "変数（let / const）",
         type: "code",
-        explain: "📘 このレッスンで学ぶこと：変数（値を入れる箱）の作り方と使い回し方<br><br>まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst newCount = 3;\nsheet.getRange('C2').setValue(newCount);</pre>中身はこれだけ：変数は「値に名前を付けた箱」。newCount という箱に 3 を入れて、その箱を setValue に渡している。数字をそのまま書くより、意味が分かりやすくなるよ。",
+        explain: "📘 このレッスンで学ぶこと：変数（値を入れる箱）の作り方と使い回し方<br><br>まず完成形：<pre>const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\nconst newCount = 3;\nsheet.getRange('C2').setValue(newCount);</pre>中身はこれだけ：変数は「値に名前を付けた箱」。newCount という箱に 3 を入れて、その箱を setValue に渡している。数字をそのまま書くより、意味が分かりやすくなるよ。<br>箱には2種類あるよ：<code>const</code> は後から中身を変えない箱、<code>let</code> は後から変えられる箱。完成形の newCount は途中で変えないから const を使っているよ。",
         example: {
           code: `function boxSample() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('売上');\n  const newCount = 3;\n  sheet.getRange('C2').setValue(newCount);\n}`,
           desc: "変数に入れた数をセルに書き込んでいる例だよ。"
