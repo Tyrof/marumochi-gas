@@ -1222,6 +1222,15 @@
             <div class="sheet-tab" data-sheet="レポート" onclick="app.switchExampleSheet('レポート')">
               <div class="sheet-tab-dot"></div><span>レポート</span>
             </div>
+            <div class="sheet-tab" data-sheet="商品" onclick="app.switchExampleSheet('商品')">
+              <div class="sheet-tab-dot"></div><span>商品</span>
+            </div>
+            <div class="sheet-tab" data-sheet="注文" onclick="app.switchExampleSheet('注文')">
+              <div class="sheet-tab-dot"></div><span>注文</span>
+            </div>
+            <div class="sheet-tab" data-sheet="回答" onclick="app.switchExampleSheet('回答')">
+              <div class="sheet-tab-dot"></div><span>回答</span>
+            </div>
           </div>
           <div class="sheet-table-scroll">
             <table class="sheet-table" id="example-sheet-table">
@@ -1250,6 +1259,15 @@
             </div>
             <div class="sheet-tab" data-sheet="レポート" onclick="app.switchLessonSheet('レポート')">
               <div class="sheet-tab-dot"></div><span>レポート</span>
+            </div>
+            <div class="sheet-tab" data-sheet="商品" onclick="app.switchLessonSheet('商品')">
+              <div class="sheet-tab-dot"></div><span>商品</span>
+            </div>
+            <div class="sheet-tab" data-sheet="注文" onclick="app.switchLessonSheet('注文')">
+              <div class="sheet-tab-dot"></div><span>注文</span>
+            </div>
+            <div class="sheet-tab" data-sheet="回答" onclick="app.switchLessonSheet('回答')">
+              <div class="sheet-tab-dot"></div><span>回答</span>
             </div>
           </div>
           <div class="sheet-table-scroll">
@@ -1418,6 +1436,15 @@
             <div class="sheet-tab" data-sheet="レポート" onclick="app.switchSandboxSheet('レポート')">
               <div class="sheet-tab-dot"></div><span>レポート</span>
             </div>
+            <div class="sheet-tab" data-sheet="商品" onclick="app.switchSandboxSheet('商品')">
+              <div class="sheet-tab-dot"></div><span>商品</span>
+            </div>
+            <div class="sheet-tab" data-sheet="注文" onclick="app.switchSandboxSheet('注文')">
+              <div class="sheet-tab-dot"></div><span>注文</span>
+            </div>
+            <div class="sheet-tab" data-sheet="回答" onclick="app.switchSandboxSheet('回答')">
+              <div class="sheet-tab-dot"></div><span>回答</span>
+            </div>
           </div>
           <div class="sheet-table-scroll">
             <table class="sheet-table" id="sandbox-sheet-table"></table>
@@ -1500,6 +1527,36 @@
       ["項目", "値"]
     ];
 
+    const INITIAL_PRODUCTS_DATA = [
+      ["商品ID", "商品名", "カテゴリ", "価格"],
+      [1, "癒しのまるもち", "静止画", 190],
+      [2, "動く！癒しのまるもち", "アニメ", 250],
+      [3, "あけおめ！まるもち2027", "季節", 250],
+      [4, "まるもち絵本", "絵本", 480]
+    ];
+
+    const INITIAL_ORDERS_DATA = [
+      ["注文ID", "顧客名", "商品ID", "個数"],
+      [1, "さくら", 1, 2],
+      [2, "さくら", 2, 1],
+      [3, "たろう", 1, 1],
+      [4, "はな", 3, 2],
+      [5, "みき", 2, 3],
+      [6, "さくら（関西）", 3, 1],
+      [7, "はな", 1, 1],
+      [8, "たろう", 2, 1]
+    ];
+
+    const INITIAL_SURVEY_DATA = [
+      ["名前", "満足度"],
+      ["さくら", 5],
+      ["たろう", 4],
+      ["はな", 5],
+      ["ゆうき", 3],
+      ["もも", 5]
+    ];
+
+
     function cloneSheetData(data) {
       return data.map(row => [...row]);
     }
@@ -1508,7 +1565,10 @@
       return {
         "売上": new MockSheet("売上", INITIAL_SALES_DATA),
         "顧客": new MockSheet("顧客", INITIAL_CUSTOMER_DATA),
-        "レポート": new MockSheet("レポート", INITIAL_REPORT_DATA)
+        "レポート": new MockSheet("レポート", INITIAL_REPORT_DATA),
+        "商品": new MockSheet("商品", INITIAL_PRODUCTS_DATA),
+        "注文": new MockSheet("注文", INITIAL_ORDERS_DATA),
+        "回答": new MockSheet("回答", INITIAL_SURVEY_DATA)
       };
     }
 
@@ -1579,13 +1639,68 @@
         }
         return this;
       }
+
+      setBackground(color) {
+        for (let r = 0; r < this.numRows; r++) {
+          const rowIndex = this.startRow - 1 + r;
+          this.sheet.ensureCapacity(rowIndex, this.startCol - 1 + this.numCols);
+          for (let c = 0; c < this.numCols; c++) {
+            const colIndex = this.startCol - 1 + c;
+            if (!this.sheet.bgColors) this.sheet.bgColors = {};
+            this.sheet.bgColors[`${rowIndex},${colIndex}`] = color;
+            this.sheet.trackUpdatedCell(rowIndex, colIndex);
+          }
+        }
+        return this;
+      }
+
+      getBackground() {
+        const r = this.startRow - 1;
+        const c = this.startCol - 1;
+        if (this.sheet.bgColors && this.sheet.bgColors[`${r},${c}`]) {
+          return this.sheet.bgColors[`${r},${c}`];
+        }
+        return "#ffffff";
+      }
+
+      setBackgrounds(colors) {
+        for (let r = 0; r < this.numRows; r++) {
+          const rowIndex = this.startRow - 1 + r;
+          this.sheet.ensureCapacity(rowIndex, this.startCol - 1 + this.numCols);
+          for (let c = 0; c < this.numCols; c++) {
+            const colIndex = this.startCol - 1 + c;
+            if (!this.sheet.bgColors) this.sheet.bgColors = {};
+            const color = (colors[r] && colors[r][c]) ? colors[r][c] : "#ffffff";
+            this.sheet.bgColors[`${rowIndex},${colIndex}`] = color;
+            this.sheet.trackUpdatedCell(rowIndex, colIndex);
+          }
+        }
+        return this;
+      }
+
+      getBackgrounds() {
+        const result = [];
+        for (let r = 0; r < this.numRows; r++) {
+          const row = [];
+          const rowIndex = this.startRow - 1 + r;
+          for (let c = 0; c < this.numCols; c++) {
+            const colIndex = this.startCol - 1 + c;
+            const color = (this.sheet.bgColors && this.sheet.bgColors[`${rowIndex},${colIndex}`]) || "#ffffff";
+            row.push(color);
+          }
+          result.push(row);
+        }
+        return result;
+      }
     }
 
     class MockSheet {
       constructor(name, data) {
         this.name = name;
         this.data = cloneSheetData(data);
+        this.bgColors = {}; // "r,c" -> hex color
         this.updatedCells = new Set(); // "r,c"
+        this.spreadsheet = null;
       }
 
       ensureCapacity(row, col) {
@@ -1680,11 +1795,42 @@
           this.trackUpdatedCell(newRowIndex, c);
         }
       }
+
+      copyTo(targetSpreadsheet) {
+        const ss = targetSpreadsheet || this.spreadsheet;
+        const copyName = `${this.name}のコピー`;
+        const newSheet = new MockSheet(copyName, this.data);
+        newSheet.bgColors = { ...this.bgColors };
+        newSheet.spreadsheet = ss;
+        if (ss && ss.sheets) {
+          ss.sheets[copyName] = newSheet;
+        }
+        return newSheet;
+      }
+
+      setName(newName) {
+        const oldName = this.name;
+        this.name = newName;
+        if (this.spreadsheet && this.spreadsheet.sheets) {
+          delete this.spreadsheet.sheets[oldName];
+          this.spreadsheet.sheets[newName] = this;
+        }
+        return this;
+      }
+
+      getName() {
+        return this.name;
+      }
     }
 
     class MockSpreadsheet {
       constructor(sheetsMap) {
         this.sheets = sheetsMap; // { "売上": MockSheet }
+        for (const name in this.sheets) {
+          if (this.sheets[name]) {
+            this.sheets[name].spreadsheet = this;
+          }
+        }
       }
 
       getSheetByName(name) {
@@ -1699,6 +1845,152 @@
       getActiveSheet() {
         const first = Object.keys(this.sheets)[0];
         return this.sheets[first];
+      }
+
+      getSheets() {
+        return Object.values(this.sheets);
+      }
+    }
+
+    const MockUtilities = {
+      formatDate(date, timeZone, format) {
+        let year, month, day, hours, minutes, seconds;
+        if (typeof date === "string") {
+          const match = date.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+          if (match) {
+            year = parseInt(match[1], 10);
+            month = parseInt(match[2], 10);
+            day = parseInt(match[3], 10);
+            hours = 0; minutes = 0; seconds = 0;
+          }
+        }
+        if (year === undefined) {
+          const d = (date instanceof Date) ? date : new Date(date);
+          if (isNaN(d.getTime())) return "";
+          year = d.getFullYear();
+          month = d.getMonth() + 1;
+          day = d.getDate();
+          hours = d.getHours();
+          minutes = d.getMinutes();
+          seconds = d.getSeconds();
+        }
+
+        let res = format || "yyyy/MM/dd";
+        res = res.replace(/yyyy/g, String(year));
+        res = res.replace(/yy/g, String(year).slice(-2));
+        res = res.replace(/MM/g, String(month).padStart(2, "0"));
+        res = res.replace(/M/g, String(month));
+        res = res.replace(/dd/g, String(day).padStart(2, "0"));
+        res = res.replace(/d/g, String(day));
+        res = res.replace(/HH/g, String(hours).padStart(2, "0"));
+        res = res.replace(/H/g, String(hours));
+        res = res.replace(/mm/g, String(minutes).padStart(2, "0"));
+        res = res.replace(/m/g, String(minutes));
+        res = res.replace(/ss/g, String(seconds).padStart(2, "0"));
+        res = res.replace(/s/g, String(seconds));
+        return res;
+      }
+    };
+
+    class MockMailApp {
+      constructor(logger) {
+        this.logger = logger;
+        this.sentEmails = [];
+      }
+
+      sendEmail(recipientOrOptions, subject, body, options) {
+        let to, subj, content;
+        if (typeof recipientOrOptions === "object" && recipientOrOptions !== null) {
+          to = recipientOrOptions.to;
+          subj = recipientOrOptions.subject;
+          content = recipientOrOptions.body || recipientOrOptions.htmlBody || "";
+        } else {
+          to = recipientOrOptions;
+          subj = subject;
+          content = body;
+        }
+        const record = { to, subject: subj, body: content };
+        this.sentEmails.push(record);
+        if (this.logger) {
+          this.logger.log(`📧 送信ログ：宛先=${to} | 件名=${subj} | 本文=${content}`);
+        }
+        return record;
+      }
+    }
+
+    class MockTriggerBuilder {
+      constructor(functionName, scriptApp, logger) {
+        this.functionName = functionName;
+        this.scriptApp = scriptApp;
+        this.logger = logger;
+        this.info = {
+          functionName: functionName,
+          type: "timeBased",
+          hour: null,
+          frequency: "毎日"
+        };
+      }
+
+      timeBased() {
+        this.info.type = "timeBased";
+        return this;
+      }
+
+      atHour(hour) {
+        this.info.hour = hour;
+        return this;
+      }
+
+      everyDays(n) {
+        this.info.frequency = n === 1 ? "毎日" : `${n}日ごと`;
+        return this;
+      }
+
+      everyWeeks(n) {
+        this.info.frequency = `${n}週間ごと`;
+        return this;
+      }
+
+      everyHours(n) {
+        this.info.frequency = `${n}時間ごと`;
+        return this;
+      }
+
+      everyMinutes(n) {
+        this.info.frequency = `${n}分ごと`;
+        return this;
+      }
+
+      create() {
+        this.scriptApp.triggers.push(this.info);
+        const hourStr = this.info.hour !== null ? `${this.info.hour}時` : "";
+        const desc = `${this.info.frequency} ${hourStr}`.trim();
+        if (this.logger) {
+          this.logger.log(`⏰ トリガー設定ログ：関数 '${this.functionName}' を「${desc}」に実行するトリガーを登録しました`);
+        }
+        return this.info;
+      }
+    }
+
+    class MockScriptApp {
+      constructor(logger) {
+        this.logger = logger;
+        this.triggers = [];
+      }
+
+      newTrigger(functionName) {
+        return new MockTriggerBuilder(functionName, this, this.logger);
+      }
+
+      getProjectTriggers() {
+        return this.triggers;
+      }
+
+      deleteTrigger(trigger) {
+        const idx = this.triggers.indexOf(trigger);
+        if (idx !== -1) {
+          this.triggers.splice(idx, 1);
+        }
       }
     }
 
@@ -2307,6 +2599,184 @@
         hint3: "A3とB3の2行を追加して実行すれば完成だよ！",
         modelCode: `function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const reportSheet = ss.getSheetByName('レポート');\n  reportSheet.getRange('A2').setValue('売上合計');\n  reportSheet.getRange('B2').setValue(1390);\n  reportSheet.getRange('A3').setValue('関東の顧客数');\n  reportSheet.getRange('B3').setValue(3);\n}`,
         afterNote: "おめでとう！！！これで Stage 2『条件分岐と自動判定・集計』も全制覇だよ！複数シートの連携と自動集計レポート作成までできるようになって、もう立派なGASエンジニアだね🍡🎉"
+      },
+      // --- Stage 3（実務自動化テクニック 6レッスン） ---
+      {
+        id: "s3-01",
+        stageId: "stage-3",
+        title: "日付を見やすく整える",
+        type: "code",
+        defaultSheet: "売上",
+        explain: "実務で日付を扱うとき、そのままログやメールに出すと <code>Mon Nov 16 2026 00:00:00...</code> のように英語で長くなって見づらくなります。そこで大活躍するのが <code>Utilities.formatDate</code> です！<br><br><strong>① 部品の意味：</strong><br>・<code>Utilities.formatDate(date, timeZone, format)</code>: 日付を指定した形式の文字列に変換するGAS専用の便利メソッドです。<br>・<code>date</code>: 変換したい日付オブジェクト（例: <code>new Date(2026, 10, 16)</code>）。<br>・<code>timeZone</code>: タイムゾーン（日本標準時は <code>'Asia/Tokyo'</code>）。<br>・<code>format</code>: 日付の並べ方（例: <code>'yyyy年M月d日'</code>。yyyyは4桁年、Mは月、dは日）。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function formatDateSample() {\n  const date = new Date(2026, 10, 16);\n  const text = Utilities.formatDate(date, 'Asia/Tokyo', 'yyyy年M月d日');\n  Logger.log(text);\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: 2026年11月16日の日付データを用意します（JSの月は0始まりなので11月は10）。<br>・2行目: 日本時間で「2026年11月16日」というきれいな日本語の文字列に変換します。<br>・3行目: 変換した日付文字列をログに出力します。",
+        example: {
+          code: "function example() {\n  const today = new Date(2026, 10, 16);\n  const formatted = Utilities.formatDate(today, 'Asia/Tokyo', 'yyyy年M月d日');\n  Logger.log('変換結果: ' + formatted);\n}",
+          desc: "<code>Utilities.formatDate</code> を使って日付を「2026年11月16日」形式に整えてログに出力する例だよ。"
+        },
+        question: "<code>Utilities.formatDate</code> を使って、日付 2026年11月16日 を <strong>「2026年11月16日」</strong> という文字列に変換し、<code>Logger.log</code> で表示してみよう！",
+        starterCode: "function myLesson() {\n  const targetDate = new Date(2026, 10, 16);\n  // Utilities.formatDate を使って「yyyy年M月d日」に変換しよう\n  const formatted = Utilities.formatDate(targetDate, 'Asia/Tokyo', 'yyyy年M月d日');\n  Logger.log(formatted);\n}",
+        check: (sheet, logs) => {
+          if (logs.some(l => l.includes("2026年11月16日"))) {
+            return { pass: true, msg: "Utilities.formatDate で日付を「2026年11月16日」にきれいに変換できました！" };
+          }
+          return { pass: false, msg: "ログに「2026年11月16日」が出力されていません。Utilities.formatDate(targetDate, 'Asia/Tokyo', 'yyyy年M月d日') を使って Logger.log で出力してください。" };
+        },
+        hint1: "Utilities.formatDate(targetDate, 'Asia/Tokyo', 'yyyy年M月d日') と書くよ。",
+        hint2: "変換した文字列を変数に代入し、Logger.log(変数) で出力しよう。",
+        hint3: "const text = Utilities.formatDate(targetDate, 'Asia/Tokyo', 'yyyy年M月d日'); Logger.log(text); で完成だよ！",
+        modelCode: "function myLesson() {\n  const targetDate = new Date(2026, 10, 16);\n  const formatted = Utilities.formatDate(targetDate, 'Asia/Tokyo', 'yyyy年M月d日');\n  Logger.log(formatted);\n}",
+        afterNote: "実務のスプレッドシートの日付は、そのままメールや通知に使うと読みにくい英語表記になりがちです。Utilities.formatDate を覚えておくと、請求書の日付や日報メールが一気に本格的になります！"
+      },
+      {
+        id: "s3-02",
+        stageId: "stage-3",
+        title: "条件で色を付ける",
+        type: "code",
+        defaultSheet: "売上",
+        explain: "特定の条件を満たす行をパッと目立たせるのは、実務自動化の大定番です！今回は金額が300以上の行を黄色く塗りつぶしてみましょう。<br><br><strong>① 部品の意味：</strong><br>・<code>sheet.getRange(row, 1, 1, 4)</code>: row行目の1列目（A列）から、1行・4列分（A〜D列）の範囲を取得します。<br>・<code>.setBackground('#fff2cc')</code>: 範囲内のセルの背景色を指定したカラーコード（#fff2ccは薄い黄色）で塗ります。<br>・<code>if (amount >= 300)</code>: 金額が300以上かを判定する条件分岐です。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function highlightHighSales() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  for (let r = 2; r <= 6; r++) {\n    const amount = sheet.getRange(r, 4).getValue();\n    if (amount >= 300) {\n      sheet.getRange(r, 1, 1, 4).setBackground('#fff2cc');\n    }\n  }\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: 操作する売上シートを取得します。<br>・2行目: データ行である2行目から6行目までを1行ずつループします。<br>・3行目: r行目の4列目（D列：金額）の数値を取り出します。<br>・4行目: 金額が300以上かどうかをチェックします。<br>・5行目: 条件に当てはまる場合、その行のA〜D列（4セル分）の背景色を #fff2cc に変更します。",
+        example: {
+          code: "function example() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  // 3行目（金額380）のA〜D列を薄い黄色にする例\n  sheet.getRange(3, 1, 1, 4).setBackground('#fff2cc');\n  Logger.log('3行目の背景色を #fff2cc に変更しました！');\n}",
+          desc: "3行目のA〜D列に背景色 <code>#fff2cc</code> を塗る例だよ。プレビュー表で黄色く変わるのを確認してみよう！"
+        },
+        question: "売上シートの金額（D列）が <strong>300以上</strong> の行について、その行の <strong>A〜D列に背景色 <code>#fff2cc</code></strong> を付けてみよう！<br>（D3=380 の3行目と、D5=570 の5行目が対象になるよ）",
+        starterCode: "function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  for (let r = 2; r <= 6; r++) {\n    const amount = sheet.getRange(r, 4).getValue();\n    // amount が 300 以上なら、その行の A〜D 列に色をつけよう\n    if (amount >= 300) {\n      sheet.getRange(r, 1, 1, 4).setBackground('#fff2cc');\n    }\n  }\n}",
+        check: (sheet) => {
+          const bgA3 = (sheet.getRange("A3").getBackground() || "").toLowerCase();
+          const bgA5 = (sheet.getRange("A5").getBackground() || "").toLowerCase();
+          const bgA2 = (sheet.getRange("A2").getBackground() || "").toLowerCase();
+          const bgA4 = (sheet.getRange("A4").getBackground() || "").toLowerCase();
+          if (bgA3 === "#fff2cc" && bgA5 === "#fff2cc") {
+            if (bgA2 === "#fff2cc" || bgA4 === "#fff2cc") {
+              return { pass: false, msg: "金額が300未満の行（2行目や4行目）にも色が塗られています。金額が300以上の行（3行目と5行目）だけを塗ってください。" };
+            }
+            return { pass: true, msg: "金額300以上の行（3行目と5行目）の背景色をきれいにハイライトできました！" };
+          }
+          return { pass: false, msg: "売上シートの A3 と A5 の背景色が #fff2cc になっていません。条件分岐と setBackground('#fff2cc') を確認してください。" };
+        },
+        hint1: "D列の金額は sheet.getRange(r, 4).getValue() で取得できるよ。",
+        hint2: "条件は if (amount >= 300) だよ。",
+        hint3: "sheet.getRange(r, 1, 1, 4).setBackground('#fff2cc'); でその行のA〜D列を塗りつぶそう！",
+        modelCode: "function myLesson() {\n  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  for (let r = 2; r <= 6; r++) {\n    const amount = sheet.getRange(r, 4).getValue();\n    if (amount >= 300) {\n      sheet.getRange(r, 1, 1, 4).setBackground('#fff2cc');\n    }\n  }\n}",
+        afterNote: "実務では「納期遅れ」「在庫僅少」「VIP顧客」など、重要なデータをひと目でわかるように色付けする自動処理が大活躍します。手作業の塗り忘れも完全に防げます！"
+      },
+      {
+        id: "s3-03",
+        stageId: "stage-3",
+        title: "シートをコピーして月次シートを作る",
+        type: "code",
+        defaultSheet: "売上",
+        explain: "毎月の締め処理や月次レポートで、「ひな形シートをコピーして新しい月のシートを作る」という作業はよく発生します。GASの <code>copyTo</code> と <code>setName</code> を使えば一瞬で完了します！<br><br><strong>① 部品の意味：</strong><br>・<code>sheet.copyTo(ss)</code>: 元のシートを別のスプレッドシート（または同じスプレッドシート <code>ss</code>）の中にまるごと複製し、複製された新しいシートを返します。<br>・<code>newSheet.setName('2026年11月')</code>: 新しくできたシートの名前を「2026年11月」に変更（リネーム）します。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function duplicateSheetSample() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const newSheet = salesSheet.copyTo(ss);\n  newSheet.setName('2026年11月');\n  Logger.log('売上シートを複製して「2026年11月」を作成しました！');\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: スプレッドシート全体を取得します。<br>・2行目: コピー元となる「売上」シートを取得します。<br>・3行目: 売上シートをスプレッドシート内に複製します。<br>・4行目: 複製されたシートの名前を「2026年11月」に変更します。<br>・5行目: 完了メッセージをログに出力します。",
+        example: {
+          code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const newSheet = salesSheet.copyTo(ss);\n  newSheet.setName('売上バックアップ');\n  Logger.log('「売上バックアップ」シートを作成しました！');\n}",
+          desc: "売上シートをコピーして「売上バックアップ」という名前のシートを作成する例だよ。"
+        },
+        question: "「売上」シートをコピーして、名前を <strong>「2026年11月」</strong> に変えたシートを作成してみよう！<br>（作成後、シートタブに「2026年11月」が追加されるよ）",
+        starterCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  // salesSheet をコピーして名前を '2026年11月' にしよう\n  const newSheet = salesSheet.copyTo(ss);\n  newSheet.setName('2026年11月');\n}",
+        check: (sheet, logs, sheets) => {
+          const novSheet = sheets && sheets["2026年11月"];
+          if (!novSheet) {
+            return { pass: false, msg: "シート「2026年11月」が見つかりません。salesSheet.copyTo(ss) でコピーし、newSheet.setName('2026年11月') で名前を変更してください。" };
+          }
+          const d2 = novSheet.getRange("D2").getValue();
+          if (Number(d2) === 190) {
+            return { pass: true, msg: "売上シートをコピーして「2026年11月」シートを作成できました！D2のデータ（190）も引き継がれています！" };
+          }
+          return { pass: false, msg: 'シート「2026年11月」は作成されましたが、D2の値が ' + d2 + ' です（売上シートの190が期待されます）。' };
+        },
+        hint1: "salesSheet.copyTo(ss) でシートが複製され、新しいシートオブジェクトが返ってくるよ。",
+        hint2: "返ってきたシートに対して .setName('2026年11月') を呼び出そう。",
+        hint3: "const newSheet = salesSheet.copyTo(ss); newSheet.setName('2026年11月'); で完成だよ！",
+        modelCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const salesSheet = ss.getSheetByName('売上');\n  const newSheet = salesSheet.copyTo(ss);\n  newSheet.setName('2026年11月');\n}",
+        afterNote: "実務では、年度初めの12か月分シート自動作成や、テンプレートからの見積書自動生成などに使われます。人間が右クリックしてシートをコピーする作業から完全に解放されます！"
+      },
+      {
+        id: "s3-04",
+        stageId: "stage-3",
+        title: "メール送信の型",
+        type: "code",
+        defaultSheet: "レポート",
+        explain: "集計した結果を関係者にメールで自動送信するのは、GASが最も輝く実務シーンの1つです！<code>MailApp.sendEmail</code> を使えば、たった1行でメール送信が可能です。<br><br><strong>① 部品の意味：</strong><br>・<code>MailApp.sendEmail(recipient, subject, body)</code>: 指定したメールアドレスにメールを送信するGASの標準サービスです。<br>・<code>recipient</code>: 送信先のメールアドレス（例: <code>'test@example.com'</code>）。<br>・<code>subject</code>: メールの件名（例: <code>'売上レポート'</code>）。<br>・<code>body</code>: メールの本文文字列（例: <code>'売上合計は 1390 円です。'</code>）。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function sendReportEmail() {\n  const to = 'test@example.com';\n  const subject = '売上レポート';\n  const total = 1390;\n  const body = \x60売上合計は \${total} 円です。\x60;\n  MailApp.sendEmail(to, subject, body);\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: 送信先の宛先アドレスを変数 <code>to</code> に用意します。<br>・2行目: メールの件名を変数 <code>subject</code> に用意します。<br>・3行目: 売上合計の数値 <code>1390</code> を用意します。<br>・4行目: テンプレート文字列（バッククォート）を使って、合計値を含んだ本文を作成します。<br>・5行目: <code>MailApp.sendEmail</code> でメールを（本ドリルでは疑似送信ログに）送信します。",
+        example: {
+          code: "function example() {\n  const recipient = 'test@example.com';\n  const title = 'テスト通知';\n  const content = 'まるもちからの自動通知テストだよ！';\n  MailApp.sendEmail(recipient, title, content);\n}",
+          desc: "<code>MailApp.sendEmail</code> を使ってメールを疑似送信する例だよ。実行ログに「📧 送信ログ」が表示されるのを確認しよう！"
+        },
+        question: "<code>MailApp.sendEmail</code> を使って、宛先 <strong>test@example.com</strong>、件名 <strong>「売上レポート」</strong>、本文に売上合計 <strong>1390</strong> を含むメールを送信してみよう！",
+        starterCode: "function myLesson() {\n  const to = 'test@example.com';\n  const subject = '売上レポート';\n  const total = 1390;\n  const body = '売上合計は ' + total + ' 円です。';\n  // MailApp.sendEmail を使って送信しよう\n  MailApp.sendEmail(to, subject, body);\n}",
+        check: (sheet, logs, sheets, meta) => {
+          const sent = meta && meta.mailApp && meta.mailApp.sentEmails.some(m =>
+            m.to === "test@example.com" && m.subject === "売上レポート" && String(m.body).includes("1390")
+          );
+          const logFound = logs.some(l =>
+            l.includes("test@example.com") && l.includes("売上レポート") && l.includes("1390")
+          );
+          if (sent || logFound) {
+            return { pass: true, msg: "宛先 test@example.com、件名「売上レポート」、合計1390を含むメールの疑似送信ログが正常に記録されました！" };
+          }
+          return { pass: false, msg: "送信ログに宛先 test@example.com、件名「売上レポート」、本文に「1390」が確認できませんでした。MailApp.sendEmail(to, subject, body) を確認してください。" };
+        },
+        hint1: "MailApp.sendEmail(宛先, 件名, 本文) の順に引数を指定するよ。",
+        hint2: "宛先は 'test@example.com'、件名は '売上レポート'、本文には '1390' を含めよう。",
+        hint3: "MailApp.sendEmail(to, subject, body); で送信を実行できるよ！",
+        modelCode: "function myLesson() {\n  const to = 'test@example.com';\n  const subject = '売上レポート';\n  const total = 1390;\n  const body = '売上合計は ' + total + ' 円です。';\n  MailApp.sendEmail(to, subject, body);\n}",
+        afterNote: "実務では、スプレッドシートの集計結果を毎朝チームに自動配信したり、お客様への問い合わせ受付自動返信を作ったりするのに大活躍します。※本アプリ内では疑似再現のため、実際のメールは送信されません。"
+      },
+      {
+        id: "s3-05",
+        stageId: "stage-3",
+        title: "トリガーの考え方",
+        type: "code",
+        defaultSheet: "売上",
+        explain: "GASの真骨頂は『パソコンを閉じて寝ていても勝手に動く』自動化です！これを可能にするのが <strong>トリガー（Trigger）</strong> です。コードからトリガーを登録する方法をマスターしましょう。<br><br><strong>① 部品の意味：</strong><br>・<code>ScriptApp.newTrigger('myFunction')</code>: 自動実行したい関数（<code>myFunction</code>）を指定してトリガーの作成を開始します。<br>・<code>.timeBased()</code>: 「時間主導型（タイマー式）」のトリガーを指定します。<br>・<code>.everyDays(1)</code>: 頻度を「毎日（1日ごと）」に設定します。<br>・<code>.atHour(9)</code>: 実行時刻を「朝9時（午前9時〜10時の間）」に指定します。<br>・<code>.create()</code>: 設定内容を確定し、トリガーを正式に登録します。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function setupDailyTrigger() {\n  ScriptApp.newTrigger('myFunction')\n    .timeBased()\n    .everyDays(1)\n    .atHour(9)\n    .create();\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1行目: <code>myFunction</code> 関数を定期実行するトリガー作成を開始します。<br>・2行目: 変更検知ではなく、時計（時間）に合わせて動くタイマー方式を選びます。<br>・3行目: 「毎日（1日ごと）」の間隔で動かす設定をつなげます。<br>・4行目: 「午前9時」のタイミングで動かす設定をつなげます。<br>・5行目: <code>.create()</code> でトリガー登録を確定します。",
+        example: {
+          code: "function example() {\n  ScriptApp.newTrigger('sendReport')\n    .timeBased()\n    .everyDays(1)\n    .atHour(8)\n    .create();\n}",
+          desc: "毎朝8時に <code>sendReport</code> 関数を実行するトリガーを登録する例だよ。実行ログに「⏰ トリガー設定ログ」が出るよ！"
+        },
+        question: "<code>ScriptApp</code> を使って、<strong>「毎日9時」</strong> に <code>myFunction</code> を自動実行する時間主導型トリガーを登録してみよう！",
+        starterCode: "function myLesson() {\n  // 毎日9時に myFunction を動かすトリガーを登録しよう\n  ScriptApp.newTrigger('myFunction')\n    .timeBased()\n    .everyDays(1)\n    .atHour(9)\n    .create();\n}",
+        check: (sheet, logs, sheets, meta) => {
+          const hasLog = logs.some(l => l.includes("毎日") && l.includes("9時"));
+          const hasMeta = meta && meta.scriptApp && meta.scriptApp.triggers.some(t =>
+            t.functionName === "myFunction" && (t.frequency === "毎日" || t.frequency === "1日ごと") && t.hour === 9
+          );
+          if (hasLog || hasMeta) {
+            return { pass: true, msg: "「毎日 9時」に関数 myFunction を実行するトリガー設定ログが正常に記録されました！" };
+          }
+          return { pass: false, msg: "トリガー設定ログに「毎日」と「9時」が確認できませんでした。ScriptApp.newTrigger('myFunction').timeBased().everyDays(1).atHour(9).create() を確認してください。" };
+        },
+        hint1: "ScriptApp.newTrigger('myFunction') の後ろに .timeBased() をつなげよう。",
+        hint2: "毎日は .everyDays(1)、9時は .atHour(9) で指定するよ。",
+        hint3: "最後に必ず .create() を呼び出すことでトリガーが作成されるよ！",
+        modelCode: "function myLesson() {\n  ScriptApp.newTrigger('myFunction')\n    .timeBased()\n    .everyDays(1)\n    .atHour(9)\n    .create();\n}",
+        afterNote: "トリガーはエディタ画面の時計マーク（左メニュー）からも手動設定できますが、コードから動的に作成・削除できるようになると、毎月末だけの集計や期限アラートの完全自動化が実現できます！"
+      },
+      {
+        id: "s3-06",
+        stageId: "stage-3",
+        title: "フォーム回答の集計",
+        type: "code",
+        defaultSheet: "回答",
+        explain: "Googleフォームでアンケートを取ると、回答が自動でスプレッドシートにたまっていきます。この回答シートから特定のデータを数えて、別シート（レポート）にまとめる実践スキルを習得しましょう！<br><br><strong>① 部品の意味：</strong><br>・<code>ss.getSheetByName('回答')</code> / <code>ss.getSheetByName('レポート')</code>: 読み取り元の「回答」シートと、書き込み先の「レポート」シートを取得します。<br>・<code>surveySheet.getRange(r, 2).getValue()</code>: 回答シートのr行目・2列目（B列：満足度）の値を取得します。<br>・<code>reportSheet.getRange('A2').setValue(...)</code>: レポートシートの指定セルに結果を書き込みます。<br><br><strong>② つなげた全体のコード：</strong><br><pre class=\"model-code-box\">function aggregateSurvey() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const surveySheet = ss.getSheetByName('回答');\n  const reportSheet = ss.getSheetByName('レポート');\n  \n  let count5 = 0;\n  for (let r = 2; r <= 6; r++) {\n    const score = surveySheet.getRange(r, 2).getValue();\n    if (score === 5) {\n      count5++;\n    }\n  }\n  \n  reportSheet.getRange('A2').setValue('満足度5の人数');\n  reportSheet.getRange('B2').setValue(count5);\n}</pre><br><strong>③ 行ごとの役割：</strong><br>・1〜3行目: スプレッドシートを取得し、「回答」シートと「レポート」シートを用意します。<br>・4行目: 満足度が5の人数を数えるカウンター変数 <code>count5</code> を 0 で初期化します。<br>・5〜9行目: 2行目から6行目までの各行をループし、満足度が5ならカウンターを1増やします。<br>・10〜11行目: レポートシートのA2に項目名「満足度5の人数」、B2にカウント結果（3）を書き込みます。",
+        example: {
+          code: "function example() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const surveySheet = ss.getSheetByName('回答');\n  const reportSheet = ss.getSheetByName('レポート');\n  // 最初の回答者の満足度をレポートに転記する例\n  const firstScore = surveySheet.getRange(2, 2).getValue();\n  reportSheet.getRange('A2').setValue('先頭回答者の満足度');\n  reportSheet.getRange('B2').setValue(firstScore);\n  Logger.log('レポートシートに最初の回答を転記しました！');\n}",
+          desc: "「回答」シートからデータを読み取り、「レポート」シートに書き込む例だよ。"
+        },
+        question: "「回答」シートの満足度（B列）を見て、<strong>「5」と答えた人数</strong> を数えよう！<br>そして「レポート」シートの <strong>A2 に「満足度5の人数」、B2 にその人数（3）</strong> を書き込んでみよう！",
+        starterCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const surveySheet = ss.getSheetByName('回答');\n  const reportSheet = ss.getSheetByName('レポート');\n\n  let count5 = 0;\n  // 2行目から6行目までの満足度（2列目）をチェックしよう\n  for (let r = 2; r <= 6; r++) {\n    const score = surveySheet.getRange(r, 2).getValue();\n    if (score === 5) {\n      count5++;\n    }\n  }\n\n  // レポートシートの A2 と B2 に書き込もう\n  reportSheet.getRange('A2').setValue('満足度5の人数');\n  reportSheet.getRange('B2').setValue(count5);\n}",
+        check: (sheet, logs, sheets) => {
+          const rep = sheets && sheets["レポート"];
+          if (!rep) {
+            return { pass: false, msg: "シート「レポート」が見つかりません。" };
+          }
+          const b2 = rep.getRange("B2").getValue();
+          if (Number(b2) === 3) {
+            return { pass: true, msg: "回答シートの集計に大成功！レポートシートのB2に「3」が正しく書き込まれました！" };
+          }
+          return { pass: false, msg: 'レポートシートのB2が ' + b2 + ' です（満足度5の人数である 3 が期待されます）。' };
+        },
+        hint1: "回答シートのデータ行は2行目から6行目だよ（for (let r = 2; r <= 6; r++)）。",
+        hint2: "if (score === 5) のときに count5++ で人数を数えよう。",
+        hint3: "最後に reportSheet.getRange('A2').setValue('満足度5の人数') と reportSheet.getRange('B2').setValue(count5) を実行しよう！",
+        modelCode: "function myLesson() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const surveySheet = ss.getSheetByName('回答');\n  const reportSheet = ss.getSheetByName('レポート');\n  let count5 = 0;\n  for (let r = 2; r <= 6; r++) {\n    const score = surveySheet.getRange(r, 2).getValue();\n    if (score === 5) {\n      count5++;\n    }\n  }\n  reportSheet.getRange('A2').setValue('満足度5の人数');\n  reportSheet.getRange('B2').setValue(count5);\n}",
+        afterNote: "おめでとうございます！Googleフォーム回答の自動集計からレポート出力まで、実務で今すぐ使える強力な自動化スキルを完全に身につけました。Stage 3制覇、本当にお見事です🍡✨"
       }
     ];
 
@@ -2343,9 +2813,9 @@
       {
         id: "stage-3",
         badge: "Stage 3",
-        title: "ループで一括データ加工",
-        locked: true,
-        desc: "近日公開予定！千件のデータも数秒で整形・クレンジング。"
+        title: "実務自動化テクニック（日付・色・メール・トリガー）",
+        locked: false,
+        lessonIds: ["s3-01", "s3-02", "s3-03", "s3-04", "s3-05", "s3-06"]
       },
       {
         id: "stage-4",
@@ -2634,14 +3104,14 @@
       }
 
       updateLessonSheetTabs() {
-        const tabs = document.querySelectorAll("#lesson-sheet-tabs .sheet-tab");
-        tabs.forEach(tab => {
-          if (tab.getAttribute("data-sheet") === this.activeLessonSheetName) {
-            tab.classList.add("active");
-          } else {
-            tab.classList.remove("active");
-          }
-        });
+        const container = document.getElementById("lesson-sheet-tabs");
+        if (!container || !this.currentSheets) return;
+        const sheetNames = Object.keys(this.currentSheets);
+        container.innerHTML = sheetNames.map(name => `
+          <div class="sheet-tab ${name === this.activeLessonSheetName ? 'active' : ''}" data-sheet="${name}" onclick="app.switchLessonSheet('${name}')">
+            <div class="sheet-tab-dot"></div><span>${name}</span>
+          </div>
+        `).join("");
       }
 
       switchSandboxSheet(sheetName) {
@@ -2653,14 +3123,14 @@
       }
 
       updateSandboxSheetTabs() {
-        const tabs = document.querySelectorAll("#sandbox-sheet-tabs .sheet-tab");
-        tabs.forEach(tab => {
-          if (tab.getAttribute("data-sheet") === this.activeSandboxSheetName) {
-            tab.classList.add("active");
-          } else {
-            tab.classList.remove("active");
-          }
-        });
+        const container = document.getElementById("sandbox-sheet-tabs");
+        if (!container || !this.sandboxSheets) return;
+        const sheetNames = Object.keys(this.sandboxSheets);
+        container.innerHTML = sheetNames.map(name => `
+          <div class="sheet-tab ${name === this.activeSandboxSheetName ? 'active' : ''}" data-sheet="${name}" onclick="app.switchSandboxSheet('${name}')">
+            <div class="sheet-tab-dot"></div><span>${name}</span>
+          </div>
+        `).join("");
       }
 
       switchExampleSheet(sheetName) {
@@ -2672,14 +3142,14 @@
       }
 
       updateExampleSheetTabs() {
-        const tabs = document.querySelectorAll("#example-sheet-tabs .sheet-tab");
-        tabs.forEach(tab => {
-          if (tab.getAttribute("data-sheet") === this.activeExampleSheetName) {
-            tab.classList.add("active");
-          } else {
-            tab.classList.remove("active");
-          }
-        });
+        const container = document.getElementById("example-sheet-tabs");
+        if (!container || !this.exampleSheets) return;
+        const sheetNames = Object.keys(this.exampleSheets);
+        container.innerHTML = sheetNames.map(name => `
+          <div class="sheet-tab ${name === this.activeExampleSheetName ? 'active' : ''}" data-sheet="${name}" onclick="app.switchExampleSheet('${name}')">
+            <div class="sheet-tab-dot"></div><span>${name}</span>
+          </div>
+        `).join("");
       }
 
       // クイズ選択肢の描画
@@ -2765,6 +3235,11 @@
             const val = rowData[c] !== undefined ? rowData[c] : "";
             td.textContent = val;
 
+            // 背景色の反映
+            if (mockSheet.bgColors && mockSheet.bgColors[`${r},${c}`]) {
+              td.style.backgroundColor = mockSheet.bgColors[`${r},${c}`];
+            }
+
             // 更新されたセルのハイライト
             if (mockSheet.updatedCells.has(`${r},${c}`)) {
               td.classList.add("cell-updated");
@@ -2829,8 +3304,10 @@
         this.updateExampleSheetTabs();
 
         const beforeDataMap = {};
+        const beforeBgMap = {};
         for (const name in this.exampleSheets) {
           beforeDataMap[name] = cloneSheetData(this.exampleSheets[name].data);
+          beforeBgMap[name] = { ...(this.exampleSheets[name].bgColors || {}) };
         }
 
         const spreadsheet = new MockSpreadsheet(this.exampleSheets);
@@ -2838,16 +3315,20 @@
           getActiveSpreadsheet: () => spreadsheet,
           getActiveSheet: () => this.exampleSheets[defSheet]
         };
+        const utilities = MockUtilities;
+        const mailApp = new MockMailApp(logger);
+        const scriptApp = new MockScriptApp(logger);
 
         try {
-          const fn = new Function("SpreadsheetApp", "Logger", "console", `${this.currentLesson.example.code}\n;if(typeof example==='function')example();if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
-          fn(spreadsheetApp, logger, logger);
+          const fn = new Function("SpreadsheetApp", "Logger", "console", "Utilities", "MailApp", "ScriptApp", `${this.currentLesson.example.code}\n;if(typeof example==='function')example();if(typeof sample==='function')sample();if(typeof readDate==='function')readDate();if(typeof setSample==='function')setSample();if(typeof boxSample==='function')boxSample();if(typeof calcSample==='function')calcSample();if(typeof checkStock==='function')checkStock();if(typeof loopLog==='function')loopLog();if(typeof arraySample==='function')arraySample();`);
+          fn(spreadsheetApp, logger, logger, utilities, mailApp, scriptApp);
 
-          // 変化したセルを「C6（3 → 1）」の形でまとめる（複数シート対応）
+          // 変化したセルを「C6（3 → 1）」や色変更の形でまとめる（複数シート対応）
           const changes = [];
           for (const sheetName in this.exampleSheets) {
             const sheet = this.exampleSheets[sheetName];
             const beforeData = beforeDataMap[sheetName] || [];
+            const beforeBg = beforeBgMap[sheetName] || {};
             const sortedCells = [...sheet.updatedCells].sort((a, b) => {
               const pa = a.split(",").map(Number);
               const pb = b.split(",").map(Number);
@@ -2859,9 +3340,15 @@
               const c = parts[1];
               const beforeVal = (beforeData[r] && beforeData[r][c] !== undefined) ? beforeData[r][c] : "";
               const afterVal = (sheet.data[r] && sheet.data[r][c] !== undefined) ? sheet.data[r][c] : "";
+              const bBg = beforeBg[key] || "";
+              const aBg = (sheet.bgColors && sheet.bgColors[key]) || "";
+              const prefix = sheetName !== defSheet ? `${sheetName}!` : "";
+              const cellName = `${prefix}${String.fromCharCode(65 + c)}${r + 1}`;
+
               if (String(beforeVal) !== String(afterVal)) {
-                const prefix = sheetName !== defSheet ? `${sheetName}!` : "";
-                changes.push(`${prefix}${String.fromCharCode(65 + c)}${r + 1}（${beforeVal === "" ? "空" : beforeVal} → ${afterVal === "" ? "空" : afterVal}）`);
+                changes.push(`${cellName}（${beforeVal === "" ? "空" : beforeVal} → ${afterVal === "" ? "空" : afterVal}）`);
+              } else if (bBg !== aBg && aBg !== "") {
+                changes.push(`${cellName}（背景色: ${aBg}）`);
               }
             }
           }
@@ -2886,6 +3373,8 @@
           exLog.classList.remove("empty");
         }
 
+        // コピー作成シート等がある場合に備えてタブを再描画
+        this.updateExampleSheetTabs();
         // 例題のプレビュー表を更新（変化したセルはハイライトされる）
         this.renderSheetTable(this.exampleSheets[this.activeExampleSheetName], "example-sheet-table");
       }
@@ -2911,6 +3400,9 @@
           getActiveSpreadsheet: () => spreadsheet,
           getActiveSheet: () => this.currentSheets[defSheet]
         };
+        const utilities = MockUtilities;
+        const mailApp = new MockMailApp(logger);
+        const scriptApp = new MockScriptApp(logger);
 
         const logBox = document.getElementById("execution-log");
         const alertBox = document.getElementById("judge-result-alert");
@@ -2923,8 +3415,8 @@
               myLesson();
             }
           `;
-          const runFn = new Function("SpreadsheetApp", "Logger", "console", wrapped);
-          runFn(spreadsheetApp, logger, logger);
+          const runFn = new Function("SpreadsheetApp", "Logger", "console", "Utilities", "MailApp", "ScriptApp", wrapped);
+          runFn(spreadsheetApp, logger, logger, utilities, mailApp, scriptApp);
 
           // ログ表示
           if (logs.length > 0) {
@@ -2935,13 +3427,18 @@
             logBox.classList.remove("empty");
           }
 
+          // コピーシート等が増えた場合に備えてタブを再描画
+          this.updateLessonSheetTabs();
+
           // 表の更新（現在アクティブなタブのシート）
           const activeSheet = this.currentSheets[this.activeLessonSheetName || defSheet];
-          this.renderSheetTable(activeSheet, "lesson-sheet-table");
+          if (activeSheet) {
+            this.renderSheetTable(activeSheet, "lesson-sheet-table");
+          }
 
           // 判定 (check)
           if (typeof this.currentLesson.check === "function") {
-            const result = this.currentLesson.check(this.currentSheets[defSheet], logs, this.currentSheets);
+            const result = this.currentLesson.check(this.currentSheets[defSheet], logs, this.currentSheets, { mailApp, scriptApp, utilities });
             if (result.pass) {
               alertBox.className = "result-alert success";
               alertBox.innerHTML = `🎉 <strong>正解！</strong><br>${result.msg || '素晴らしい出来栄えです！'}`;
@@ -2953,8 +3450,11 @@
           }
         } catch (err) {
           // エラーハンドリング（日本語補助説明つき）
+          this.updateLessonSheetTabs();
           const activeSheet = this.currentSheets[this.activeLessonSheetName || defSheet];
-          this.renderSheetTable(activeSheet, "lesson-sheet-table");
+          if (activeSheet) {
+            this.renderSheetTable(activeSheet, "lesson-sheet-table");
+          }
           const friendlyExplanation = this.getFriendlyErrorMessage(err);
           logBox.textContent = `エラー発生: ${err.name}\n${err.message}`;
           logBox.classList.remove("empty");
@@ -3144,12 +3644,15 @@
           getActiveSpreadsheet: () => spreadsheet,
           getActiveSheet: () => this.sandboxSheets[this.activeSandboxSheetName || "売上"]
         };
+        const utilities = MockUtilities;
+        const mailApp = new MockMailApp(logger);
+        const scriptApp = new MockScriptApp(logger);
 
         const logBox = document.getElementById("sandbox-execution-log");
 
         try {
-          const fn = new Function("SpreadsheetApp", "Logger", "console", code);
-          fn(spreadsheetApp, logger, logger);
+          const fn = new Function("SpreadsheetApp", "Logger", "console", "Utilities", "MailApp", "ScriptApp", code);
+          fn(spreadsheetApp, logger, logger, utilities, mailApp, scriptApp);
 
           if (logs.length > 0) {
             logBox.textContent = logs.join("\n");
@@ -3159,8 +3662,10 @@
             logBox.classList.remove("empty");
           }
 
+          this.updateSandboxSheetTabs();
           this.renderSandboxSheet();
         } catch (err) {
+          this.updateSandboxSheetTabs();
           this.renderSandboxSheet();
           logBox.textContent = `エラー発生: ${err.name}\n${err.message}\n\n💡 まるもちのヒント:\n${this.getFriendlyErrorMessage(err)}`;
           logBox.classList.remove("empty");
